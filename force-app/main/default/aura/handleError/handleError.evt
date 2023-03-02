@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION">
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="hasError" type="boolean"/>
+    <aura:attribute name="errorText" type="String"/>
+</aura:event>

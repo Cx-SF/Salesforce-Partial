@@ -1,0 +1,126 @@
+<apex:page cache="false" showHeader="false" contentType="text/css">
+    
+    /*Looks like we have ourselves a perfectionist. 
+    Add any custom CSS for your portal in this page.
+    Some sample tags are included below.*/
+    
+    /*If adding styles for communities you may 
+    need to add !important to your CSS atrributes*/
+    
+    /*The body*/
+    body{}
+    
+    /*The container*/
+    #portalwrapper{}
+    
+    /*The body*/
+    #portalbody{
+        padding: 20px 20px 20px 20px;
+        //width:auto;
+        margin-left: auto;
+        margin-right: auto;
+        width: 1140px;
+    }
+    
+    /*The header*/
+    #portalheader{}
+    
+    /*The user section*/
+    #portalheadertop{
+        background:none;
+        color:black;
+    }
+    
+    /*The logo*/
+    #portalheadermid{}
+    
+    /*The slider*/
+    #portalheaderbot{}
+    
+    /*The footer*/
+    #portalfooter{}
+    
+    /*The sidebar*/
+    #sidebarDiv{
+        //margin-left:auto;
+    }
+    
+    #SSEPortalLogo{
+        width:1140px;
+    }
+    
+    #sidebarCell{
+        //width:auto;
+    }
+    
+    /*The tabbar*/
+    .tabNavigation{
+        float:left;
+    }
+    
+    .outer {
+        margin-bottom:-100% !important;
+    }
+    
+    #container_pageFooter #portalfooter{
+        top:600px;
+    }
+    #container_pageHeader #portalwrapper{
+        box-shadow:none;
+        -webkit-box-shadow:none;
+        -moz-box-shadow:none;
+    }
+    #mask{
+        display:none !important;
+    }
+    #body_content #sidebarCell{
+        display:table-cell;
+    }
+    #body_content #sidebarCell{
+        
+        //top:-880px;
+        left:0px;
+        position:relative;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%,rgba(0, 0, 0, 0.1) 100%);
+    }
+    
+    #body_content #bodyDiv {
+        //margin-left: 30px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 1140px !important;
+        top: -935px !important;
+    }
+    
+    #portalheadermid{
+        height:126px;
+    }
+    
+    #container_content{
+        top:0px;
+    }
+    
+    .ideaSection{
+        width: 500px !important;
+    }
+    
+    .ideaContentWidth{
+        width: 500px !important;
+    }
+    
+    .dataCol{
+        vertical-align: middle !important;
+    }
+    
+    .labelCol{
+        vertical-align: middle !important;
+    }
+    
+    .dataCell a{
+        text-decoration: underline !important;
+    }
+    
+    .photoDiv img{
+        width: 60px;
+    }
+</apex:page>

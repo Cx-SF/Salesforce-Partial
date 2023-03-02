@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="Field rendered property changed">
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="isRendered" type="boolean" default="null"/>
+    <aura:attribute name="isRequired" type="boolean" default="null"/>
+    <aura:attribute name="isDisabled" type="boolean" default="null"/>
+</aura:event>

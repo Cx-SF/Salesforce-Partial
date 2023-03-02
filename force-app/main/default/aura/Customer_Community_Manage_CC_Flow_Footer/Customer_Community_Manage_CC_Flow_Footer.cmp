@@ -1,0 +1,29 @@
+<aura:component access="global" implements="lightning:availableForFlowScreens">
+   <!-- Determine which actions are available>
+   <aura:attribute name="canCancel" type="Boolean" />
+   <aura:attribute name="canFinish" type="Boolean" />
+   <aura:handler name="init" value="{!this}" action="{!c.init}" /-->
+
+   <div aura:id="actionButtonBar" class="slds-clearfix slds-p-top_medium">
+      <div class="slds-float_left">
+         <!--aura:if isTrue="{!v.canPause}">
+            <lightning:button aura:id="FINISH" label="Cancel"
+               variant="neutral" onclick="{!c.onButtonPressed}" />
+         </aura:if-->
+          
+         <!--aura:if isTrue="{!v.canNext}"-->
+            <lightning:button aura:id="NEXT" label="Save"
+               variant="brand" onclick="{!c.onButtonPressed}" />
+         <!--/aura:if-->
+      </div>
+   </div>
+</aura:component>
+
+    
+
+	<!--div class="slds-modal__footer">
+        <lightning:button label="Cancel" variant="neutral" onclick="{!c.Cancel}"/>
+        <lightning:button label="Save" variant="brand"/> 
+    </div> 
+
+</aura:component-->

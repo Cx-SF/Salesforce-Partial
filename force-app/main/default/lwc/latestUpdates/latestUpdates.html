@@ -1,0 +1,33 @@
+<template>
+    <div  id="LatestUpdates" >
+        <table class="LatestUpdatesTable" >
+            <tr>
+                <td colspan="3">
+                    <h1 class="LatestUpdatesHeader">{ComponentTitle}</h1>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <c-lightning-carousel id="Announcement" announcement-type="Announcement" box-title='{BoxTitle_1}'></c-lightning-carousel>
+                </td>
+                <td >
+                    <c-lightning-carousel id="CaseStudy" announcement-type="Case Study" box-title='{BoxTitle_2}'></c-lightning-carousel>
+                </td>
+                <td >
+                    <c-lightning-carousel id="WhitePaper" announcement-type="White Paper" box-title='{BoxTitle_3}'></c-lightning-carousel>
+                </td>
+            </tr>  
+            <tr>
+                <td >
+                    <c-lightning-carousel id="CheckmarxBlog" announcement-type="Checkmarx Blog"  box-title='{BoxTitle_4}'></c-lightning-carousel>
+                </td>
+                <td >
+                    <c-lightning-carousel id="Video" announcement-type="Video"  box-title='{BoxTitle_5}'></c-lightning-carousel>
+                </td>
+                <td >
+                    <c-lightning-carousel id="Webinar" announcement-type="Webinar"  box-title='{BoxTitle_6}'></c-lightning-carousel>
+                </td>
+            </tr>            
+        </table>       
+    </div>
+</template>

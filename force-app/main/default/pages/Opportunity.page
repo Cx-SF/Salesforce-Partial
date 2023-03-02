@@ -1,0 +1,109 @@
+<apex:page standardcontroller="Opportunity" extensions="OpportunityCls" tabstyle="Opportunity">
+                  
+    <head>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+      <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+          
+      <script type = "text/javascript"> 
+        /*$(document).ready(function(){ 
+            if ({!isBillingType} == true)
+            {
+                $( "#dialog" ).dialog();
+            }
+         });    
+         function closeAndRefresh()
+         {
+            $( "#dialog" ).dialog();
+            $('#dialog').dialog("close");
+            window.location.href = window.location.href;
+         }*/    
+         function closeAndRefresh()
+         {
+            window.location.href = window.location.href;
+         }
+      </script>
+
+    <style type="text/css">
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup 
+            displays in the center of the screen. First set the width. Then set 
+            margin-left to negative half of what the width is. You can add 
+            the height property for a fixed size pop up if you want.*/
+            width: 500px;
+            margin-left: -250px;
+            top:100px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+
+    </style>
+</head>
+<body>
+    <apex:form id="frm">
+        <apex:detail inlineEdit="true" relatedList="true" relatedListHover="true" showChatter="true" oncomplete="location.reload()"/>
+           
+            <!-- <div id="dialog" title=" Billing Type">
+                <p>Please choose the Billing Type:</p>
+                <apex:selectRadio value="{!billingType}">
+                    <apex:selectOptions value="{!billingTypeSO}"/>
+                </apex:selectRadio>
+                <apex:commandButton action="{!SaveBilling}" value="Save" oncomplete="closeAndRefresh();"/>
+            </div> -->
+         
+         
+         
+ 
+        <!--<apex:outputPanel id="tstpopup">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+                <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                    <div id="diahlog" title=" Billing Type">
+                        <p>Please choose the Billing Type:</p>
+                        <apex:selectRadio value="{!billingType}">
+                            <apex:selectOptions value="{!billingTypeSO}"/>
+                        </apex:selectRadio>
+                        <apex:commandButton action="{!SaveBilling}" value="Save" oncomplete="closeAndRefresh();" rerender="tstpopup"/>
+                    </div>
+                </apex:outputPanel>
+        </apex:outputPanel>  -->
+         
+         
+ 
+        <apex:outputPanel id="tstpopup2">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp2}"/>
+                <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp2}">
+                    <div id="diahlog" title=" Billing Type">
+                        <p>Can the license be delivered now ?</p>
+                        <apex:selectRadio value="{!deliveryStatus}">
+                            <apex:selectOptions value="{!deliveryStatusSO}"/>
+                        </apex:selectRadio>
+                        <apex:commandButton action="{!SaveDelivery}" value="Save" oncomplete="closeAndRefresh();" rerender="tstpopup"/>
+                    </div>
+                </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+    </body>
+   
+    <script>
+        <!-- Fix SW-12528 -->
+        // The id of the VF Page. Example on production is "066D00000002q3q".
+        $('{!IF($Organization.Id == '00D20000000IoIOEA0','#066D00000002q3q','066c00000009scW')}').replaceWith('<iframe id="gridFrame" scrolling="auto" height="600" width="100%" frameborder="0" src="/apex/gbfree__Grid?gname=Opportunity Payments&id={!opportunity.Id}&sh=0&ssb=0&sbb=1"></iframe>');
+    </script>
+    
+</apex:page>

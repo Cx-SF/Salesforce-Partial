@@ -1,0 +1,29 @@
+<apex:page standardController="Opportunity" extensions="VF_OpportunityRevenueRecognition">
+<apex:sectionHeader title="Revenue Recognition" subtitle="{!Opportunity.Name}"/>
+<apex:form id="formId">
+<apex:pageMessages />
+    <apex:pageBlock title="Revenue Recognition" mode="view">
+        <apex:pageblockSection columns="1" collapsible="false">
+            <h3>Revenue Recognitions</h3>
+            <apex:pageblockTable value="{!lst_oliIDs}" var="oliId">
+                <apex:column >
+                    <apex:facet name="header"><div style="width:220px">Product Name</div></apex:facet>
+                    {!map_productNames[oliId]}
+                    <apex:facet name="footer">
+                        <apex:outputText value="Total:" style=""/><!--style="float: right;"-->
+                    </apex:facet>
+                </apex:column>
+                <apex:repeat var="h" value="{!list_colHeader}">
+                    <apex:column >
+                        <apex:facet name="header"><div style="width:60px">{!h}</div></apex:facet>
+                        {!map_colValues[oliId][h]}
+                        <apex:facet name="footer">
+                            {!map_footers[h]}
+                        </apex:facet>
+                    </apex:column>
+                </apex:repeat>
+            </apex:pageblockTable>
+        </apex:pageblockSection>
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

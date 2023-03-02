@@ -1,0 +1,70 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">    
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+
+<head>
+  <title>Page Title</title>
+  <apex:stylesheet value="{!URLFOR($Resource.LightningZipNew, 'styles/salesforce-lightning-design-system.css')}" />
+</head>    
+<body>    
+  <div class="slds">    
+      <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped slds-table_col-bordered">
+        <thead>
+          <tr class="slds-text-title_caps">
+            <th>
+              <b>Status</b>
+            </th>
+            <th>
+             <b>Meaning</b>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <th>
+              Scheduled
+            </th>
+            <td>
+              The feature is on the roadmap with a planned version (the planned version will be mentioned in a dedicated field).<br/>
+              The plan is <b>not committed</b> unless a commitment request process has taken place and an official commitment was provided by the product team (for now commitments management is external to this system).
+
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Candidate for upcoming versions
+            </th>
+            <td>
+            
+              A valid feature with high priority relative to other items in the backlog.<br/>
+              The feature was added to the backlog and will be considered for upcoming versions. The product team will re-assess this feature as part of the planning process of every future version:<br/>
+                •   If PM decides to include it in a specific version - the status will be changed to "Scheduled"<br/>
+                •   If PM decides to lower its priority - the status will be changed to "Not planned" (with reasoning)<br/>
+                •   If PM decides to reconsider it again for the next version - the status will <u>remain</u> "Candidate for upcoming versions"<br/>
+
+            </td>
+          </tr>
+          <tr>
+            <th>
+              Not Planned
+            </th>
+            <td>
+              A valid feature with low priority relative to other items in the backlog, not likely to be implemented.<br/>
+              The feature was added to the backlog but not planned at the moment.
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Rejected
+            </th>
+            <td>
+              Not a valid feature
+            </td>
+          </tr>                                    
+        </tbody>
+      </table>  
+  </div>
+</body>
+</html>
+</apex:page>

@@ -1,0 +1,90 @@
+<template>
+    <div class="tableS">
+        <div class="infoTemp">
+            <template if:true={opportunityInfo}>
+                <div class="infoCard">
+                    <div class="infoText">{infoText}</div>
+                    <div class="infoText">{infoText2}</div>
+                    <div class="infoText">{infoText3}</div>
+                </div>
+            </template>
+        </div>
+        <img class="iconInfo" src={infoImage} alt="this is a test" onmouseover={iconOver} onmouseout={icondown}></img>        
+        <h1 class="titelH">Opportunity List:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{selectedRecords} <spend class="txtSelectedRecourd">selected out of</spend> {existtingRecords} <spend class="txtSelectedRecourd">records found</spend></h1>
+        <template if:true={showOpportunitiesTable}>
+        <table class="opportuntyTable">
+            <tr class="accHd">
+                <th key={checkBoxAccount}><lightning-input 
+                    data-id="mainCheckbox" 
+                    class="mainCheck" 
+                    type="checkbox" 
+                    name="mainCheckBoxN" 
+                    onchange={handelMainCheckbox}
+                    ></lightning-input></th>
+                <template for:each={columns} for:item="column">
+                    <template if:false={column.value}>
+                        <th class="opportunityColumn" onclick={handelSortBy} key={column.fieldName} style="text-align: left;">{column.label} <lightning-icon class="sortIcon" icon-name="utility:sort" alternative-text="sort" size="xx-small" title="sortd"></lightning-icon></th>
+                    </template>
+                    <template if:true={column.value}>
+                        <th class="opportunityColumn" onclick={handelSortBy} key={column.fieldName} style="text-align: left;">{column.label}</th>
+                    </template>
+                </template>
+
+            </tr>
+            <tbody class="accBody">
+                <template for:each={opportunitiesTableData} for:item="opportunty" for:index="index">
+                    <tr key={opportunty.Id}>
+                        <td><lightning-input 
+                            data-id="checkBoxRos" 
+                            type="checkbox" 
+                            name={opportunty}
+                            onchange={handelCheckbox}
+                            ></lightning-input></td>
+                        <td class="opportuntyRowNumber" style="text-align: left;">{opportunty.rowNumber}</td>
+                        <td class="opportuntyName" style="text-align: left;"><lightning-formatted-url value={opportunty.opportunityUrl} tooltip="Omit leading slash" target="_blank" label={opportunty.Name}></lightning-formatted-url></td>
+                        <td class="opportuntyAccount" style="text-align: left;"><lightning-formatted-url value={opportunty.opportunityAccUrl} tooltip="Omit leading slash" target="_blank" label={opportunty.Account_name__c}></lightning-formatted-url></td>
+                        <td class="opportuntyChannel" style="text-align: left;">{opportunty.Channel__c}</td>
+                        <td class="opportuntyType" style="text-align: left;">{opportunty.Type}</td>
+                        <td class="opportuntyStageName" style="text-align: left;">{opportunty.StageName}</td>
+                        <td class="opportuntyCloseDate" style="text-align: left;">{opportunty.CloseDate}</td>
+                        <td class="opportuntyOwnerName" style="text-align: left;">{opportunty.Opportunity_Owner_Name__c}</td>
+                        <template if:true={opportunty.Existing_Quota__c}><td class="existingQuotaTrue" style="text-align: left;">{opportunty.Existing_Quota__c}</td></template>
+                        <template if:false={opportunty.Existing_Quota__c}><td class="existingQuotaFalse" style="text-align: left;">{opportunty.Existing_Quota__c}</td></template>
+                        <td style="width: 350px; padding: 4px 0; padding-right:1px;">
+                            <c-lookup
+                                rownumber = {index}
+                                onsearch={handleLookupSearch}
+                                onselectionchange={handleLookupSelectionChange}
+                                label="Search"
+                                placeholder="Search Owner"
+                                is-multi-entry={isMultiEntry}
+                                new-record-options={newRecordOptions}
+                            >
+                            </c-lookup>
+                        </td>
+                        <!-- <td style="width: 200px; padding: 4px 0; padding-right:1px;"><lightning-input
+                            data-target-id={index}
+                            data-id={newOwnerInput}
+                            name={opportunty.Id}
+                            class="comboBoxIntd"
+                            onkeydown={handelNewOwnerKeydown}
+                            placeholder="select new owner"
+                            >
+                        </lightning-input></td>  -->
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        <div class="tableList">
+            <ul>
+                <template for:each={tabels} for:item="table">
+                    <li key={table.label} data-id={table.label} onclick={handelChangeTable}><a>{table.label}</a></li>
+                </template>
+            </ul>
+        </div>
+    </template>    
+    <template if:false={showOpportunitiesTable}>
+        <a class="noData">No data found</a>
+    </template>
+    </div>   
+</template>

@@ -1,0 +1,83 @@
+<apex:page controller="IdeaToAccountsViewController" showHeader="true">
+    <style type="text/css">
+    .pbTitle {
+        white-space: nowrap
+     }
+</style>
+    <apex:pageMessages ></apex:pageMessages>
+
+    <apex:form >
+        <!--<apex:sectionHeader subtitle="All Accounts who requested the FR - {!title} "/> -->
+       
+        <apex:pageBlock id="PB" title="All Accounts who requested this FR - {!title}">
+            
+            <apex:pageBlockButtons location="Bottom">
+               
+                <apex:commandButton action="{!cancel}" value="Back To Feature Request" id="CancelButton"/>
+                <apex:commandButton value="FirstPage" action="{!FirstPage}" rerender="pgTable,PB"
+                                    status="status" disabled="{!DisablePrevious}" />
+                <apex:commandButton value="Previous" action="{!Previous}" rerender="pgTable,PB"
+                                    status="status" disabled="{!DisablePrevious}" />
+                <apex:commandButton value="Next" action="{!Next}" reRender="pgTable,PB" 
+                                    status="status" disabled="{!DisableNext}" />
+                <apex:actionStatus id="status" startText="Please Wait..."/>
+                <!--<apex:commandButton action="{!edit}" id="editButton" value="Edit"/> -->
+                <apex:commandButton action="{!save}" id="saveButton" value="Save" style="display: none;"/>
+                <apex:commandButton onclick="resetInlineEdit()" id="InternalcancelButton" value="Cancel" style="display: none;"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+            <apex:pageBlockTable value="{!records}"  var="rec" id="pgTable" >
+             
+                   
+                    <apex:column headerValue="Name" > <apex:outputLink target="_top" value="/{!rec.Account__r.Id}" >{!rec.Account__r.Name}</apex:outputLink></apex:column>
+                    <apex:column headerValue="Region"> <apex:outputField value="{!rec.Account__r.Region__c}" /></apex:column>
+                    <apex:column headerValue="Segmentation"> <apex:outputField value="{!rec.Account__r.Touching_level__c}" /></apex:column>
+                    <apex:column headerValue="Contract status"> <apex:outputField value="{!rec.Account__r.Contracts_Status__c}" /></apex:column>
+                    <apex:column headerValue="# closed won opps"> <apex:outputField value="{!rec.Account__r.of_Closed_Won_Opps__c}" /></apex:column>
+                    <apex:column headerValue="ACV"> <apex:outputField value="{!rec.Account__r.Total_Active_ACV__c}" /></apex:column>
+                    <apex:column headerValue="TCV"> <apex:outputField value="{!rec.Account__r.Total_Won_Amount__c}" /></apex:column>
+                    <apex:column headerValue="Industry"> <apex:outputField value="{!rec.Account__r.Industry}" /></apex:column>
+                    <apex:column headerValue="Requesting contact"> 
+                        <apex:outputField value="{!rec.Requesting_Contact__c}"> 
+                            <apex:inlineEditSupport showOnEdit="saveButton, InternalcancelButton" 
+                             event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                        </apex:outputField>
+                    </apex:column>
+                    <apex:column headerValue="Business justification"> 
+                        <apex:outputField value="{!rec.Business_justification__c}">
+                            <apex:inlineEditSupport showOnEdit="saveButton, InternalcancelButton" 
+                             event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                        </apex:outputField>
+                   </apex:column>
+                    <apex:column headerValue="Business justification Reason"> 
+                        <apex:outputField value="{!rec.Business_Justification_Reason__c}">
+                            <apex:inlineEditSupport showOnEdit="saveButton, InternalcancelButton" 
+                             event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                        </apex:outputField>
+                   </apex:column>
+                   <apex:column headerValue="Customer Priority"> 
+                        <apex:outputField value="{!rec.Customer_priority__c}">
+                            <apex:inlineEditSupport showOnEdit="saveButton, InternalcancelButton" 
+                             event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                        </apex:outputField>
+                   </apex:column>
+                    <apex:column headerValue="Account use case"> 
+                        <apex:outputField value="{!rec.Account_use_case__c}">
+                            <apex:inlineEditSupport showOnEdit="saveButton, InternalcancelButton" 
+                             event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                        </apex:outputField>
+                    </apex:column>
+                   <apex:column headerValue="Expected usage"> 
+                        <apex:outputField value="{!rec.Expected_Usage__c}">
+                            <apex:inlineEditSupport showOnEdit="saveButton, InternalcancelButton" 
+                             event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                        </apex:outputField>
+                    </apex:column>
+                    <apex:column headerValue="Added By"> <apex:outputField value="{!rec.CreatedBy.Name}" /></apex:column>
+                    
+                </apex:pageBlockTable>
+          </apex:pageBlockSection>
+        </apex:pageBlock>
+         
+  </apex:form>
+</apex:page>

@@ -1,0 +1,24 @@
+<apex:page id="CommunityUsersManagement"  standardController="CSM__c">
+
+    <apex:includeScript value="/lightning/lightning.out.js"/>
+<!--        {!CSM__c.id} <br/>-->
+<!--        {!CSM__c.Account__r.id} <br/>-->
+
+    <script>
+        $Lightning.use("c:CommunityUsersManagement2VF", function () {
+            $Lightning.createComponent(
+                "c:CommunityUsersManagement",
+                    {
+                        recordId : '{!CSM__c.Account__r.id}',
+                        avoidToasts : true
+                    },
+                "communityUsers",
+                function (cmp) {
+                    //console.log("Component created!");
+                    //console.log(cmp);
+                });
+        });
+    </script>
+
+    <div id="communityUsers"></div>
+</apex:page>

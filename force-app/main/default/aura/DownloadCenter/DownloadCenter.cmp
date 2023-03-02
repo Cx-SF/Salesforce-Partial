@@ -1,0 +1,552 @@
+<aura:component controller="Ctrl_DownloadCenter" implements="forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:appHostable" access="global">
+	<lightning:notificationsLibrary aura:id="notifLib" />
+	
+	<aura:attribute name="runningUser" type="User" />
+	<aura:attribute name="available_accounts" type="List" />
+	<aura:attribute name="selected_account" type="String" />
+	<aura:attribute name="availableProducts" type="List" />
+	<aura:attribute name="apiSetting" type="Object" />
+	<aura:attribute name="availableProductVersions" type="List" />
+	<aura:attribute name="loadedProductVersions" type="List" />
+	<aura:attribute name="selectedProduct" type="String" />
+	<aura:attribute name="productMapping" type="Object" />
+	<aura:attribute name="selectedProductWrap" type="Object" />
+	
+	<aura:attribute name="loadedPlugins" type="List" />
+	<aura:attribute name="loadedServices" type="List" />
+	
+	<aura:attribute name="optionalDownloadLinks" type="List" />
+	<aura:attribute name="selectedDownloadLinks" type="List" default="[]" />
+	<aura:attribute name="currentDLObject" type="Object" />
+	
+	<aura:attribute name="productSelected" type="Boolean" default="false" />
+	<aura:attribute name="pluginTabsLoaded" type="Boolean" default="false" />
+	<aura:attribute name="servicesLoaded" type="Boolean" default="false" />
+	<aura:attribute name="downloadModalOpen" type="Boolean" default="false" />
+	<aura:attribute name="isPowerPartner" type="Boolean" default="false" />
+	<aura:attribute name="blockPage" type="Boolean" default="true" />
+	
+	<aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+	
+	<div class="wrap-all">
+		<div class="inner">
+			<aura:if isTrue="{! v.blockPage }">
+				<div class="block-page">
+					{! $Label.c.Block_Account_from_Download_Center_msg }
+				</div>
+			</aura:if>
+			
+			<aura:if isTrue="{! not(v.blockPage) }">
+				<!-- Page 1 - Product selection -->
+				<aura:if isTrue="{! not(v.productSelected) }">
+					<div class="main-header">
+						<div class="pLeft">
+							<h1>Welcome to the Checkmarx Download Center!</h1>
+							<p>{! $Label.c.Download_Center_welcome_sentence }</p>
+						</div>
+						<div class="pRight">
+							<img src="{! $Resource.DownloadCenterMaterials + '/DownloadImage.png' }" />
+						</div>
+					</div>
+					<aura:if isTrue="{! or(v.availableProducts == null, v.availableProducts.length == 0) }">
+						<div class="error-message">No products were found</div>
+					</aura:if>
+					<aura:if isTrue="{! and(v.availableProducts != null, v.availableProducts.length > 0) }">
+						<ul class="product-btn-list">
+							<aura:iteration items="{! v.availableProducts }" var="product">
+								<li>
+									<a href="javascript: void(0);" title="{! product.pName }" id="{! product.imgId }" onclick="{! c.productSelected }">
+										<div class="top">
+											<div class="prod-img-container" title="{! product.pName }">
+												<img src="{! product.imgURL }" title="{! product.pName }" />
+											</div>
+											<div class="prod-text-container">
+												<div class="prod-name" title="{! product.pName }">{! product.pName }</div>
+												<div class="prod-desc" title="{! product.pName }">
+													<lightning:formattedRichText value="{! product.pDesc }" />
+												</div>
+											</div>
+										</div>
+										<div class="bottom">
+											<ul class="tag-list">
+												<li>
+													<div class="img"><img src="{! $Resource.DownloadCenterMaterials + '/document.svg' }" /></div>
+													<div class="text">Documentation</div>
+												</li>
+												<li>
+													<div class="img"><img src="{! $Resource.DownloadCenterMaterials + '/wrench.svg' }" /></div>
+													<div class="text">Hotfixes</div>
+												</li>
+												<li>
+													<div class="img"><img src="{! $Resource.DownloadCenterMaterials + '/update.svg' }" /></div>
+													<div class="text">Content Updates</div>
+												</li>
+												<li>
+													<div class="img"><img src="{! $Resource.DownloadCenterMaterials + '/flag.svg' }" /></div>
+													<div class="text">Release Notes</div>
+												</li>
+												<li>
+													<div class="img"><img src="{! $Resource.DownloadCenterMaterials + '/thumb.svg' }" /></div>
+													<div class="text">Best Practices</div>
+												</li>
+											</ul>
+										</div>
+										<div class="dl-btn-container" style="display: none;">
+											<img src="{! $Resource.DownloadCenterMaterials + '/download.svg' }" />
+										</div>
+									</a>
+								</li>
+							</aura:iteration>
+						</ul>
+						<br style="clear: both;" />					
+					</aura:if>
+				</aura:if>
+			</aura:if>
+			<!-- End Page 1 - Product selection -->
+			
+			<!-- Page 2 - Version/Plugin download -->
+			<aura:if isTrue="{! v.productSelected }">
+				<div class="dl-page-wrap">
+					<div class="dl-page-header">
+						<div class="prod-img-container" title="{! v.selectedProductWrap.pName }">
+							<img src="{! v.selectedProductWrap.imgURL }" title="{! v.selectedProductWrap.pName }" />
+						</div>
+						<div class="prod-text-container">
+							<div class="prod-name" title="{! v.selectedProductWrap.pName }">{! v.selectedProductWrap.pName }</div>
+							<div class="prod-desc" title="{! v.selectedProductWrap.pName }">
+								<lightning:formattedRichText value="{! v.selectedProductWrap.pDesc }" />
+							</div>
+						</div>
+					</div>
+					<lightning:tabset variant="scoped">
+						<lightning:tab label="{! v.selectedProduct }">
+							<div class="tab-content">
+								<lightning:tabset variant="scoped">
+									<aura:iteration items="{! v.loadedProductVersions }" var="pv" indexVar="ind">
+										<lightning:tab label="{! pv.Name }" id="{! ind }">
+											<div class="tab-content">
+												<div class="tab-content-section recommended">
+													<aura:if isTrue="{! pv.Latest_Version__c }">
+														<div class="tab-row"><span class="label">Latest version (recommended)</span><!-- &nbsp;{! pv.Name } --></div>
+													</aura:if>
+										
+													<aura:if isTrue="{! pv.Download_URL__c != null }">
+														<div class="tab-row">
+															<span class="pi-label">
+																{! pv.Product__c }&nbsp;{! pv.Product_Name_Text__c }&nbsp;{! pv.Version_Number__c }
+															</span>
+															<aura:if isTrue="{! pv.Product_Name_Text__c == 'Windows Installer' }">
+																	<lightning:button class="dl-link btn" value="{! 'prod=' + pv.Product__c + ':file_name=' + pv.Download_URL__c + ':cmp=Main Version:ver=' + pv.Version_Number__c + '' }" onclick="{! c.doDownloads }">
+																		<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+																	</lightning:button>
+																<aura:set attribute="else">
+																	<lightning:button class="dl-link btn" value="{! 'prod=' + pv.Product__c + ':file_name=' + pv.Download_URL__c + ':cmp=Main Version:ver=' + pv.Version_Number__c + '' }" onclick="{! c.doDownloads }">
+																		<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+																	</lightning:button>
+																</aura:set>
+															</aura:if>
+														</div>
+														<aura:if isTrue="{! pv.Version_Release_Notes__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Version_Release_Notes__c }"/>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.SHA256__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">SHA256: {! pv.SHA256__c }</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Last_Updated_Date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">
+																		Last updated:
+																		<lightning:formattedDateTime value="{! pv.Last_Updated_Date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Version_Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Version_Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</aura:if>
+												</div>
+												
+												<!-- -->
+												<aura:if isTrue="{! pv.Engine_Pack__c }">
+													<div class="tab-content-section">
+														<div class="tab-row">
+															<span class="pi-label">
+																Engine Pack {! pv.Engine_Pack_Number__c }
+															</span>
+															<lightning:button class="dl-link btn" value="{! 'prod=' + pv.Product__c + ':file_name=' + pv.Engine_Pack__c + ':cmp=EnginePack:ver=' + pv.Version_Number__c + ':enginepack_number=' + pv.Engine_Pack_Number__c }" onclick="{! c.doDownloads }">
+																<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+															</lightning:button>
+														</div>
+														<aura:if isTrue="{! pv.Engine_Pack_Release_Notes__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Engine_Pack_Release_Notes__c }"/>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Engine_Pack_SHA256__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">SHA256: {! pv.Engine_Pack_SHA256__c }</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Engine_Pack_Latest_updated_date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">
+																		Last updated: 
+																		<lightning:formattedDateTime value="{! pv.Engine_Pack_Latest_updated_date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Engine_Pack_Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Engine_Pack_Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</div>
+												</aura:if>
+												<!--  -->
+												
+												<aura:if isTrue="{! pv.Hotfix_URL__c }">
+													<div class="tab-content-section">
+														<div class="tab-row">
+															<span class="pi-label">
+																Hotfix {! pv.Hotfix_Number__c }
+															</span>
+															<lightning:button class="dl-link btn" value="{! 'prod=' + pv.Product__c + ':file_name=' + pv.Hotfix_URL__c + ':cmp=Hotfix:ver=' + pv.Version_Number__c + ':hotfix_number=' + pv.Hotfix_Number__c }" onclick="{! c.doDownloads }">
+																<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+															</lightning:button>
+														</div>
+														<aura:if isTrue="{! pv.Hotfix_Release_Notes__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Hotfix_Release_Notes__c }"/>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Hotfix_SHA256__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">SHA256: {! pv.Hotfix_SHA256__c }</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Hotfix_Latest_updated_date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">
+																		Last updated: 
+																		<lightning:formattedDateTime value="{! pv.Hotfix_Latest_updated_date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Hotfix_Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Hotfix_Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</div>
+												</aura:if>
+												
+												<aura:if isTrue="{! pv.Linux_Engine__c }">
+													<div class="tab-content-section">
+														<div class="tab-row">
+															<span class="pi-label">
+																Linux Engine {! pv.Linux_Engine_Number__c }
+															</span>
+															<lightning:button class="dl-link btn" value="{! 'prod=' + pv.Product__c + ':file_name=' + pv.Linux_Engine__c + ':cmp=Linux Engine:ver=' + pv.Version_Number__c + ':linux_engine_number=' + pv.Linux_Engine_Number__c }" onclick="{! c.doDownloads }">
+																<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+															</lightning:button>
+														</div>
+														<aura:if isTrue="{! pv.Linux_Engine_Release_Notes__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Linux_Engine_Release_Notes__c }"/>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Linux_Engine_SHA256__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">SHA256: {! pv.Linux_Engine_SHA256__c }</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Linux_Engine_Latest_updated_date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">
+																		Last updated: 
+																		<lightning:formattedDateTime value="{! pv.Linux_Engine_Latest_updated_date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Linux_Engine_Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Linux_Engine_Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</div>
+												</aura:if>
+										
+												<aura:if isTrue="{! pv.Version_Linux__c }">
+													<div class="tab-content-section">
+														<div class="tab-row">
+															<span class="pi-label">
+																{! pv.Product__c } Linux Installer {! pv.Version_Linux_Number__c }
+															</span>
+															<lightning:button class="dl-link btn" value="{! 'prod=' + pv.Product__c + ':file_name=' + pv.Version_Linux__c + ':cmp=Version Linux:ver=' + pv.Version_Number__c + ':linux_engine_number=' + pv.Version_Linux_Number__c }" onclick="{! c.doDownloads }">
+																<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+															</lightning:button>
+														</div>
+														<aura:if isTrue="{! pv.Version_Linux_Release_Notes__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Version_Linux_Release_Notes__c }"/>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Version_Linux_SHA256__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">SHA256: {! pv.Version_Linux_SHA256__c }</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Version_Linux_Latest_updated_date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">
+																		Last updated: 
+																		<lightning:formattedDateTime value="{! pv.Version_Linux_Latest_updated_date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Version_Linux_Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Version_Linux_Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</div>
+												</aura:if>
+												
+												<aura:if isTrue="{! pv.Content_Pack__c }">
+													<div class="tab-content-section">
+														<div class="tab-row">
+															<span class="pi-label">
+																Content Pack {! pv.Content_Pack_Number__c }
+															</span>
+															<lightning:button class="dl-link btn" value="{! 'prod=' + pv.Product__c + ':file_name=' + pv.Content_Pack__c + ':cmp=Content Pack:ver=' + pv.Version_Number__c + ':content_pack_number=' + pv.Content_Pack_Number__c }" onclick="{! c.doDownloads }">
+																<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+															</lightning:button>
+														</div>
+														<aura:if isTrue="{! pv.Content_Pack_Release_Notes__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Content_Pack_Release_Notes__c }"/>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Content_Pack_SHA256__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">SHA256: {! pv.Content_Pack_SHA256__c }</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Content_Pack_Latest_updated_date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl grey indent">
+																		Last updated: 
+																		<lightning:formattedDateTime value="{! pv.Content_Pack_Latest_updated_date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pv.Content_Pack_Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pv.Content_Pack_Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</div>
+												</aura:if>
+							
+												<aura:if isTrue="{! pv.General_Notes__c != null }">
+													<div class="tab-row indi-container"><lightning:formattedRichText value="{! pv.General_Notes__c }"/></div>
+												</aura:if>
+											</div>
+										</lightning:tab>
+									</aura:iteration>
+								</lightning:tabset>
+							</div>
+						</lightning:tab>
+						
+						<!-- Plugins tab -->
+						<lightning:tab label="PlugIns">
+							<div class="tab-content">
+								<lightning:tabset variant="scoped">
+									<aura:iteration items="{! v.loadedPlugins }" var="pi" indexVar="ind">
+										<lightning:tab label="{! pi.Name }" id="{! ind }">
+											<div class="tab-content">
+												<aura:if isTrue="{! pi.Download_URL__c }">
+													<div class="tab-content-section plugins">
+														<div class="tab-row">
+															<span class="pi-label">Plugin Version {! pi.Plug_In_Version__c }</span>
+															
+															<a class="dl-link btn" href="{! pi.Download_URL__c }" target="_blank" value="{! 'prod=' + pi.Product__c + ':file_name=' + pi.Download_URL__c + ':cmp=Plugin:plugin_ver=' + pi.Plug_In_Version__c + ':plugin_name=' + pi.Name }">
+																<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+															</a>
+															
+															<!--
+															<lightning:button class="dl-link btn" value="{! 'prod=' + pi.Product__c + ':file_name=' + pi.Download_URL__c + ':cmp=Plugin:plugin_ver=' + pi.Plug_In_Version__c + ':plugin_name=' + pi.Name }" onclick="{! c.doDownloads }">
+																<span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+															</lightning:button>
+															-->
+														</div>
+														<aura:if isTrue="{! pi.Plugin_Latest_updated_date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl">
+																		Last updated: 
+																		<lightning:formattedDateTime value="{! pi.Plugin_Latest_updated_date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! pi.Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! pi.Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</div>
+												</aura:if>										
+											</div>
+										</lightning:tab>
+									</aura:iteration>
+								</lightning:tabset>
+							</div>
+						</lightning:tab>
+						<!-- .Plugins tab -->
+						
+						<!-- Services tab -->
+						<lightning:tab label="Services">
+							<div class="tab-content">
+								<lightning:tabset variant="scoped">
+									<aura:iteration items="{! v.loadedServices }" var="s" indexVar="ind">
+										<lightning:tab label="{! s.Name }" id="{! ind }">
+											<div class="tab-content">
+												<aura:if isTrue="{! s.Download_URL__c }">
+													<div class="tab-content-section plugins">
+														<div class="tab-row">
+															<span class="pi-label">{! s.Name + ' ' + s.Service_Version__c }</span>
+                                                            <lightning:button class="dl-link btn" value="{! 'prod=' + s.Product__c + ':file_name=' + s.Download_URL__c + ':cmp=Services:ver=' + s.Service_Version__c + ':service_name=' + s.Name + '' }" onclick="{! c.doDownloads }">
+                                                                <span>Download</span> <img src="{! $Resource.DownloadCenterMaterials + '/dl-small.png' }" />
+                                                            </lightning:button>
+														</div>
+														<aura:if isTrue="{! s.Service_Latest_Updated_Date__c != null }">
+															<div class="tab-row">
+																<div>
+																	<label class="sub-ttl">
+																		Last updated: 
+																		<lightning:formattedDateTime value="{! s.Service_Latest_Updated_Date__c }" year="numeric" month="numeric" day="numeric" hour="2-digit"
+																								minute="2-digit" timeZone="UTC" timeZoneName="short" hour12="false" />
+																	</label>
+																</div>
+															</div>
+														</aura:if>
+														<aura:if isTrue="{! s.Description__c != null }">
+															<div class="tab-row">
+																<div>
+																	<lightning:formattedRichText value="{! s.Description__c }"/>
+																</div>
+															</div>
+														</aura:if>
+													</div>
+												</aura:if>										
+											</div>
+										</lightning:tab>
+									</aura:iteration>
+								</lightning:tabset>
+							</div>
+						</lightning:tab>
+						<!-- .Services tab -->
+					</lightning:tabset>
+					<lightning:button label="Back" onclick="{! c.backToFirst }" class="back-btn" />
+				</div>
+			</aura:if>
+		
+			<div class="page-footer">
+				<div class="footer-img">
+					<img src="{! $Resource.DownloadCenterMaterials + '/rep.svg' }" />
+				</div>
+				<div class="txt">
+					Thanks for being a Checkmarx customer. If you have any questions or comments<br />
+					<span class="b">contact our Support team.</span>
+				</div>
+			</div>
+		</div>
+		<lightning:spinner alternativeText="Loading" variant="brand" size="large" class="in-spinner" aura:id="cmspinner" />
+		
+		<aura:if isTrue="{! v.downloadModalOpen }">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick="{! c.closeModal }">X</button>
+					<div class="slds-modal__header">
+						<h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">End Customer Account Selection</h1>
+					</div>
+					<div class="slds-modal__content slds-p-around_medium account-selector-wrap" id="modal-content-id-1">
+						<p class="account-selector-container">
+							<label class="common-label">{! $Label.c.Partner_Account_selection_label }</label>
+							<lightning:combobox aura:id="AccountCombo" variant="label-hidden" options="{! v.available_accounts }" value="{! v.selected_account }" />
+						</p>
+					</div>
+					<div class="slds-modal__footer">
+						<lightning:button label="Cancel" onclick="{! c.closeModal }" />
+						<lightning:button variant="brand" label="Select and Continue" onclick="{! c.selectAndContinue }" />
+					</div>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+		</aura:if>
+	</div>	
+</aura:component>

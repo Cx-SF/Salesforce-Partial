@@ -1,0 +1,143 @@
+<apex:page standardController="Lead" extensions="SendAnEmail_Controller" showHeader="true" sidebar="true">
+<script type="text/javascript">
+    
+        if("{!$CurrentPage.parameters.alert}" == "1"){
+            alert("You can't send an Activation request when the Email field is empty. Please insert a valid email address and click again");
+        }
+        if("{!$CurrentPage.parameters.close}" == "1"){
+            RefreshParent();
+        }
+    
+        function RefreshParent(){
+            var winMain = window.opener;
+            if (null == winMain){
+                winMain = window.parent.opener;
+            }
+            winMain.location.href = "/" + "{!Lead.Id}";
+            top.location.reload();
+            CloseWindow();
+        }
+        
+        function CloseWindow(){
+            var winMain =window;
+            if (null == winMain.opener){
+                winMain = window.parent;
+            }
+            if (null == winMain.opener){
+                winMain = window.parent.parent;
+            }
+            winMain.close();
+        }
+</script>        
+<head>    
+</head>
+<style type="text/css">
+    
+    .Body
+    {
+         background-color:rgb(23,151,192);   
+    }
+    #centrWin
+    {
+        position:absolute;
+        left: 30%;    
+        margin-top: 100px;
+        background-color:rgb(200,226,235);
+    }
+    .Select
+    {
+        color:White;
+        background-color:rgb(23,151,192);                
+        width:70%;
+        height:25px;        
+        margin-left:80px;        
+    } 
+    .Select select
+    {  
+        background-color:rgb(200,226,235);
+        color:Black;    
+    } 
+    .CreateAnEmail
+    {
+        margin-left:200px!important;
+        -moz-box-shadow:inset 0px 0px 50px -45px #c8e2eb!important;
+        -webkit-box-shadow:inset 0px 0px 50px -45px #c8e2eb!important;
+        box-shadow:inset 0px 0px 50px -45px #c8e2eb!important;
+        background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1796c0), color-stop(1, #1799c0) )!important;
+        background:-moz-linear-gradient( center top, #1796c0 5%, #1799c0 100% )!important;
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1796c0', endColorstr='#1799c0')!important;
+        background-color:#1796c0!important;
+        -moz-border-radius:6px!important;
+        -webkit-border-radius:6px!important;
+        border-radius:6px!important;
+        border:1px solid #293545!important;
+        display:inline-block!important;
+        color:#ffffff!important;
+        font-family:arial!important;
+        font-size:15px!important;
+        font-weight:bold!important;
+        padding:7px 18px!important;
+        text-decoration:none!important;
+        text-shadow:1px 1px 13px #7cacde!important;
+    }
+    .CreateAnEmail:hover 
+    {
+        background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1799c0), color-stop(1, #1796c0) )!important;
+        background:-moz-linear-gradient( center top, #1799c0 5%, #1796c0 100% )!important;
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1799c0', endColorstr='#1796c0')!important;
+        background-color:#1799c0!important;
+    }
+    .CreateAnEmail:active 
+    {
+        position:relative!important;
+        top:1px!important;
+    }
+    .Header
+    {                                                           
+       font-size: 2em;                                       
+    }
+    .Row
+    {
+        margin-left:80px;        
+    }    
+</style>
+<body class="Body">
+    <div id="centrWin">
+        <apex:form style="width:553px;">
+        <div>
+            <apex:sectionHeader title="Create an Email"/>                        
+        </div>
+        <apex:pageBlock >  
+                          
+            <div>
+                <apex:outputLabel value="Select a directory:" styleClass="Row"></apex:outputLabel>
+            </div>
+            <div>
+                <apex:selectList multiselect="false" value="{!selectedFolder}" size="1" styleClass="Select"  >
+                    <apex:selectOptions value="{!Directories}"></apex:selectOptions>
+                    <apex:actionSupport event="onchange" reRender="depPicklistId"/>
+                </apex:selectList>
+            </div>
+            <div>
+                <apex:outputLabel value="Select a template:" styleClass="Row"></apex:outputLabel>       
+            </div>
+            <apex:outputPanel id="depPicklistId">
+                <apex:selectList multiselect="false" value="{!selectedTemplate}" size="1" styleClass="Select">
+                    <apex:selectOptions value="{!Templates}"></apex:selectOptions>
+                </apex:selectList>
+           </apex:outputPanel>            
+           <div>
+                <br/>
+                <br/>
+           </div>            
+       <div>
+            <apex:commandButton action="{!CreateAnEmail}" value="Create An Email" styleClass="CreateAnEmail"/>
+       </div>       
+       <div>
+           <br/>
+       </div>
+        </apex:pageBlock>   
+        </apex:form>
+    </div>
+</body>
+</apex:page>

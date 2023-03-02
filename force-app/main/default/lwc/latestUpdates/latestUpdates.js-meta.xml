@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Latest Updates</masterLabel>
+    <description>Latest Updates Component</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__UtilityBar</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default, lightning__HomePage">        
+            <property name="ComponentTitle" type="String" label="Component Title" default="Latest Updates" description="The title for component"/>
+            <property name="BoxTitle_1" type="String" label="Box 1 Title" default="Announcement" description="The title for box no. 1"/>
+            <property name="BoxTitle_2" type="String" label="Box 2 Title" default="Case Study" description="The title for box no. 2"/>
+            <property name="BoxTitle_3" type="String" label="Box 3 Title" default="White Paper" description="The title for box no. 3"/>
+            <property name="BoxTitle_4" type="String" label="Box 4 Title" default="Checkmarx Blog" description="The title for box no. 4"/>
+            <property name="BoxTitle_5" type="String" label="Box 5 Title" default="Video" description="The title for box no. 5"/>
+            <property name="BoxTitle_6" type="String" label="Box 6 Title" default="Webinar" description="The title for box no. 6"/>
+            <property name="CarouselWidth" type="String" default="75" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

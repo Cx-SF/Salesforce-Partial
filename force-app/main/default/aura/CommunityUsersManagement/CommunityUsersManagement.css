@@ -1,0 +1,81 @@
+.THIS .YellowColor {
+    background-color: yellow!important;
+}
+
+.THIS .hideScroll .slds-table_header-fixed_container .slds-scrollable_y {
+	overflow: hidden;
+}
+
+
+.THIS .dtWrapper{
+	border: 2px solid;
+    border-color: rgba(99,72,35,0.18);
+    border-radius: 3px;
+
+}
+
+/*.THIS .showScroll .slds-table_header-fixed_container .slds-scrollable_y {
+    max-height:400px;
+}*/
+
+.THIS .x-short .slds-table_header-fixed_container .slds-scrollable_y {
+    max-height:150px;
+}
+.THIS .short .slds-table_header-fixed_container .slds-scrollable_y {
+    max-height:250px;
+}
+.THIS .medium .slds-table_header-fixed_container .slds-scrollable_y {
+    max-height:400px;
+}
+.THIS .long .slds-table_header-fixed_container .slds-scrollable_y {
+    max-height:500px;
+}
+.THIS .x-long .slds-table_header-fixed_container .slds-scrollable_y {
+    max-height:600px;
+}
+
+
+.THIS .UserDataTable .slds-hint-parent {
+	height: 30px;
+}
+
+.THIS .loader{
+    position: relative;
+    display: inline-block;
+    margin-left: 15px;
+    width: 55px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.THIS .slds-card__header .slds-text-heading_small{
+   	font-weight: 600;
+   	font-size: 1.5em;
+}
+
+.THIS .slds-truncate {
+    text-overflow: inherit;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 4em; 
+}
+
+.THIS .slds-modal__container {
+    margin: 0 auto;
+    width: 50%;
+    max-width: 75rem !important;
+    min-width: 20rem;
+}
+
+.THIS .btnToPopup button {
+    border: none;
+    background: transparent;
+    color: black;  
+    padding: initial;
+    line-height: 10px;
+}
+.THIS .slds-modal__container{
+   max-width:80rem !important;
+    width:80% !important;
+}

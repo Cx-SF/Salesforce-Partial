@@ -1,0 +1,82 @@
+/* Css file */
+.navBar {
+    position: sticky;
+    background-color:rgba(255,255,255, 0.88);
+    /* background-color: RGBA(0,0,255,0.14); */
+    height: auto;
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 0px;
+    /*display: flex;*/
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    z-index: 2;
+}
+
+.caseInput {
+    width: 200px;
+    margin-left: 5%;
+    min-height: 25px;
+    height: 25px;
+    display: inline-block;
+}
+
+.divider{
+    flex-grow: 1;
+    border-color: rgb(122, 122, 126);
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-top: 34px;
+ }
+
+ .butt {
+    margin: 5px 50%;
+    background-color: rgb(89, 89, 245);
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    border: 0;
+    padding: 5px 7px;
+ }
+
+ .butt:hover {
+    background-color: rgb(43, 43, 245);
+ }
+
+ .bodyCard {
+    background-color:rgba(255,255,255, 0.88);
+    height: auto;
+    min-height: 50px;
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 0px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+ }
+
+ .tabelCard {
+    width: 98%;
+    margin: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+ }
+
+ .table {
+    border: 1pt solid rgb(122, 122, 126);
+
+ }
+
+ .table td {
+    padding: 5px;
+ }
+
+ .trThTable{
+    border-bottom: 1pt solid rgb(122, 122, 126);
+ }
+
+ .thTable {
+    border-right: 1pt solid rgb(122, 122, 126);
+    padding: 3px;
+ }

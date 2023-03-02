@@ -1,0 +1,21 @@
+<aura:component implements="flexipage:availableForRecordHome,lightning:hasPageReference,lightning:isUrlAddressable,force:hasRecordId,force:lightningQuickAction,lightning:actionOverride,forceCommunity:availableForAllPageTypes" 
+access="global"
+controller="CloseCaseController">
+    
+    <aura:attribute name="caseRecord" type="Case"/>
+    <aura:attribute name="recordError" type="String"/>
+    <aura:attribute name="isNotClosed" type="Boolean" default="true"/>
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />    
+    <force:recordData aura:id="recordEditor"
+                      recordId="{!v.recordId}"
+                      fields="Id,Status"
+                      targetFields="{!v.caseRecord}"
+                      targetError="{!v.recordError}"
+                      mode="EDIT"/>
+    <!--,Classification__c,IsIgnoreValidation__c-->
+    <aura:if isTrue="{!v.isNotClosed}">
+        <div class="buttons-group">
+            <lightning:button label="Close Case" onclick="{!c.changeStatusCaseToClose}" />
+        </div>
+    </aura:if>
+</aura:component>

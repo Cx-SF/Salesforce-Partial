@@ -1,0 +1,272 @@
+<aura:component controller="CaseEmailsListCtrl"
+                description="CaseEmailsList"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes">
+
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+     <aura:attribute name="threadId" type="String"/>
+    <aura:attribute name="currentCase" type="Case"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <force:recordData aura:id="recordHandler" recordId="{!v.recordId}" layoutType="FULL"
+                      fields="{!v.currentCase}" targetFields="{!v.currentCase}"/>
+
+    <!--email list attributes-->
+    <aura:attribute name="emailsColumns" type="List"/>
+    <aura:attribute name="emails" type="Object"/>
+    <aura:attribute name="lastEmail" type="Object"/>
+    <aura:attribute name="showMailSend" type="boolean"/>
+    <aura:attribute name="showMailSendPopup" type="boolean"/>
+    <aura:attribute name="showReply" type="boolean" default="false"/>
+    <aura:attribute name="showEmailDetails" type="boolean" default="false"/>
+
+    <!--email send attributes-->
+    <aura:attribute name="email" type="string"/>
+    <aura:attribute name="subject" type="string"/>
+    <aura:attribute name="body" type="string"/>
+    <aura:attribute name="mailStatus" type="boolean" default="false"/>
+    <aura:attribute name="attachList" type="List"/>
+    <aura:attribute name="attachData" type="Map"/>
+    <aura:attribute name="attachTotalSize" type="Integer" default="0"/>
+    <aura:attribute name="attachTotalCount" type="Integer" default="0"/>
+    
+
+    <!--attach attributes-->
+    <!--<aura:attribute name="accept" type="List" default="['.jpg', '.jpeg']"/>-->
+    <aura:attribute name="accept" type="List"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+
+    <!--Email details attributes-->
+    <aura:attribute name="currentEmail" type="Object"/>
+    <aura:attribute name="currentEmailBody" type="Object"/>
+    <aura:attribute name="currentEmailBodyBackup" type="Object"/>
+    <aura:attribute name="currentEmailSubject" type="Object"/>
+    <aura:attribute name="attachListDetails" type="List"/>
+	<aura:attribute name="isOpen" type="Boolean" default="false" access="private"/>
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:handler event="lightning:tabRefreshed" action="{!c.handleTabRefreshed}"/>
+    
+    <lightning:card title="Communication">
+
+        <button class="slds-button slds-button--brand" onclick="{!c.handleReplyClick}" style="margin-left:10px; margin-bottom:5px;" disabled="{!v.currentCase.Status == 'Closed'}"> Reply </button>
+        <button class="slds-button slds-button--brand" onclick="{!c.handleCcClick}" style="margin-left:10px; margin-bottom:5px; background-color: white; color: #2fb02e; border: 1px solid #cbd1cb" disabled="{!v.currentCase.Status == 'Closed'}"> Manage CC Recipients</button>
+        
+    <!--aura:handler name="init" value="{!this}" action="{!c.doInit}"/-->
+              <aura:if isTrue="{!v.isOpen}">
+              <div style="height: 640px;">
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header slds-modal__header_empty">
+                        <lightning:buttonIcon iconName="utility:close" class="slds-modal__close" onclick="{!c.closeFlowModal}"/>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning:flow aura:id="CCflow" onstatuschange="{!c.closeModalOnFinish}" />
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+              </aura:if>																																																																				 
+        
+        <!-- <div  style="height: 300px"> -->
+        <lightning:datatable
+                aura:id="emailsTable"
+                columns="{!v.emailsColumns}"
+                data="{!v.emails}"
+                keyField="id"
+                styleClass = 'dtmaxHeight300'
+                class = 'dtmaxHeight300'
+                hideCheckboxColumn="true"
+                onrowaction="{! c.handleRowAction }"/>
+        <!-- </div>      -->
+        <aura:if isTrue="{!v.showEmailDetails}">
+            <div role="dialog"
+                 class="slds-modal slds-fade-in-open hideDiv"
+                 aria-hidden="false">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header slds-theme--shade">
+
+
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" onclick="{!c.closeEmailDetails}">
+                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+
+                        <h2 class="slds-text-heading--medium" id="prompt-heading-id">Email to Case
+                            {!v.currentCase.CaseNumber}.</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="CC">Subject</label>
+                            <div class="slds-form-element__control">
+                                <ui:inputText   class="slds-input" aura:id="subject"
+                                                value="{!v.currentEmailSubject}"
+                                                disabled="true"/>
+                            </div>
+                        </div>
+
+                        <div class="slds-form-element">
+<!--                            <label class="slds-form-element__label" for="textareaSample2">Mail-->
+<!--                                Body</label>-->
+                            <div class="slds-form-element__control" id="richtext">
+                                <div class="slds-box">
+                                    <lightning:formattedRichText aura:id="body" value="{!v.currentEmailBody}"
+                                                                 disabled="true"/>
+                                </div>
+
+<!--                                <lightning:inputRichText aura:id="body" value="{!v.currentEmailBody}"-->
+<!--                                                         disabled="true"-->
+<!--                                                         onblur="{!c.richTextGetMessageBack}"/>-->
+                            </div>
+                        </div>
+						<aura:if isTrue="{!v.currentEmail.HasAttachment}">
+                        <br/>Attached files:<br/><br/>
+                        <c:AttachmentsRelatedList  openedFromEmails="true" recordId="{!v.currentEmail.Id}"></c:AttachmentsRelatedList>
+                        </aura:if>
+                    </div>
+                    <!--<div class="slds-modal__footer slds-theme&#45;&#45;default">-->
+                    <!--</div>-->
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+
+        <aura:if isTrue="{!v.showMailSendPopup}">
+            <div role="dialog"
+                 class="slds-modal slds-fade-in-open hideDiv"
+                 aria-hidden="false">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header slds-theme--shade">
+
+
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" onclick="{!c.closeEmailSendPopup}">
+                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+
+
+                        <h2 class="slds-text-heading--medium" id="prompt-heading-id">Send Email to Case
+                            {!v.currentCase.CaseNumber}.</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+
+                            <!---Part 3 [message display part] -->
+                            <aura:if isTrue="{!v.mailStatus}">
+                                <div role="dialog"
+                                     class="slds-modal slds-fade-in-open hideDiv"
+                                     aria-hidden="false">
+                                    <div class="slds-modal__container">
+                                        <div class="slds-modal__header slds-theme--success slds-theme--alert-texture">
+                                            <button class="slds-button slds-button--icon-inverse slds-modal__close" onclick="{!c.closeMessage}">
+                                                <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                                                <span class="slds-assistive-text">Close</span>
+                                            </button>
+
+                                            <h2 class="slds-text-heading--medium" id="prompt-heading-id">Mail
+                                                Status</h2>
+                                        </div>
+                                        <div class="slds-modal__content slds-p-around--medium">
+                                            <div>
+                                                <p>Email Sent successfully to Case {!v.currentCase.CaseNumber}</p>
+                                            </div>
+                                        </div>
+                                        <!--<div class="slds-modal__footer slds-theme&#45;&#45;default">-->
+                                            <!--<button class="slds-button slds-button&#45;&#45;brand" onclick="{!c.closeMessage}">-->
+                                                <!--Close-->
+                                            <!--</button>-->
+                                        <!--</div>-->
+                                    </div>
+                                </div>
+                                <div class="slds-backdrop slds-backdrop--open"></div>
+                            </aura:if>
+
+                        <!---Part 4 [mail form part]-->
+
+                        <!--<div class="slds-form-element">-->
+                            <!--<label class="slds-form-element__label" for="CC">Email</label>-->
+                            <!--<div class="slds-form-element__control">-->
+                                <!--<ui:inputEmail class="slds-input" aura:id="email" value="{!v.email}"-->
+                                               <!--required="true"/>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--div class="slds-form-element"-->
+                            <!--label class="slds-form-element__label" for="CC">Subject</label-->
+                            <!--div class="slds-form-element__control"-->
+                                <!--ui:inputText class="slds-input" aura:id="subject"
+                                              value="{!v.subject}" disabled="false"/-->
+                                <!--<ui:inputText class="slds-input" aura:id="subject" value="{!v.lastEmail.Subject}"/>-->
+                            <!--/div-->
+                        <!--/div-->
+                        <div class="slds-form-element">
+                            <!--label class="slds-form-element__label" for="textareaSample2">Mail
+                                Body</label-->
+                            <div class="slds-form-element__control">
+                                <!--<lightning:inputRichText aura:id="body" value="{!v.lastEmail.HtmlBody}"/>-->
+                                <lightning:inputRichText aura:id="body" value="{!v.body}"/>
+                            </div>
+                        </div>
+
+                        <!--Part 5 [attach part]-->
+                        <br/>Attached files:<br/><br/>
+                        <!--
+                        <aura:iteration items="{!v.attachList}" var="attach">
+                            {!attach}<br/>
+                        </aura:iteration>
+                        -->
+                        <div style="width:90%;">
+                            <aura:iteration items="{!v.attachList}" var="file" indexVar="idx">
+                                <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
+                                    <div class="slds-col slds-size_1-of-12 slds-text-align--center">
+                                        <lightning:icon iconName="doctype:unknown" size="xx-small" title="" />
+                                    </div>
+                                    <div class="slds-col slds-size_4-of-6">
+                                        <ui:outputText value="{!file.name}"/>
+                                    </div>
+                                    
+                                    <div class="slds-col slds-size_1-of-12">
+                                        <lightning:button variant="base" value="{!file.documentId}" title="Delete" onclick="{!c.deleteAttachment}">
+                                            Delete
+                                        </lightning:button>
+                                    </div>
+									
+                                </div>
+                            </aura:iteration>
+                        </div>
+                        
+                        <br/>
+                        
+                        <lightning:fileUpload name="fileUploader"
+                                              label="Add files"
+                                              multiple="{!v.multiple}"
+                                              accept="{!v.accept}"
+                                              disabled="{!v.disabled}"
+                                              recordId="{!v.recordId}"
+                                              onuploadfinished="{! c.handleUploadFinished }"/>
+                        
+                        <!--
+                        <lightning:input name="fileUploader" 
+                                         type="file" 
+                                         label="Add files" 
+                                         multiple="{!v.multiple}" 
+                                         accept="{!v.accept}"
+                                         disabled="{!v.disabled}"
+                                         onchange="{!c.handleFilesUpload}"/>
+						-->
+						<br/>
+                        <!--Part 6 [send button part]-->
+                        <div class="slds-form-element">
+                            <button class="slds-button slds-button--brand" onclick="{!c.sendMail}">
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                    <!--<div class="slds-modal__footer slds-theme&#45;&#45;default">-->
+                    <!--</div>-->
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="ownersManagementProcess">
+    <apiVersion>50</apiVersion>
+	<isExposed>true</isExposed>
+    <description>Description for ownersManagementProcess</description>
+    <masterLabel>ownersManagementProcess</masterLabel>
+	<targets>
+		<target>lightning__RecordPage</target>
+		<target>lightning__AppPage</target>
+		<target>lightning__Tab</target>
+	</targets>
+</LightningComponentBundle>

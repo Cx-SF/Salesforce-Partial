@@ -1,0 +1,79 @@
+<aura:component controller = 'AttachmentsRelatedListCtrl' implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes">
+	<aura:attribute name = 'attachments' type='list'/>
+	<aura:attribute name = 'attachmentColumns' type='list'/>
+	<aura:attribute name = 'sortBy' type='String'/>
+	<aura:attribute name = 'sortDirection' type='String'/>
+	<aura:attribute name = 'hasModalOpen' type='boolean' default='false'/>
+    <aura:attribute name = 'isAttachment' type='boolean' default='false'/>
+	<aura:attribute name = 'selectedDocumentId' type='string'/>
+    <aura:attribute name = 'downloadUrl' type='string'/>
+	<aura:attribute name = 'openedFromEmails' type='boolean' default='false'/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <lightning:card title="{!v.openedFromEmails ? '' : 'Attachments'}">
+    	<aura:set attribute="actions">
+    		<!-- <lightning:button onclick="{!c.handleReload}" > -->
+    		<div class = "slds-grid slds-wrap">
+                <aura:if isTrue="{!!v.openedFromEmails}">
+                    <div class = "slds-col" style="margin-top: 19px; margin-right: 10px;">
+                        <lightning:buttonIcon iconName="utility:refresh" onclick="{!c.handleReload}" variant="border-filled" alternativeText="Refresh"  />
+                    </div>
+                </aura:if>
+    			<!--<div class = "slds-col">	
+					<lightning:fileUpload name="fileUploader"
+					                      recordId="{!v.recordId}"
+					                      onuploadfinished="{! c.handleUploadFinished }"/>
+    			</div>
+				-->
+    		<!-- </lightning:button> -->
+    		</div>
+<!--             <lightning:button variant="brand" label="Add File"
+                      title="Add File" name="addFile"
+                              onclick="{! c.handleNewFile }"/> -->
+    	</aura:set>
+        <div class="slds-grid slds-wrap slds-grid_align-center">
+            <div class="slds-col slds-size_1-of-1 dtWrapper">
+                <lightning:datatable
+                    columns="{! v.attachmentColumns }"
+                    data="{! v.attachments }"
+                    keyField="id"
+                    onrowaction="{! c.handleRowAction }" 
+                    hideCheckboxColumn="true"  
+                    sortedBy="{!v.sortBy}"
+                    styleClass = 'dtmaxHeight300'
+                    class = 'dtmaxHeight300'
+                    sortedDirection="{!v.sortDirection}"
+                    onsort="{!c.handleSort}"/>
+
+                <br/>
+            </div>
+		</div>
+    </lightning:card>
+
+    <aura:if isTrue="{!v.hasModalOpen}">
+        <section onclick="{!c.closeModel}"
+                 role="dialog"
+                 aria-modal="true"
+                 class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="border:none; box-shadow: none;">
+                <div class="slds-modal__content slds-p-around_medium slds-text-align_center"
+                     style="background: transparent; border:none; box-shadow: none;">
+                    <aura:if isTrue="{!!v.isAttachment}">
+                        <div style="{!v.openedFromEmails ? 'width: 100%; margin: 0 auto; text-align: left' : 'width: 50%; margin: 0 auto; text-align: left'}">
+                            <!--<lightning:fileCard> to preview file using content document Id -->
+                            <lightning:fileCard fileId="{!v.selectedDocumentId}"/>
+                            
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.isAttachment}">
+                        <div>No popup preview available.</div>
+                        <a href="{!v.downloadUrl}" target="_blank">Click here to preview in new tab</a>
+                    </aura:if>
+                    </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+</aura:component>

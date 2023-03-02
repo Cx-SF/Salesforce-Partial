@@ -1,0 +1,225 @@
+/*style*/
+/* scrolltable rules */
+.titelH { color: #2b292a; font-family: 'Open Sans', sans-serif; font-size: 1.5rem; font-weight: 300; line-height: 40px; margin-left: 8px; display: inline-block;}
+
+
+.tableS {
+    width: 98.2vw;
+    position: inherit;
+    background-color: RGBA(0,0,255,0.14);
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 0px;
+    height: 500px;
+}
+
+.infoTemp {
+    position: relative;
+}
+
+.infoCard{
+    width: 700px !important;
+    height: 200px;
+    position: absolute;
+    left: 40px;
+    top: 35px;
+    width: 500px;
+    box-shadow: 0 0 20px rgba(224, 215, 211, 0.849);
+    background-color: rgba(74, 196, 49, 0.9);
+    padding-top: 5px;
+    padding-left: 5px;
+    color: white;
+    font-size: 16px;
+    border-radius: 15px;
+    z-index: 2;
+}
+
+.infoText{
+    margin-bottom: 10px;
+}
+
+.iconInfo{
+    height: 30px;
+    margin-left: 5px;
+    position: relative;
+    top: -5px;
+}
+
+.pageCard .opportuntyTable{
+    text-align: center;
+}
+
+.txtSelectedRecourd{
+    font-size: 16px;
+}
+
+.opportuntyTable { 
+    display: inline-block; 
+    overflow: auto; 
+    height: 400px; 
+    width: fit-content;  
+    border-collapse: collapse;
+    /*border-collapse: separate;
+    border-spacing: 0 2px;*/
+    font-family: sans-serif;
+    box-shadow: 0 0 20px rgba(224, 215, 211, 0.849);
+    font-size: 1rem;
+ }
+
+ .opportuntyTable::-webkit-scrollbar{
+    display: none;
+  }
+
+.accHd th{
+    padding-right: 10px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 5px 0;
+    background-color: rgba(10, 177, 255, 0.9);
+    color: white;
+}
+
+.opportunityColumn {
+    cursor: pointer;
+}
+
+.accBody tr:nth-child(even) { 
+    background: rgba(231, 227, 227, 0.4); 
+}
+
+.accBody td{
+    text-align: center;
+    background-color: rgba(139, 142, 143, 0.4);
+}
+.opportuntyRowNumber{
+    width: 50px;
+}
+
+.opportuntyName{
+    width: 700px;
+}
+
+.opportuntyAccount{
+    width: 400px
+}
+
+.opportuntyChannel{
+    width: 250px
+}
+
+.opportuntyType{
+    width: 220px;
+}
+
+.opportuntyStageName{
+    width: 350px;
+}
+.opportuntyCloseDate{
+    width: 200px;
+}
+
+.opportuntyOwnerName{
+    Width: 250px;
+}
+
+.existingQuotaTrue{
+    Width: 250px;
+    color: yellow;
+}
+
+.existingQuotaFalse{
+    Width: 250px;
+}
+
+.comboBoxIntd {
+}
+
+.mainCheck{
+    padding-left: 8px;
+}
+
+.tableList {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.9rem 0;
+}
+
+.tableList ul{
+    display: flex;
+    align-items: center;
+}
+
+.tableList ul li a{
+    background: rgba(10, 177, 255, 0.4);
+    color: white;
+    padding: 0.5rem;
+    margin: 0 0.45rem;
+    white-space: nowrap;
+    border-radius: 25%;
+    text-decoration: none;
+}
+
+.tableList ul li a:hover{
+    background: rgba(10, 177, 255);
+}
+
+.comboBoxIntd {
+    display: flex;
+}
+
+.noData {
+    font-size: 1.6rem;
+    color: red;
+    display: block;
+    text-align: center;
+    margin-top: 100px;
+}
+
+@media only screen and (min-width: 2300px ) {
+    .opportuntyName{
+        width: 500px;
+    }
+
+    .tableS {
+        width: 99.3vw;
+     }
+}
+
+
+@media only screen and (max-width: 2000px ) {
+    .opportuntyName{
+        width: 500px;
+    }
+
+    .tableS {
+        width: 98.0vw;
+     }
+}
+
+
+@media only screen and (max-width: 1700 ) {
+    .opportuntyName{
+        width: 400;
+    }
+
+    .tableS {
+        width: 97.4vw;
+        height: 300px;
+     }
+}
+
+@media only screen and (max-width: 1500px ) {
+    .opportuntyTable { 
+        font-size: 0.7rem;
+     }
+
+     .tableS {
+        width: 96.9vw;
+        height: 300px;
+     }
+
+     .opportuntyTable { 
+        height: 200px; 
+     }
+}

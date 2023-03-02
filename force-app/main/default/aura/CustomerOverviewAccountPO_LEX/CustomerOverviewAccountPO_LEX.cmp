@@ -1,0 +1,10 @@
+<aura:component controller="CostomerOverviewAvvountPO_ctrl" implements="flexipage:availableForRecordHome,force:hasRecordId" access="global"> 
+	
+	<aura:attribute name="showFrame" type="Boolean" default="false" />
+	<aura:attribute name="frameSrc" type="String" default="false" />
+		
+	<aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+	
+	<iframe src="{! v.frameSrc }" height="550" width="100%" scrolling="false" frameborder="false" id="CSMProducts" />
+	
+</aura:component>

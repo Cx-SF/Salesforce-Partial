@@ -1,0 +1,66 @@
+.THIS .isActivityLoading .slds-spinner_container {
+    position: relative !important;
+    top: 20px !important;
+}
+
+.THIS div.slds-init-spinner-container-custom {
+    height: 100px;
+}
+
+.THIS div.slds-spinner-container-custom {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    background-color: rgba(253, 253, 253, 0.57);
+    border-radius: 0.25rem;
+}
+
+.THIS div.slds-layout-disabled-overlay {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    background-color: rgba(112, 110, 107, 0.77);
+    border-radius: 0.25rem;
+}
+
+.THIS .slds-radio {
+  	padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+}
+
+.THIS .slds-modal__container-child {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.THIS .slds-modal {
+    position: fixed !important; /* SF Winter 20 release brings relative modal position. Force to be fixed as in older releases */ 
+}
+
+.THIS .slds-backdrop {
+    position: fixed !important; /* SF Winter 20 release brings relative modal position. Force to be fixed as in older releases */ 
+}
+
+/********************************************   Open New Case Dialog   ******************************************/
+.THIS div[class="slds-form-element"] div[c-knowledgesearch_knowledgesearch]{
+    margin: 0 !important;
+}
+.THIS div[class="slds-form-element"] lightning-layout-item[c-knowledgesearch_knowledgesearch]{
+    Padding: 0 !important;
+}
+.THIS lightning-layout-item[c-knowledgesearch_knowledgesearch] p{
+    Padding-left: 10px !important;
+}
+.THIS lightning-icon[c-knowledgesearch_knowledgesearch]{
+    display:none !important;
+}

@@ -1,0 +1,7 @@
+<aura:event type="APPLICATION" description="Set field value event">
+    <aura:attribute name="sObjectName" type="String"/>
+    <aura:attribute name="recordId" type="String" default=""/>
+    <aura:attribute name="recordTypeId" type="String" default=""/>
+    <aura:attribute name="layoutMode" type="String" default="VIEW"/>
+    <aura:attribute name="defaultValues" type="Object"/>
+</aura:event>

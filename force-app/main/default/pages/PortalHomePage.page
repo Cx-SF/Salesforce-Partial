@@ -1,0 +1,250 @@
+<apex:page controller="PortalHomePage_Controller" sidebar="true" showHeader="true" >
+    
+    <style>
+        .mainDiv{
+            background-color:transparent !important;
+            height: 100%;
+            
+            width:420px;
+        }
+        
+        .mainDivBorders{
+            border-radius: 0px;
+            border-color:#38a9e5;
+            border-width: 1px;
+            border-style: solid;
+            background-color: rgb(241,243,245);
+            width:400px;
+        }
+        
+        .containerDiv{
+            margin:0px -20px 0px 20px;
+            padding-top: 0px;
+            overflow:auto;
+            overflow-x:hidden;
+            height:450px;
+        }
+        
+        .rowDiv{
+            //background-color:rgb(79,129,189);
+            //background-color:rgb(23,151,192);
+            //border-radius: 10px;
+            border-color: #38a9e5;
+            border-width: 1px;
+            border-bottom-style: solid;
+            min-height:30px;
+            margin-right: 40px;
+            text-align: left;
+        }
+        
+        .innerDiv{
+            //margin:0px 4px 4px 4px;
+            //padding-top: 4px;
+            display: inline-table;
+            width: 254px;
+            overflow-wrap: break-word;
+            //border-style: solid;
+        }
+        
+        .separator{
+            height:10px;
+        }
+        
+        .innerDiv span{
+            background-color:transparent !important;
+        }
+        
+        .innerDiv .sfdc_richtext{
+            width: 266px;
+            //font-size: 9px;
+            font-family: Calibri Regular;
+            color: #333333;
+            overflow-wrap: break-word;
+        }
+        
+        .linkDiv {
+            //padding-bottom: 4px;
+            display: inline-table;
+            vertical-align: top;
+            width: 100%;
+            //border-style: solid;
+        }
+        
+        .subjectDiv{
+            //margin-left: 10px;
+            color: rgb(23,151,192);
+            display: inline-table;
+            font-size: 14px;
+            font-family: Calibri Bold;
+            color: #333333;
+        }
+        
+        .photoDiv{
+            //margin-left: 10px;
+            display: inline-table;
+        }
+        
+        .photoDiv img{
+            width: 60px;
+        }
+        
+        .outputLinkClass{
+            //display:inline-table;
+            //width: 100%;
+        }
+        
+        .photoTd{
+        }
+        
+        .linkTd{
+            width: 100%;
+        }
+        
+        .headLine{
+            font-size: 24px;
+            font-family: Calibri Bold;
+            color: #333;
+        }
+    </style>
+    
+    <apex:form style="text-align:center;" >
+        
+            
+            
+            
+            <table >
+                <tr  >
+                    <td colspan="3" style="text-align:left" >
+                        <apex:outputPanel >
+                            <apex:image width="98%" url="{!URLFOR($Resource.PartnerPortalStaticResources,'img/Portal_hp_banner.jpg')}"  />
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputPanel >
+                            <div style="text-align:left; width:100%;">
+                                <b>
+                                    <apex:outputText value="Press Release" styleClass="headLine" />
+                                </b>
+                            </div>
+                            <br/>
+                            <div class="mainDiv" >
+                                <div class="mainDivBorders" >
+                                    <div class="containerDiv" >
+                                        <div style="separator" >&nbsp;</div>
+                                        <apex:repeat value="{!latestNewsList}" var="row">
+                                            <div class="rowDiv" >
+                                                <apex:outputLink styleClass="outputLinkClass" value="{!IF(row.Link__c!=null,row.Link__c, '/' + $ObjectType.Latest_News__c.keyPrefix )}" target="_blank" >
+                                                    <div class="subjectDiv" >
+                                                        <apex:outputField styleClass="fieldSubject" value="{!row.Subject__c}" />
+                                                    </div>
+                                                </apex:outputLink>
+                                                <table>
+                                                    <tr>
+                                                        <td class="photoTd">
+                                                            <apex:outputLink styleClass="outputLinkClass" value="{!IF(row.Link__c!=null,row.Link__c, '/' + $ObjectType.Latest_News__c.keyPrefix )}" target="_blank" >
+                                                                <div class="photoDiv" >
+                                                                    <apex:outputField style="width:60px;height:60px;" value="{!row.Image__c}" />
+                                                                    <!--
+                                                                    <a href="{!row.Link__c}" target="_blank" >
+                                                                        <apex:image value="{!row.Photo__c}" width="60" height="60" />
+                                                                    </a>
+                                                                    -->
+                                                                </div>
+                                                            </apex:outputLink>
+                                                        </td>
+                                                        <td class="linkTd">
+                                                            <apex:outputLink styleClass="outputLinkClass" value="{!IF(row.Link__c!=null,row.Link__c, '/' + $ObjectType.Latest_News__c.keyPrefix )}" target="_blank" >
+                                                                <div class="innerDiv">
+                                                                    <apex:outputField value="{!row.Post__c}" />
+                                                                </div>
+                                                            </apex:outputLink>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div style="separator" >&nbsp;</div>
+                                        </apex:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--
+                            <apex:pageBlockTable value="{!latestNewsList}" var="row" >
+                                <apex:column value="{!row.Link__c}"/>
+                                <apex:column value="{!row.Read_More__c}"/>
+                                <apex:column value="{!row.Post__c}"/>
+                                <apex:column value="{!row.Published_Date__c}"/>
+                            </apex:pageBlockTable>
+                            -->
+                        </apex:outputPanel>
+                    </td>
+                    <td >
+                        <div style="width:30px;">
+                        &nbsp;
+                        </div>
+                    </td>
+                    <td>
+                        <apex:outputPanel >
+                            <div style="text-align:left; width:100%;">
+                                <b>
+                                    <apex:outputText value="New Product Release" styleClass="headLine" />
+                                </b>
+                            </div>
+                            <br/>
+                            <div class="mainDiv" >
+                                <div class="mainDivBorders" >
+                                    <div class="containerDiv" >
+                                        <div style="separator" >&nbsp;</div>
+                                        <apex:repeat value="{!newReleaseList}" var="row">
+                                            <div class="rowDiv" >
+                                                <apex:outputLink styleClass="outputLinkClass" value="{!IF(row.Link__c!=null,row.Link__c, '/' + $ObjectType.New_Product_Release__c.keyPrefix )}" target="_blank" >
+                                                    <div class="subjectDiv" >
+                                                        <apex:outputField styleClass="fieldSubject" value="{!row.Subject__c}" />
+                                                    </div>
+                                                </apex:outputLink>
+                                                <table>
+                                                    <tr>
+                                                        <td class="photoTd">
+                                                            <apex:outputLink styleClass="outputLinkClass" value="{!IF(row.Link__c!=null,row.Link__c, '/' + $ObjectType.New_Product_Release__c.keyPrefix )}" target="_blank" >
+                                                                <div class="photoDiv" >
+                                                                    <apex:outputField style="width:60px;height:60px;" value="{!row.Image__c}" />
+                                                                    <!--
+                                                                    <a href="{!row.Link__c}" target="_blank" >
+                                                                        <apex:image value="{!row.Photo__c}" width="60" height="60" />
+                                                                    </a>
+                                                                    -->
+                                                                </div>
+                                                            </apex:outputLink>
+                                                        </td>
+                                                        <td class="linkTd">
+                                                            <apex:outputLink styleClass="outputLinkClass" value="{!IF(row.Link__c!=null,row.Link__c, '/' + $ObjectType.New_Product_Release__c.keyPrefix )}" target="_blank" >
+                                                                <div class="innerDiv">
+                                                                    <apex:outputField value="{!row.Post__c}" />
+                                                                </div>
+                                                            </apex:outputLink>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div style="separator" >&nbsp;</div>
+                                        </apex:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--
+                            <apex:pageBlockTable value="{!newReleaseList}" var="row" >
+                                <apex:column value="{!row.Link__c}"/>
+                                <apex:column value="{!row.Read_More__c}"/>
+                                <apex:column value="{!row.Post__c}"/>
+                            </apex:pageBlockTable>
+                            -->
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+            </table>
+            
+        
+    </apex:form>
+    
+</apex:page>

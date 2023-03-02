@@ -1,0 +1,62 @@
+<apex:page controller="EntitlementProcessController">
+<style>
+    .prog-bar {
+      height: 14px;
+      margin: 3px;
+      padding: 0px;
+      padding-right:3px;
+      background: #FFA037;
+      text-align:right;
+      font-size:12px;
+      font-weight:bold;
+      color:#333333;
+    }
+
+    .prog-bar-done {
+      height: 14px;
+      margin: 3px;
+      padding: 0px;
+      padding-right:3px;
+      background: #C9DDEC;
+    }
+
+    .prog-border {
+      width: 209px;
+      background: #fff;
+      border: 1px solid silver;
+      margin: 0px;
+      padding: 0px;
+    }
+    </style>
+<apex:form id="f1">
+    <apex:pageBlock >
+        <apex:pageblockButtons location="top">
+            <apex:commandButton value="Start batch Job" action="{!StartBactJob}" rerender="f1" status="actionstatus"/>
+            <apex:actionPoller rerender="f1" interval="5" action="{!updateProgress}" enabled="{!batchStatus!='finished'}"/>
+        </apex:pageblockButtons>
+        <apex:pageblockSection columns="1">
+            <apex:outputLabel value="Accounts Ids" for="AccountsToProcess"/>
+            <apex:inputText value="{!AccountsIds}" id="AccountsToProcess"/>
+            <apex:pageBlockTable id="prog" value="{!Jobs}" var="item">
+                 <apex:column headerValue="Class Name" >
+                    <apex:outputText value="{!item.Class_Name}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </apex:column> 
+                <apex:column headerValue="{!$ObjectType.AsyncApexJob.fields.Status.label}" >
+                    <apex:outputText value="{!item.aj.status}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <apex:image url="/img/loading.gif" id="progressbar_img1" rendered="{!ShowProgressBar}" style="visibility: {!IF(item.isCompleted,'hidden','visible')}"/>
+                </apex:column>         
+                <apex:column headerValue="Progress (%)"> 
+                    <div class="prog-border" >
+                        <apex:outputPanel layout="block" styleClass="{!if(item.Percent>=100,'prog-bar-done','prog-bar')}" style="width: {!item.Percent*2}px;">
+                            <apex:outputText value="{!item.Percent}" rendered="{!if(item.Percent!=100,true,false)}" />
+                        </apex:outputPanel> 
+                    </div>
+                </apex:column>
+                  <apex:column headerValue="Number Of Errors">
+                    <apex:outputText value="{!item.NumberOfErrors}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </apex:column> 
+            </apex:pageBlockTable> 
+        </apex:pageblockSection>
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

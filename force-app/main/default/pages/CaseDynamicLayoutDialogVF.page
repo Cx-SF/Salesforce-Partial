@@ -1,0 +1,22 @@
+<apex:page showHeader="false" sidebar="false" standardController="Case">
+        <apex:includeScript value="/lightning/lightning.out.js"/>
+
+        <script>
+            $Lightning.use("c:DynamicLayoutDialog2VF", function () {
+                $Lightning.createComponent(
+                    "c:DynamicLayoutDialogWithRecordType",
+                        {
+                            sObjectName : 'Case',
+                            fromVF : true,
+                            sObjectPrefix : '500'
+                        },
+                    "communityUsers",
+                    function (cmp) {
+                        console.log("Component created!");
+                        console.log(cmp);
+                    });
+            });
+        </script>
+
+        <div id="communityUsers"></div>
+</apex:page>

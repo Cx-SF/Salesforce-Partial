@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION">
+    <aura:attribute name="sObjectName" type="String" default=""/>
+    <aura:attribute name="recordId" type="String" default=""/>
+    <aura:attribute name="recordTypeId" type="String" default=""/>
+    <aura:attribute name="layoutMode" type="String" default="VIEW"/>
+</aura:event>

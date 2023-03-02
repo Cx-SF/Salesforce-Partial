@@ -1,0 +1,22 @@
+.THIS #richtext {
+    pointer-events: none;
+}
+.THIS .descCell .slds-truncate {
+	text-overflow: clip!important;
+	max-height: 75px;
+}
+
+.THIS .slds-truncate {
+    text-overflow: inherit;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+}
+
+.THIS .dtmaxHeight300 .slds-scrollable_y {
+	max-height: 300px;
+}
+
+.THIS .dtmaxHeight300 .slds-scrollable--y {
+	max-height: 300px;
+}

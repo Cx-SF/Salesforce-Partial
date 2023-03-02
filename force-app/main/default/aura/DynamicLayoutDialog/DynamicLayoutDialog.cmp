@@ -1,0 +1,318 @@
+<aura:component 
+    implements="flexipage:availableForRecordHome,lightning:hasPageReference,lightning:isUrlAddressable,force:hasRecordId,force:hasSObjectName,force:lightningQuickAction,lightning:actionOverride,forceCommunity:availableForAllPageTypes" 
+    access="global" 
+    controller="DynamicLayoutDialog">
+    
+    <lightning:workspaceAPI aura:id="workspace" />
+    
+    <aura:attribute name="componentId" type="String"/>
+    <aura:attribute name="caller" type="String" default="APP"/>
+    <aura:attribute name="uiMode" type="String" default="MODAL"/>
+    <aura:attribute name="record" type="Object" default=""/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="recordTypeId" type="String"/>
+    <aura:attribute name="newRecordTypeId" type="String"/>
+    <aura:attribute name="defaultValues" type="Object"/>
+    <aura:attribute name="layoutMode" type="String"/>
+    <aura:attribute name="isChangeRecordType" type="boolean" default="false"/>
+    <aura:attribute name="recordTypes" type="List"/>
+    <aura:attribute name="objectLabel" type="String"/>
+    <aura:attribute name="objectIconName" type="String"/>
+    <aura:attribute name="recordTypeName" type="String"/>
+    <aura:attribute name="lauoutTitle" type="String"/>
+    <aura:attribute name="dependentFields" type="Object" default=""/>
+    <aura:attribute name="picklistValues" type="Object" default=""/>
+    <aura:attribute name="layoutMetadata" type="Object" default=""/>
+    <aura:attribute name="recordFieldsMetadata" type="Object" default=""/>
+    <aura:attribute name="layoutBody" type="Aura.Component[]"/>
+    <aura:attribute name="sections" type="Aura.Component[]"/>
+    <aura:attribute name="rows" type="Aura.Component[]"/>
+    <aura:attribute name="sectionFields" type="Aura.Component[]"/>
+    <aura:attribute name="uiMetadata" type="Object"/>
+    <aura:attribute name="isLayoutValid" type="boolean" default="true"/>
+    <aura:attribute name="isInitialized" type="boolean" default="false"/>
+    <aura:attribute name="recordLoaded" type="boolean" default="false"/>
+    <aura:attribute name="isProcessingSpinner" type="boolean" default="false"/>
+    <aura:attribute name="errors" type="Object" default=""/>
+    <aura:attribute name="validateTimer" type="Object"/>
+    <aura:attribute name="isRecordTypeSelectionAction" type="boolean" default="false"/>
+    <aura:attribute name="resultMessage2VF" type="String"/>
+    <aura:attribute name="showPopupIsteadToast" type="boolean" default="false"/>
+    <aura:attribute name="retURL" type="String"/>
+    <aura:attribute name="currentRecordId" type="String"/>
+    <aura:attribute name="addAttachmentsFlag" type="boolean" default="false"/>
+    <aura:attribute name="isAddAttachmentsAction" type="boolean" default="false"/>
+    <aura:attribute name="isAttachmentsUploaded" type="boolean" default="false"/>
+    <aura:attribute name="attachmentsUploaded" type="Object[]"/>
+    <aura:attribute name="isLayoutdisabled" type="boolean" default="false"/>
+   
+    
+    <aura:registerEvent name="fieldPropertiesEvent" type="c:setDynamicLayoutFieldProperties"/>
+    <aura:registerEvent name="fieldRenderProperyEvent" type="c:isFieldRendered"/>
+    <aura:registerEvent name="fieldRequiredProperyEvent" type="c:setFieldRequired"/>
+    <aura:registerEvent name="fieldDisabledProperyEvent" type="c:setFieldDisabled"/>
+    <aura:registerEvent name="handleError" type="c:handleError"/>
+    <aura:registerEvent name="setFieldValue" type="c:setFieldValue"/>
+    <aura:registerEvent name="dynamicLayoutDialogStoper" type="c:DynamicLayoutDialogStoper"/>
+    <aura:registerEvent name="setAutosuggestOptions" type="c:setAutosuggestOptions"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="c:FieldChangedEvent" action="{!c.fieldChanged}"/> 
+    <aura:handler event="c:replaceFieldValue" action="{!c.replaceFieldValue}"/> 
+    
+    <div id="dynamicLayoutScope" class="slds-scope">
+    
+    <aura:if isTrue="{!v.layoutMode != 'VIEW'}">
+    	
+        <!-- Edit form -->
+        <lightning:recordEditForm
+            aura:id="recordEditForm"
+            objectApiName="{!v.sObjectName}"
+            recordTypeId="{!v.recordTypeId}"
+            recordId="{!v.recordId}"
+            onload="{!c.handleRecordLoad}"
+            onsubmit="{!c.handleSubmit}"
+            onsuccess="{!c.handleOnSuccess}"
+            onerror="{!c.handleOnError}">
+            
+            <!-- Temp workaround to resolve errors with compaund fields like address
+            <div style="display:none"> 
+                <lightning:inputField fieldName="BillingAddress"/>
+                <lightning:inputField fieldName="ShippingAddress"/>
+            </div>
+			-->
+    
+            <div aura:id="editDialog" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="modal-container slds-modal__container">
+                    <div class="modal-header slds-modal__header">
+                        <aura:if isTrue="{!v.recordLoaded}">
+                            <div style="float: left;">
+                                <lightning:icon iconName="{! 'standard:' + v.objectIconName }" size="medium" title="" />
+                            </div>
+                            <h2 class="slds-text-heading--medium">{!v.lauoutTitle}</h2>
+                            <aura:set attribute="else">
+                                <h2 class="slds-text-heading--medium">Loading layout...</h2>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div id="dynamicLayoutModalBody" class="modal-body scrollable slds-modal__content slds-p-around--medium">                
+                        <aura:if isTrue="{!v.isInitialized}">
+                            <lightning:messages />
+                            <aura:if isTrue="{!v.errors != ''}">
+                                <ui:message title="Errors" severity="error" closable="false">
+                                        <aura:iteration items="{!v.errors}" var="error">
+                                    		{!error}<br/>
+                                		</aura:iteration>
+                                </ui:message>
+                            </aura:if>
+                            {!v.layoutBody}
+                            <aura:set attribute="else">
+                                <div class="slds-init-spinner-container-custom">
+                                    <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_medium">
+                                        <span class="slds-assistive-text">Processing...</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="modal-footer slds-modal__footer">                
+                        <aura:if isTrue="{!v.recordLoaded}">
+                            <aura:if isTrue="{!v.isLayoutValid}">
+                            	<div style="float:left;">
+                                    <lightning:input aura:id="addObjectAttachmentsFlag" type="checkbox" checked="{!v.addAttachmentsFlag}" label="Add attachments"/>
+                                </div>
+                        	</aura:if>
+                            <lightning:button variant="neutral" label="Cancel" onclick="{!c.cancelDialog}"/>
+                            <aura:if isTrue="{!v.isLayoutValid}">
+                                <lightning:button variant="brand" type="submit" label="{! (v.addAttachmentsFlag) ? 'Next' : 'Submit' }"/>
+                        	</aura:if>
+                        </aura:if>
+                    </div>
+                    <aura:if isTrue="{!v.isProcessingSpinner}">
+                        <div class="slds-spinner-container-custom">
+                            <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_medium">
+                                <span class="slds-assistive-text">Processing...</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.isLayoutdisabled}">
+                        <div class="slds-layout-disabled-overlay"/>
+                    </aura:if>
+                </div>
+            </div>
+    
+        </lightning:recordEditForm>
+        
+        <div aura:id="overlay" class="slds-backdrop slds-backdrop--open"></div>
+    
+    	<!-- View form -->
+        <aura:set attribute="else">
+            
+        	<lightning:recordViewForm
+            	aura:id="recordViewForm"
+                objectApiName="{!v.sObjectName}"
+                recordId="{!v.recordId}">  
+                
+                <force:recordData aura:id="forceViewRecord" recordId="{!v.recordId}" targetFields="{!v.record}" layoutType="FULL" />
+            
+            	<aura:if isTrue="{!v.uiMode == 'MODAL'}">
+                    <div aura:id="viewDialog" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                        <div class="modal-container slds-modal__container">
+                            <div class="modal-header slds-modal__header">
+                                <aura:if isTrue="{!v.isInitialized}">
+                                    <h2 class="slds-text-heading--medium">{!v.lauoutTitle}</h2>
+                                    <aura:set attribute="else">
+                                        <h2 class="slds-text-heading--medium">Loading layout...</h2>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                            <div class="modal-body scrollable slds-modal__content slds-p-around--medium">                
+                                <aura:if isTrue="{!v.isInitialized}">
+                                    {!v.layoutBody}
+                                    <aura:set attribute="else">
+                                        <div class="slds-init-spinner-container-custom">
+                                            <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_medium">
+                                                <span class="slds-assistive-text">Processing...</span>
+                                                <div class="slds-spinner__dot-a"></div>
+                                                <div class="slds-spinner__dot-b"></div>
+                                            </div>
+                                        </div>
+                                    </aura:set>
+                                </aura:if>    
+                            </div>
+                            <div class="modal-footer slds-modal__footer">                
+                                <aura:if isTrue="{!v.isInitialized}">
+                                    <lightning:button variant="neutral" label="Close" onclick="{!c.cancelDialog}" />
+                                    <lightning:button variant="brand" label="Edit" onclick="{!c.editRecord}" />
+                                </aura:if>
+                            </div>
+                            <aura:if isTrue="{!v.isProcessingSpinner}">
+                                <div class="slds-spinner-container-custom">
+                                    <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_medium">
+                                        <span class="slds-assistive-text">Processing...</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </aura:if>
+                        </div>
+                    </div>
+                    <div aura:id="overlay" class="slds-backdrop slds-backdrop--open"></div>
+                    <aura:set attribute="else">
+                        <div class="slds-clearfix slds-card forceDetailPanelDesktop">
+                            <aura:if isTrue="{!v.isInitialized}">
+                                {!v.layoutBody}
+                                <aura:set attribute="else">
+                                    <div class="slds-init-spinner-container-custom">
+                                        <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_medium">
+                                            <span class="slds-assistive-text">Processing...</span>
+                                            <div class="slds-spinner__dot-a"></div>
+                                            <div class="slds-spinner__dot-b"></div>
+                                        </div>
+                                    </div>
+                                </aura:set>
+                            </aura:if>
+                        </div> 
+                    </aura:set>
+            	</aura:if>
+            </lightning:recordViewForm>
+        
+        </aura:set>
+    
+    </aura:if>
+        
+    	<!-- Case type selection modal -->
+        <aura:if isTrue="{!v.isRecordTypeSelectionAction}">
+            <div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="modal-container slds-modal__container">
+                    <div class="modal-header slds-modal__header">
+                        <h2 class="slds-text-heading--medium">Select {!v.objectLabel} Type</h2>
+                    </div>
+                    <div class="modal-body scrollable slds-modal__content slds-p-around--medium">                
+                        <lightning:radioGroup aura:id="recordTypeRadioSelector" 
+                                              label="" 
+                                              variant="label-hidden" 
+                                              options="{!v.recordTypes}" 
+                                              value="{!v.newRecordTypeId}" 
+                                              type="radio"/>
+                    </div>
+                    <div class="modal-footer slds-modal__footer">                
+                        <lightning:button variant="neutral" label="Cancel" onclick="{!c.onTypeSelectionCancel}" />
+                        <lightning:button variant="brand" label="Next" onclick="{!c.onTypeSelectionNext}" />
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+        
+        <!-- Add attachments modal -->
+        <aura:if isTrue="{!v.isAddAttachmentsAction}">
+            <div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="modal-container slds-modal__container slds-modal__container-child">
+                    <div class="modal-header slds-modal__header">
+                        <h2 class="slds-text-heading--medium">Add attachments to {!v.objectLabel}</h2>
+                    </div>
+                    <div class="modal-body scrollable slds-modal__content slds-p-around--medium">                
+                        <lightning:fileUpload name="fileUploader"
+                                              label= "Upload files"
+                                              multiple="true"
+                                              recordId="{!v.currentRecordId}"
+                                              onuploadfinished="{!c.attachmantsUploadFinished }"/>
+                        <aura:if isTrue="{!v.isAttachmentsUploaded}">
+                            <br/>Attached files:<br/>
+                            <div style="width:90%;">
+                                <aura:iteration items="{!v.attachmentsUploaded}" var="file" indexVar="idx">
+                                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
+                                        <div class="slds-col slds-size_1-of-12 slds-text-align--center">
+                                            <lightning:icon iconName="doctype:unknown" size="xx-small" title="" />
+                                        </div>
+                                        <div class="slds-col slds-size_4-of-6">
+                                        	<ui:outputText value="{!file.name}"/>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-12 slds-text-align--center">
+                                            <lightning:button variant="base" name="{!file.documentId}" title="Delete file" onclick="{!c.deleteAttachment}">
+                                        		<lightning:icon iconName="utility:clear" size="xx-small" title="Delete file"/>
+                                            </lightning:button>
+                                        </div>
+                                    </div>
+                                </aura:iteration>
+                            </div>
+                        </aura:if>
+                    </div>
+                    <div class="modal-footer slds-modal__footer">                
+                        <aura:if isTrue="{!!v.isAttachmentsUploaded}">
+                        	<lightning:button variant="neutral" label="Skip and Submit" onclick="{!c.skipAttachments}" />
+                        </aura:if>
+                        <aura:if isTrue="{!v.isAttachmentsUploaded}">
+                        	<lightning:button variant="brand" label="Submit" onclick="{!c.closeDialogAfterSave}" />
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showPopupIsteadToast}">
+            <div role="dialog" class="slds-modal slds-fade-in-open hideDiv" aria-hidden="false">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header slds-theme--default">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close"
+                                onclick="{!c.closePopupIsteadToast}">
+                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <div>
+                            <h2 class="slds-text-heading--medium" id="prompt-heading-id">{!v.resultMessage2VF}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>        
+    </div>
+    
+</aura:component>

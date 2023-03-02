@@ -1,0 +1,121 @@
+<template>
+    <template if:true={spinner}>
+        <div class="spinner">
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+    </template>
+    <div class="pageCard">
+        <h3 slot="title">
+        <!-- <lightning-icon icon-name="action:new_note" size="small"></lightning-icon> -->
+        <p class="iconTitle">Record Owner Filters</p>
+        </h3>
+    <br />
+    <!-- <p class="slds-p-horizontal_small">Card Body (custom component)</p> -->
+    <div class="box_filter">
+        <div class="card_filter">
+            <div class="labelFiled">Regional Director: </div>
+            <lightning-combobox
+                data-id="regionalDirector"
+                class="comboBox"
+                name="Regional_Director"
+                read-only={rDReadOnly}
+                options={rDOptions}
+                value={rDValue}
+                onchange={rDhandleChange}
+                placeholder={rDplace}>
+            </lightning-combobox>
+        </div>
+        <div class="card_filter">
+            <div class="labelFiled">Accounts Owner: </div>
+            <lightning-combobox
+                data-id="accountOwner"
+                class="comboBox"
+                name="Accounts_Owner"
+                value={aOValue}
+                options={aOOptions}
+                onchange={aOHandleChange}
+                placeholder="Select User"
+                >
+            </lightning-combobox>
+        </div>
+        <div class="card_filter">
+            <div class="labelFiled">Org Sub-Region: </div>
+           <lightning-input class="comboBox" type="text" disabled="true" value={orgValue}></lightning-input>
+        </div>
+        <div class="card_filter">
+            <div class="labelFiled">Position Id: </div>
+            <lightning-input class="comboBox" type="text" disabled="true" value={positionValue}></lightning-input>
+        </div>
+
+        <div class="card_filter">
+            <div class="labelFiled">Billing Country: </div>
+            <lightning-combobox
+                class="comboBox"
+                name="Billing_Country"
+                value={bCValue}
+                options={billingCountryList}
+                onchange={bCHandelChange}
+                placeholder="Select Billing Country"
+                >
+            </lightning-combobox>
+        </div>
+
+        <div class="card_filter">
+            <div class="labelFiled">Type: </div>
+            <lightning-combobox
+                class="comboBox"
+                name="Type"
+                value={tValue}
+                options={tepyList}
+                onchange={tHandelChange}
+                placeholder="Select Type" 
+                >
+            </lightning-combobox>
+        </div>
+        <div class="card_filter">
+            <div class="labelFiled">Accounts Status: </div>
+            <lightning-combobox
+                class="comboBox"
+                name="Accounts_Status"
+                value={aSValue}
+                options={statusList} 
+                onchange={aSHandelChange}
+                placeholder="Select Progress" 
+                >
+            </lightning-combobox>
+        </div>
+    </div>
+    <a onclick={handelMoreOption}>{optionText}</a>
+    <template if:true={extraFilter}>
+        <div class="box_filter extra">
+            <div class="card_filter">
+                <div class="labelFiled">Batch Id: </div>
+                <lightning-input
+                    data-id="batchIdFilter"
+                    class="comboBox"
+                    name="BatchId_Filter"
+                    onclick={handelClickBatch}
+                    placeholder='Batch Id'>
+                </lightning-input>
+            </div>
+            <div class="card_filter">
+                <div class="labelFiled">Status: </div>
+                <lightning-combobox
+                    data-id="statusFilter"
+                    class="comboBox"
+                    name="Status_Filter"
+                    value={statusValue}
+                    options={statusOptions}
+                    onchange={statusHandleChange}
+                    placeholder="Status"
+                    >
+                </lightning-combobox>
+            </div>
+        </div>
+    </template>
+    <!-- <div class="card_filter"> -->
+        <!-- sldsValidatorIgnoreNextLine -->
+        <button class="filterButton" onclick={submit}>Show Accounts</button>
+    <!-- </div> -->
+</div>
+</template>

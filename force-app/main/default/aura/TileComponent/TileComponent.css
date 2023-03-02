@@ -1,0 +1,87 @@
+.THIS {
+}
+
+.THIS.paddingtop{
+	padding-top: 35px;
+}
+
+.THIS.tile{
+	left:15px;
+}
+
+.THIS.removeBtn {
+	left:35px;
+}
+
+
+.THIS .override-flex.slds-col {
+	-webkit-box-flex: 1;
+	-webkit-flex: 0 1 auto;
+	-ms-flex: 0 1 auto;
+	flex: 0 1 252px;
+}
+
+.THIS .override-flex-header.slds-col {
+	-webkit-box-flex: 1;
+	-webkit-flex: 0 1 auto;
+	-ms-flex: 0 1 auto;
+	flex: 0 1 945px;
+}
+
+.THIS .margin-left {
+	margin-right: 3rem;
+}
+ 
+@media (min-width: 86rem) {
+	.THIS .override-Grid{
+		width: 25%;
+	}
+
+	.THIS.override-Grid{
+		width: 25%;
+	}	
+}
+
+.THIS .CustomCardCss {
+    border-radius: 5%;
+    min-height: 215px;
+    background-color: cornflowerblue;
+    background-image: url('/resource/1555930255000/TilesResource/TilesResource/tilesBackGround/TileBlue.png');
+    /*background-image: url('{!URLFOR($Resource.TilesResource, tilesBackGround/TileBlue)}');*/
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+
+}
+
+.THIS .severityBlue {
+	background-color: cornflowerblue;
+    background-image: url('/resource/1555930255000/TilesResource/TilesResource/tilesBackGround/TileBlue.png');
+    /*background-image: url('{!URLFOR($Resource.TilesResource, tilesBackGround/TileBlue)}');*/
+
+}
+
+.THIS .severityGreen {
+	background-color: cadetblue;
+    background-image: url('/resource/1555930255000/TilesResource/TilesResource/tilesBackGround/TileGreen.png');
+    /*background-image: url('{!URLFOR($Resource.TilesResource, tilesBackGround/TileGreen)}');*/
+
+ }
+.THIS .severityYellow {
+	background-color: yellow;
+    background-image: url('/resource/1555930255000/TilesResource/TilesResource/tilesBackGround/YellowTile.png');
+    /*background-image: url('{!URLFOR($Resource.TilesResource, tilesBackGround/YellowTile)}');*/
+
+}
+
+.THIS .severityRed {
+	background-color: lightcoral;
+    background-image: url('/resource/1555930255000/TilesResource/TilesResource/tilesBackGround/TileRed.png');
+    /*background-image: url('{!URLFOR($Resource.TilesResource, tilesBackGround/TileRed)}');*/
+
+}
+
+.THIS .severityAmber {
+	background-color: darkorange;
+    background-image: url('/resource/1555930255000/TilesResource/TilesResource/tilesBackGround/TileOrange.png');
+    /*background-image: url('{!URLFOR($Resource.TilesResource, tilesBackGround/TileOrange)}');*/
+}

@@ -1,0 +1,101 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" controller="LinkToContactUsController" access="global">
+    
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="endSubmit" type="boolean" default="false"/>
+    <!--RecordName is design attribute-->
+    <aura:attribute name="RecordName" type="String" required="true" default="General"/>
+    <!--RecordTypeName - for Work around Liron S. 06-Aug, update record type -->
+    <aura:attribute name="RecordTypeName" type="String" required="true" default="General"/>
+    <aura:attribute name="RecordTypeId" type="String" required="true" default="Contact_Us"/>
+    <aura:attribute name="PriorityName" type="String" required="true" default="Normal"/>
+    <aura:attribute name="Origin" type="String" required="true" default="Contact_Us"/>
+    <aura:attribute name="retURL" type="String"  required="true"  default="123"/>
+    <aura:attribute name="orgid" type="String" required="true" default="test"/>
+    <aura:attribute name="URL" type="String" required="true" default="123"/>
+    <aura:attribute name="CommunityType" type="String"  default="Customer"/>
+    <!--center-->
+    <!--lightning:button variant="brand" label="Contact Us" title="Contact Us" onclick="{! c.openModel }" /-->
+    <!--span class="employeeLoginLink salesforceIdentityEmployeeLoginLink2"-->
+    
+    <!-- Added by Alex Levchenko on 06-Jun-2019: Start -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="recaptchaResponse" type="String"/>
+    <aura:attribute name="recaptchaSettings" type="String"/>
+    <aura:attribute name="passedCaptcha" type="boolean" default="false"/>
+    <!-- Added by Alex Levchenko on 06-Jun-2019: End -->
+    
+    <a class="inverseTextColor" href="javascript:void(0)" onclick="{!c.openModel}" style="color:rgb(255, 255, 255)!important;">
+        Contact Us </a><!--/span-->
+    <!--/center-->
+    <!--div class="slds-m-around_xx-large"-->
+    <aura:if isTrue="{!v.isOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            
+            
+            <div class="slds-modal__container" >
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Contact Us</h2>
+                </header>
+                <aura:if isTrue="{!v.endSubmit}">
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                          <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close"/>
+                        <h3 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            Thank you!<br/>
+                            Your request was successfully submitted. <br/>
+                            A member of our team will contact you shortly
+                        </h3>
+                    </div>
+                </aura:if>
+                
+                <div class="slds-modal__content slds-p-around_medium slds-form-element" id="modal-content-id-1">
+                    <form id="frm" action="{!v.URL}" method="POST">
+                        <input type="hidden" name="captcha_settings" value="{!v.recaptchaSettings}"/>
+                        <input type="hidden" name="orgid" value="{!v.orgid}"/><br/>
+                        <input type="hidden" name="retURL" value="{!v.retURL}"/>
+                        <label class="slds-form-element__label" for="email" id="emailLabel">
+                            <abbr class="slds-required" title="required">* </abbr>Email</label>
+                            <div class="slds-form-element__control">
+   							 <input type="text" id="email" name="email" placeholder="please fill out email…" required="" class="slds-input" />
+  							</div>
+                        <label class="slds-form-element__label" for="subject" id="subjectLabel">
+                            <abbr class="slds-required" title="required">* </abbr>Subject</label>
+                            <div class="slds-form-element__control">
+   							 <input type="text" id="subject" name="subject" class="slds-input" />
+  							</div>    
+                        <lightning:textarea aura:id="description"  label="Description" name="description" required="true"/><br/>
+                        <input type="hidden" id="priority" name="priority" value="{!v.PriorityName}"/>
+                        <input type="hidden" id="recordType" name="recordType" value="{!v.RecordTypeId}"/>
+                        <!--input type="hidden" id="origin" name="origin" value="{!v.Origin}" /-->
+                        <!--origin - for Work around-->
+                        <input type="hidden" id="origin" name="origin" value="Contact_Us" />
+                        <!--input type="hidden" id="Account__r.Id" name="Account__r.Id" value="v.AccountId" /-->
+
+                        <input type="hidden"  id="external" name="external" value="1" />
+                        <textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" value="{!v.recaptchaResponse}" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea>
+                        
+                        <!-- Added by Alex Levchenko on 06-Jun-2019: Start -->
+                        <aura:if isTrue="{!!v.endSubmit}">
+                            <div class="slds-media__body slds-truncate" id="modal-content-id-1" >
+                                <iframe aura:id="ifrm" src="/CheckmarxCustomerServiceCommunity/apex/CaptchaDemo" height="300px" width="1000px" style="border:0px"/>
+                            </div>
+                        </aura:if>
+
+                        <!-- Added by Alex Levchenko on 06-Jun-2019: End -->
+                    </form>
+                </div>
+
+                <aura:if isTrue="{!!v.endSubmit}">
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeModel }"/>
+                        <aura:if isTrue="{!v.passedCaptcha}">
+                            <lightning:button aura:id="submit" variant="brand" label="Submit" onclick="{!c.doSubmited}" />
+                        </aura:if>
+                    </footer> 
+                </aura:if>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    <!--/div-->
+</aura:component>

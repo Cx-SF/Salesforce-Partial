@@ -1,0 +1,11 @@
+<template>
+    <template if:true={filter}>
+        <c-owners-management-filter onprogressvaluechange={handelProgressValueChange}></c-owners-management-filter>
+    </template>
+    <template if:false={filter}>
+        <c-owners-management-table childtabledata={progressValue} ontablechange={handelTableChange} onerror={handelError}></c-owners-management-table>
+    </template>
+    <template if:true={popUp}>
+        <c-pop-up-message popmessage={popUpMessage} onpopupchange={handelPopUpChange}></c-pop-up-message>
+    </template>
+</template>

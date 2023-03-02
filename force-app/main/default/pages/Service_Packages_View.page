@@ -1,0 +1,266 @@
+<!--apex:page standardController="account" extensions="Service_Packages_Controller" lightningStylesheets="true"--->
+<apex:page Controller="Service_Packages_Controller" standardStylesheets="false" sidebar="true" applyBodyTag="false" docType="html-5.0" id="PageId" lightningstylesheets="true">
+    <style>
+        .myTable {
+        counter-reset: rowCounter !important;
+        }
+        .myTable .row {
+        counter-increment: rowCounter;
+        }
+        .myTable .row .counter::before {
+        content: counter(rowCounter);
+        }
+        .headerClass
+        {
+        font-size: large;
+        font-weight: bold;
+        text-decoration: underline;
+        }
+        
+        .totalNumberClass
+        {
+        font-weight: bold;
+        color: #0070C0;
+        }
+    </style>
+    <script>
+    function selectAllCheckboxes(obj,receivedInputID)
+    {
+        
+        var inputCheckBox = document.getElementsByTagName("input");                  
+        for(var i=0; i<inputCheckBox.length; i++)
+        {          
+            if(inputCheckBox[i].id.indexOf(receivedInputID)!=-1)
+            {                                     
+                inputCheckBox[i].checked = obj.checked;
+            }
+        }
+    } 
+    </script>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        <style type="text/css">
+        </style>    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>        
+        <script src="//code.jquery.com/jquery-1.10.2.js">
+            </script>
+        <body>
+            <apex:outputPanel >
+                <apex:form >
+                    
+                    <apex:pageblock id="pblock" > 
+                        <apex:outputLabel style="font-weight: bold; font-size: 200%; " value="{!CurrQuote.name} "/>
+                        
+                        <div class="slds-col slds-no-flex slds-grid slds-align-top">
+                            <div class="slds-button-group" role="group">                        
+                                <apex:pageBlockButtons location="both">
+                                    <apex:commandButton value="Calc Totals" action="{!CactTotals}" styleClass="slds-button slds-button--neutral" reRender="pblock" />
+                                    <apex:commandButton value="Save" action="{!SaveRollUp}" styleClass="slds-button slds-button--neutral"/>
+                                    <apex:commandButton value="Cancel" action="{!CancelPage}" styleClass="slds-button slds-button--neutral" />
+                                </apex:pageBlockButtons>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-wrap slds-grid--pull-padded slds-m-bottom--medium" >
+                            <!---div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-01">Subscriptions List Total </label>
+                                    <div class="slds-form-element__control">
+                                        <apex:outputText value="{!CASE(CurrQuote.CurrencyIsoCode ,'USD','$',
+                                                                'AUD','$',
+                                                                'CAD','$',
+                                                                'EUR','€',
+                                                                'GBP','₤',
+                                                                'JPY','¥',
+                                                                'SGD','S$',
+                                                                '$')}"/> &nbsp;
+                                        <apex:outputText value="{0, number, ###,###,###,##0}">
+                                            <apex:param value="{!subList}" />
+                                        </apex:outputText> 
+                                    </div>
+                                </div>  
+                            </div--->
+                            <div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-02">Subscriptions Net Total (ACV)</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:outputText value="{!CASE(CurrQuote.CurrencyIsoCode ,'USD','$',
+                                                                'AUD','$',
+                                                                'CAD','$',
+                                                                'EUR','€',
+                                                                'GBP','₤',
+                                                                'JPY','¥',
+                                                                'SGD','S$',
+                                                                '$')}"/> &nbsp;
+                                        <apex:outputText value="{0, number, ###,###,###,##0}">
+                                            <apex:param value="{!subNet}" />
+                                        </apex:outputText> 
+                                    </div>
+                                </div>
+                            </div>
+                            <!---div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-03">Assets List Total</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:outputText value="{!CASE(CurrQuote.CurrencyIsoCode ,'USD','$',
+                                                                'AUD','$',
+                                                                'CAD','$',
+                                                                'EUR','€',
+                                                                'GBP','₤',
+                                                                'JPY','¥',
+                                                                'SGD','S$',
+                                                                '$')}"/> &nbsp;
+                                        <apex:outputText value="{0, number, ###,###,###,##0}">
+                                            <apex:param value="{!assList}" />
+                                        </apex:outputText> 
+                                    </div>
+                                </div>
+                            </div---> 
+                            <div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-03">Assets Net Total (ACV)</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:outputText value="{!CASE(CurrQuote.CurrencyIsoCode ,'USD','$',
+                                                                'AUD','$',
+                                                                'CAD','$',
+                                                                'EUR','€',
+                                                                'GBP','₤',
+                                                                'JPY','¥',
+                                                                'SGD','S$',
+                                                                '$')}"/> &nbsp;
+                                        <apex:outputText value="{0, number, ###,###,###,##0}">
+                                            <apex:param value="{!assNet}" />
+                                        </apex:outputText> 
+                                    </div>
+                                </div>
+                            </div>  
+                               <div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-03">Quote Lines Net Total</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:outputText value="{!CASE(CurrQuote.CurrencyIsoCode ,'USD','$',
+                                                                'AUD','$',
+                                                                'CAD','$',
+                                                                'EUR','€',
+                                                                'GBP','₤',
+                                                                'JPY','¥',
+                                                                'SGD','S$',
+                                                                '$')}"/> &nbsp;
+                                        <apex:outputText value="{0, number, ###,###,###,##0}">
+                                            <apex:param value="{!QlNet}" />
+                                        </apex:outputText> 
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-03"></label>
+                                    <div class="slds-form-element__control">
+                                      
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-03">Preferred (15%)</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:outputText value="{!CASE(CurrQuote.CurrencyIsoCode ,'USD','$',
+                                                                'AUD','$',
+                                                                'CAD','$',
+                                                                'EUR','€',
+                                                                'GBP','₤',
+                                                                'JPY','¥',
+                                                                'SGD','S$',
+                                                                '$')}"/> &nbsp;
+                                        <apex:outputText value="{0, number, ###,###,###,##0}">
+                                            <apex:param value="{!Preferred}" />
+                                        </apex:outputText> 
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="slds-p-horizontal--small slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="textarea-input-03">Enterprise (20%)</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:outputText value="{!CASE(CurrQuote.CurrencyIsoCode ,'USD','$',
+                                                                'AUD','$',
+                                                                'CAD','$',
+                                                                'EUR','€',
+                                                                'GBP','₤',
+                                                                'JPY','¥',
+                                                                'SGD','S$',
+                                                                '$')}"/> &nbsp;
+                                        <apex:outputText value="{0, number, ###,###,###,##0}">
+                                            <apex:param value="{!Enterprise}" />
+                                        </apex:outputText> 
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                        
+                        <apex:pageblock >
+                            <apex:variable value="{!0}" var="rowNum"/>
+                            <apex:dataTable value="{!recordlist}" var="prod"  styleClass="slds-table">
+                                <apex:column > 
+                                    <apex:facet name="header">
+                                        <apex:outputPanel >
+                                            <apex:inputCheckbox id="hCheckbox" onclick="selectAllCheckboxes(this,'inputId')"/><!--  style="margin-left:-95%;"-->
+                                        </apex:outputPanel>
+                                    </apex:facet>
+                                    <apex:inputCheckbox value="{!prod.Selected}" id="inputId"/>
+                                </apex:column>
+                                <apex:column headerValue="#" styleClass="slds-text-title--caps">
+                                    <apex:variable var="rowNum" value="{!rowNum + 1}"/> 
+                                    <apex:outputText value="{!rowNum}" styleClass="slds-form-element__label" />
+                                    
+                                </apex:column>
+                                 <apex:column headerValue="Type" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{!prod.WType }" styleClass="slds-output" /> 
+                                </apex:column>
+                                <apex:column headerValue="Contract" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{!prod.WContract }" styleClass="slds-output" /> 
+                                </apex:column>
+                                <apex:column headerValue="Product" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{!prod.prodName }" styleClass="slds-output" /> 
+                                </apex:column>
+                                <apex:column headerValue="Quantity" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{!prod.WQuantity }" styleClass="slds-output" /> 
+                                </apex:column>
+                                <!---apex:column headerValue="List Price" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{0, number, ###,###,###,##0}">
+                                        <apex:param value="{!prod.WListPrice}" /> </apex:outputText> 
+                                </apex:column--->
+                                <apex:column headerValue="Net Price" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{0, number, ###,###,###,##0}">
+                                        <apex:param value="{!prod.WNetPrice}" /> </apex:outputText>   </apex:column>
+                                <apex:column headerValue="Total (ACV)" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{0, number, ###,###,###,##0}">
+                                        <apex:param value="{!prod.TotalPrice}" /> </apex:outputText>  </apex:column>
+                                <apex:column headerValue="Start Date" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!prod.StartD}" /> </apex:outputText> 
+                                </apex:column>
+                                <apex:column headerValue="End Date" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!prod.EndD}" /> </apex:outputText>                            
+                                </apex:column>
+                                <apex:column headerValue="Name" styleClass="slds-text-title--caps" >
+                                    <apex:outputText value="{!prod.Wname }" styleClass="slds-output" /> 
+                                </apex:column>
+                            </apex:dataTable>
+                        </apex:pageblock>   
+                        <!---apex:pageBlock >
+
+
+</apex:pageBlock--->
+                    </apex:pageblock>
+                </apex:form>
+            </apex:outputPanel>
+        </body>
+    </html>
+</apex:page>

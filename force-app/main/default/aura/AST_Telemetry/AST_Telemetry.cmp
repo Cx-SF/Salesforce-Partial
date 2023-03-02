@@ -1,0 +1,13 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+	<aura:attribute name="showFrame" type="Boolean" default="false" />
+	<aura:attribute name="frameSrc" type="String" default="false" />
+	<aura:attribute name="record" type="Opportunity" />
+	
+	<force:recordData aura:id="record" recordId="{! v.recordId }" 
+									   fields="AccountId"
+									   targetFields="{! v.record }" 
+									   recordUpdated="{! c.doInit }"/>
+	
+	<iframe src="{! v.frameSrc }" height="700" width="100%" scrolling="false" frameborder="false" id="ASTTelemetry" />
+	
+</aura:component>

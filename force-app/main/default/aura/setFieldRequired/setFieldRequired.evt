@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="Field required property changed">
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="isRequired" type="boolean"/>
+</aura:event>

@@ -1,0 +1,183 @@
+<aura:component 
+    implements="flexipage:availableForRecordHome,lightning:hasPageReference,lightning:isUrlAddressable,force:hasRecordId,force:hasSObjectName,force:lightningQuickAction,lightning:actionOverride,forceCommunity:availableForAllPageTypes" 
+    access="global"
+    controller="NewCaseCreationWizardController">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:attribute name="articleData" type="Object"/>
+    <aura:attribute name="articleSearchCount" type="Integer" default="0"/>
+    <aura:attribute name="articleColumns" type="List"/>
+    <aura:attribute name="hasArticleResult" type="boolean" default="false"/>
+    <aura:attribute name="isCreateCaseButtonShown" type="boolean" default="true"/>
+    <aura:attribute name="recordTypes" type="List"/>
+    <aura:attribute name="defaultRecordType" type="String"/>
+    <aura:attribute name="generalRecordTypeId" type="String"/>
+    <aura:attribute name="caseDeflectionRecordTypeId" type="String"/>
+    <aura:attribute name="userType" type="String" default="Standard"/>
+    <aura:attribute name="isRecordTypeSelectionAction" type="boolean" default="false"/>
+    <aura:attribute name="isProcessingSpinner" type="boolean" default="false"/>
+    <aura:attribute name="isArticleOpened" type="boolean" default="false"/>
+    <aura:attribute name="openedArticleId" type="String"/>
+    <aura:attribute name="openedArticleNumber" type="String"/>
+	
+	<aura:attribute name="runningUser" type="User" />
+	<aura:attribute name="available_accounts" type="List" />
+	<aura:attribute name="selected_account" type="String" />
+	<aura:attribute name="downloadModalOpen" type="Boolean" default="false" />
+	<aura:attribute name="isPowerPartner" type="Boolean" default="false" />
+    <aura:attribute name="isOne" type="Boolean" default="false" />
+    <aura:attribute name="tenant_list_filter" type="String" />
+    <aura:attribute name="isSelectTenantREQ" type="Boolean" default="false" />
+    <aura:attribute name="selected_tenant_obj" type="Object" />
+    <aura:attribute name="selected_tenant" type="String" />
+	
+	
+    <div class="slds-scope">
+        <div class="slds-clearfix slds-card slds-p-around--large">
+            <div class="slds-m-bottom--medium">
+            	<h2 class="slds-text-heading--medium textInNewCaseWizardToHide">Search knowledge articles, best practices and more...</h2>
+            </div>
+            <lightning:input aura:id="searchInputField" type="search" label="#" variant="label-hidden" placeholder=" search here..." onchange="{!c.onChange}"/>
+            <div id="articleResults" class="{! 'slds-m-top--x-large' + (!v.hasArticleResult ? ' slds-hide' : '') }">
+                <h2 class="slds-m-bottom--medium slds-text-heading--medium">Next knowlege articles may resolve your issue</h2>
+                <div style="{! 'padding-bottom: 1.5rem;' + (v.articleSearchCount > 3 ? ' height: 300px;' : '') }">
+                    <h1>Found articles: {! v.articleSearchCount }</h1><br/>
+                    <lightning:datatable keyField="KnowledgeArticleId" data="{!v.articleData}" columns="{!v.articleColumns}" hideCheckboxColumn="true" onrowaction="{!c.onRowAction}"/>
+                </div>
+                <aura:if isTrue="{!v.isProcessingSpinner}">
+                    <div class="slds-spinner-container-custom">
+                        <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_medium">
+                            <span class="slds-assistive-text">Processing...</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+            <div class="{! 'slds-m-top--x-large' + (!v.isCreateCaseButtonShown ? ' slds-hide' : '') }">
+                <h2 class="slds-m-bottom--medium slds-text-heading--medium textInNewCaseWizardToChange">Did not find resolution? Open new case</h2>
+                <lightning:button variant="brand" class="OpenCaseButton" label="Open Case" onclick="{!c.createNewCase}" />
+                <!--
+                <div style="padding-top: 1rem;">
+                	<c:CaptchaDemo/>
+                </div>
+				-->
+            </div>
+        </div>
+        
+        <!-- Case type selection modal -->
+        <aura:if isTrue="{!v.isRecordTypeSelectionAction}">
+            <div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="modal-container slds-modal__container">
+                    <div class="modal-header slds-modal__header">
+                        <h2 class="slds-text-heading--medium">New Case</h2>
+                    </div>
+                    <div class="modal-body scrollable slds-modal__content slds-p-around--medium">                
+                        <lightning:radioGroup aura:id="recordTypeRadioSelector" label="Please select a case type" options="{!v.recordTypes}" value="{!v.defaultRecordType}" type="radio"/>
+                    </div>
+                    <div class="modal-footer slds-modal__footer">                
+                        <lightning:button variant="neutral" label="Cancel" onclick="{!c.onTypeSelectionCancel}" />
+                        <lightning:button variant="brand" label="Next" onclick="{!c.onTypeSelectionNext}" />
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+        
+        <!-- Article modal -->
+        <aura:if isTrue="{!v.isArticleOpened}">
+            <div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="modal-container slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" title="Close article" onclick="{!c.closeArticle}">
+                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Knowlege Article {!v.openedArticleNumber}</h2>
+                    </div>
+                    <div class="modal-body scrollable slds-modal__content slds-p-around--medium">                
+                        <force:recordView recordId="{!v.openedArticleId}">
+                            <div class="slds-init-spinner-container-custom">
+                                <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_medium">
+                                    <span class="slds-assistive-text">Processing...</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </force:recordView>
+                    </div>
+                    <div class="modal-footer slds-modal__footer">                
+                        <span class="slds-text-heading--small slds-m-right--medium">Did this solve your issue?</span>
+                        <lightning:button variant="neutral" label="No" onclick="{!c.closeArticle}" />
+                        <lightning:button variant="brand" label="Yes" onclick="{!c.articleResolvedIssue}" />
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+		
+		<!-- Account select modal -->
+		<aura:if isTrue="{! v.downloadModalOpen }">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<div class="slds-modal__header">
+						<h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">End Customer Account Selection</h1>
+					</div>
+					<div class="slds-modal__content slds-p-around_medium account-selector-wrap" id="modal-content-id-1">
+						<p class="account-selector-container">
+							<label class="common-label">{! $Label.c.Partner_Account_selection_label }</label>
+							<lightning:combobox aura:id="AccountCombo" variant="label-hidden" options="{! v.available_accounts }" value="{! v.selected_account }" 
+                                                onchange="{! c.partnerAccountSelected }" />
+						</p>
+                        <aura:if isTrue="{! v.isOne }">
+                            <p class="account-selector-container">
+                                <label class="common-label">Select Tenant List</label>
+                                <div class="c-lookup-wrap">
+                                    <c:CustomLookupAura aura:id="tenantlookup" objectName="Tenant__c" singleChoose="false" field_API_text="Name" field_API_val="Id" 
+                                                        field_API_search="Name" limit="25" lookupIcon="custom:custom57" placeholder="Search Tenants" 
+                                                        selItem="{! v.selected_tenant_obj }" query_literal="{! v.tenant_list_filter }"></c:CustomLookupAura>
+                                </div>
+                            </p>
+                        </aura:if>
+					</div>
+					<div class="slds-modal__footer">
+						<lightning:button label="Cancel" onclick="{! c.closeAccountSelectionModal }" />
+						<lightning:button variant="brand" label="Select and Continue" onclick="{! c.selectAccountAndContinue }" />
+					</div>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+		</aura:if>
+		<!-- .Account select modal -->
+
+        <!-- Tenant list select modal -->
+		<aura:if isTrue="{! v.isSelectTenantREQ }">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<div class="slds-modal__header">
+						<h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Tenant list Selection</h1>
+					</div>
+					<div class="slds-modal__content slds-p-around_medium account-selector-wrap" id="modal-content-id-1">
+						<p class="account-selector-container">
+							<label class="common-label">Select Tenant List</label>
+							<div class="c-lookup-wrap">
+                                <c:CustomLookupAura aura:id="tenantlookup" objectName="Tenant__c" singleChoose="false" field_API_text="Name" field_API_val="Id" 
+                                                    field_API_search="Name" limit="25" lookupIcon="custom:custom57" placeholder="Search Tenants" 
+                                                    selItem="{! v.selected_tenant_obj }" query_literal="{! v.tenant_list_filter }"></c:CustomLookupAura>
+                            </div>
+						</p>
+					</div>
+					<div class="slds-modal__footer">
+						<lightning:button label="Cancel" onclick="{! c.closeTenantSelectionModal }" />
+						<lightning:button variant="brand" label="Select and Continue" onclick="{! c.selectTenantListAndContinue }" />
+					</div>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+		</aura:if>
+		<!-- .Tenant list select modal -->
+
+    </div>
+    
+</aura:component>

@@ -1,0 +1,334 @@
+<aura:component description="Community users management"
+                controller="CommunityUserManagementServiceCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes">
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+    <aura:attribute name="dtHeight" type="String" description="Max-Height of datatable" default="short"/>
+    <!-- attributes -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="currentAccount" type="Account"/>
+
+    <force:recordData aura:id="recordHandler" recordId="{!v.recordId}" layoutType="FULL"
+                      fields="Id, Name" targetFields="{!v.currentAccount}"/>
+	<aura:attribute name="accountType" type="String"/>
+	<aura:attribute name="accountStatus" type="String"/><!--add by Rafa on 14/06/22-->
+    <aura:attribute name="users" type="Object"/>
+    <aura:attribute name="selectedUsers" type="Object"/>
+    <aura:attribute name="usersColumns" type="List"/>
+    <aura:attribute name="account" type="String"/>
+    <aura:attribute name="resultMessage2VF" type="String"/>
+    <aura:attribute name="maxPortalUsers" type="Integer"/>
+    <aura:attribute name="availableUsers" type="Integer"/>
+    <aura:attribute name="haveAdditionalUsers" type="Boolean"/>
+    <aura:attribute name="activeUsers" type="Integer"/>
+    <aura:attribute name="requests" type="Object"/>
+    <aura:attribute name="requestsColumns" type="List"/>
+    <aura:attribute name="showPopupIsteadToast" type="Boolean"/>
+    <aura:attribute name="showPopupIsteadToastContact" type="Boolean"/>
+    <aura:attribute name="showResultsPopup" type="Boolean"/>
+    <aura:attribute name="avoidToasts" type="Boolean"/>
+    <aura:attribute name="communityContact" type="Boolean"/>
+    <aura:attribute name="jobsStatus" type="String"/>
+
+    <aura:attribute name="showContactCreatePopup" type="Boolean"/>
+    <aura:attribute name="newContact" type="Object"/>
+    <aura:attribute name="simpleNewContact" type="Object"/>
+    <aura:attribute name="newContactError" type="String"/>
+    <force:recordData aura:id="contactRecordCreator"
+                      layoutType="FULL"
+                      targetRecord="{!v.newContact}"
+                      targetFields="{!v.simpleNewContact}"
+                      targetError="{!v.newContactError}"
+    />
+
+    <aura:attribute name="sortBy" type="String" default="lastName"/>
+    <aura:attribute name="sortDirection" type="String" default="ASC"/>
+    <aura:attribute name="accounts" type="Account[]"/>
+    <aura:attribute name="countries" type="Object"/>
+    <aura:attribute name="countriesStates" type="Object"/>
+    <aura:attribute name="isCountryStatesAvalible" type="Boolean"/>
+    <aura:attribute name="selectedCountryCode" type="String"/>
+    <aura:attribute name="selectedCountryState" type="String"/>
+    <aura:attribute name="isSystemAdmin" type="Boolean"/>
+    <aura:attribute name="isPoc" type="Boolean"/>
+    <aura:attribute name="CantActivte" type="Boolean"/>
+    <aura:attribute name="isStandard" type="Boolean"/>
+    <aura:attribute name="userType" type="Boolean"/>
+    <aura:attribute name="isLoading" type="Boolean" default='true' />
+
+  
+
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+        <aura:if isTrue="{!v.recordId!=null}">
+            <!-- <lightning:card title="{!'Customer Support User Access Management for '+ v.account }" variant="Narrow"> -> REM 05/02-->   
+            <lightning:card title="{!'Support Community - User Management'}" variant="Narrow">    
+            <aura:set attribute="actions">
+                <aura:if isTrue="{!v.isSystemAdmin}">
+                   {!v.jobsStatus}
+                  <lightning:buttonMenu aura:id="menu" onselect="{! c.handleAdminSelect }" alternativeText="Show menu">
+                      <lightning:menuItem value="Run Jobs" label="Run Jobs" />
+                      <lightning:menuItem value="Abort Jobs" label="Abort Jobs" />
+                  </lightning:buttonMenu>
+
+                </aura:if>
+            </aura:set>
+
+                <div class="slds-border_top">
+
+                    <lightning:layout horizontalAlign="space">
+
+                        <lightning:layoutItem size="2">
+                            <lightning:formattedText value="{!'Maximum Users: '+ v.maxPortalUsers }"/>
+                        </lightning:layoutItem>
+
+                        <lightning:layoutItem size="2">
+                            <lightning:formattedText value="{!'Active Users: '+ v.activeUsers }"/>
+                        </lightning:layoutItem>
+
+                        <lightning:layoutItem size="1">
+                            <lightning:formattedText value="{!'Available Users: '+ v.availableUsers }"/>
+                        </lightning:layoutItem>
+
+                        <lightning:layoutItem size="4">
+                            <!--<lightning:formattedText
+                                    value="* if you would like to purchase additional users, contact your CSM"/>-->
+                        </lightning:layoutItem>
+
+                    </lightning:layout>
+
+                </div>
+
+                <lightning:card title="Account contacts:">
+                    <div class="slds-grid slds-wrap slds-grid_align-center">
+                        <div class="slds-col slds-size_1-of-1 dtWrapper">
+                            <lightning:datatable
+                                columns="{! v.usersColumns }"
+                                data="{! v.users }"
+                                keyField="id"
+                                onrowaction="{! c.handleUserChangeActions }"
+                                onrowselection="{! c.updateSelectedUsers }" 
+                                hideCheckboxColumn="true" 
+                                class="{! 'UserDataTable showScroll ' + v.dtHeight}" 
+                                sortedBy="{!v.sortBy}"
+                                sortedDirection="{!v.sortDirection}"
+                                onsort="{!c.handleSort}"/>
+
+                            <br/>
+                        </div>
+                        
+                        <div class="slds-col slds-size_11-of-12" style="margin-top: 20px;">
+                            <div class="slds-grid slds-grid_align-spread slds-wrap">
+								<aura:if isTrue="{!v.communityContact}">
+                                <div clss="slds-col slds-size_1-of-6">
+                                    <lightning:button variant="brand" label="Add New Contact"
+                                                      title="Add New Contact" name="addNewContact"
+                                                      onclick="{! c.handleAddNewContact }"
+                                                      disabled="{!!v.haveAdditionalUsers}"
+														>
+                                        
+                                    </lightning:button>
+                                    <aura:if isTrue="{!!v.haveAdditionalUsers}">
+                                            <lightning:helptext
+                                                                content="Could not create contact - you have reached the limit of active users."/>
+                                        </aura:if>
+								
+                                    <!--div style="padding-left:2rem;padding-top:5rem;position:relative">
+                                        <button class="slds-button slds-button_neutral" aria-describedby="help" 
+                                                onclick="{! c.handleAddNewContact }" disabled="{!!v.haveAdditionalUsers}">Add New Contact</button>
+                                        <aura:if isTrue="{!!v.haveAdditionalUsers}">
+                                            <div  class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" id="help" style="position:absolute;top:-4px;left:45px">
+                                                <div  class="slds-popover__body">Could not create contact - you have reached the limit of active users</div>
+                                            </div>
+                                        </aura:if>
+                                    </div-->
+                                </div>
+								</aura:if>                          
+                                <div clss="slds-col slds-size_1-of-6">
+                                    <lightning:button variant="brand" label="Refresh"
+                                                      title="Refresh" name="reloadTab"
+                                                      onclick="{! c.reload }"/>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </lightning:card>
+
+            </lightning:card>
+            <aura:set attribute="else">
+
+                <lightning:card title="Select Account">
+                    <lightning:select aura:id="selectAccount" name="selectAccount" label=""
+                                      onchange="{! c.accountSelect }">
+                        <option value="" label="--None--">
+                        </option>
+                        <aura:iteration items="{!v.accounts}" var="item">
+                            <option value="{!item.Id}" label="{!item.Name}">
+                                {!item.Name}
+                            </option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:card>
+            </aura:set>
+        </aura:if>
+
+        <aura:if isTrue="{!v.showPopupIsteadToast}">
+            <div role="dialog"
+                 class="slds-modal slds-fade-in-open hideDiv"
+                 aria-hidden="false">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header slds-theme--default">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close"
+                                onclick="{!c.closePopupIsteadToast}">
+                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+
+                        <div>
+                            <h2 class="slds-text-heading--medium" id="prompt-heading-id">{!v.resultMessage2VF}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+
+        <aura:if isTrue="{!v.showContactCreatePopup}">
+            <div role="dialog"
+                 class="slds-modal slds-fade-in-open hideDiv"
+                 aria-hidden="false">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header slds-theme--shade">
+
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close"
+                                onclick="{!c.closeAddNewContactPopup}">
+                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+
+                        <h2 class="slds-text-heading--medium" id="prompt-heading-id">Create New Contact for
+                            {!v.account}</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+
+                        <aura:if isTrue="{!v.showPopupIsteadToastContact}">
+                            <div role="dialog"
+                                 class="slds-modal slds-fade-in-open hideDiv"
+                                 aria-hidden="false">
+                                <div class="slds-modal__container">
+                                    <div class="slds-modal__header slds-theme--default">
+                                        <button class="slds-button slds-button--icon-inverse slds-modal__close"
+                                                onclick="{!c.closePopupIsteadToast}">
+                                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                                            <span class="slds-assistive-text">Close</span>
+                                        </button>
+
+                                        <div>
+                                            <h2 class="slds-text-heading--medium" id="prompt-heading-id">{!v.resultMessage2VF}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-backdrop slds-backdrop--open"></div>
+                        </aura:if>
+
+                        <!-- Display the new contact form -->
+                        <lightning:card iconName="action:new_contact" title="Create Contact">
+                            <div class="slds-p-horizontal--small">
+                                <lightning:input required="true" aura:id="contactField1" label="First Name"
+                                                 value="{!v.simpleNewContact.FirstName}"/>
+                                <lightning:input required="true" aura:id="contactField2" label="Last Name"
+                                                 value="{!v.simpleNewContact.LastName}"/>
+                                <lightning:input required="true" aura:id="contactField3" label="Email"
+                                                 value="{!v.simpleNewContact.Email}"/>
+                                <!--
+                                <lightning:input aura:id="contactField" label="Email2"
+                                                 value="{!v.simpleNewContact.Email2}"/>
+								-->
+                                
+                                <!-- Added by Alex Levchenko on 12/07/2019: Start -->
+                                <!-- Commented by Hananel Cohen-->
+                                <!-- lightning:input aura:id="contactField" type="checkbox" label="See all cases"
+                                                 value="{!v.simpleNewContact.Can_see_all_account_cases__c}"/-->
+                                <!-- Added by Alex Levchenko on 12/07/2019: End -->
+                                
+                                <lightning:select aura:id="selectCountry" name="selectCountry" label="Country"
+                                                  onchange="{! c.countrySelect }">
+                                    <option value="" label="--None--">
+                                    </option>
+                                    <aura:iteration items="{!v.countries}" var="item">
+                                        <option value="{!item.value}" label="{!item.label}">
+                                            {!item.label}
+                                        </option>
+                                    </aura:iteration>
+                                </lightning:select>
+                                <lightning:select aura:id="selectCountryState" name="selectCountryState" label="State"
+                                                  onchange="{! c.stateSelect }">
+                                    <option value="" label="--None--">
+                                    </option>
+                                    <aura:iteration items="{!v.countriesStates}" var="item">
+                                        <option value="{!item.value}" label="{!item.label}">
+                                            {!item.label}
+                                        </option>
+                                    </aura:iteration>
+                                </lightning:select>
+                                <br/>
+                                <lightning:button label="Save Contact" variant="brand" onclick="{!c.handleSaveContact}"/>
+                            </div>
+                        </lightning:card>
+                        <!-- Display Lightning Data Service errors -->
+                        <aura:if isTrue="{!not(empty(v.newContactError))}">
+                            <div class="recordError">
+                                {!v.newContactError}
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>
+
+        <aura:if isTrue="{!v.showResultsPopup}">
+            <div role="dialog"
+                 class="slds-modal slds-fade-in-open hideDiv"
+                 aria-hidden="false">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header slds-theme--shade">
+
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close"
+                                onclick="{!c.closeRequestsPopup}">
+                            <lightning:icon iconName="utility:close" size="medium" variant="bare"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+
+                        <h2 class="slds-text-heading--medium" id="prompt-heading-id">Request Status Details</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+
+                            <lightning:datatable
+                                columns="{! v.requestsColumns }"
+                                data="{! v.requests }"
+                                keyField="id"/>
+
+                    </div>
+                    <!--<div class="slds-modal__footer slds-theme&#45;&#45;default">-->
+                    <!--</div>-->
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </aura:if>   
+        <aura:if isTrue="{!v.isLoading}">
+                <div aura:id="spinnerId" class="slds-spinner_container">
+                   <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                     <span class="slds-assistive-text">Loading</span>
+                     <div class="slds-spinner__dot-a"></div>
+                     <div class="slds-spinner__dot-b"></div>
+                   </div>
+                </div>
+                <!-- <lightning:spinner alternativeText="Loading" size="medium" class='spinner' /> -->
+        </aura:if>
+        <input type="text" id='hiddenTextForClipboard' style="display:none"/>
+
+</aura:component>

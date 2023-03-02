@@ -1,0 +1,23 @@
+<aura:component controller="Ctrl_SubscribeUnsubscribe_Btn" implements="forceCommunity:availableForAllPageTypes,lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global">
+	<aura:attribute name="disable" type="Boolean" default="false" />
+	<aura:attribute name="showSubscribe" type="Boolean" default="false" />
+	<aura:attribute name="showUnSubscribe" type="Boolean" default="false" />
+	<aura:attribute name="showSpecialSubscribe" type="Boolean" default="false" />
+	<aura:attribute name="communityBaseURL" type="String" />
+	<aura:attribute name="article" type="Object" />
+	
+	<aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+	
+	<aura:if isTrue="{! v.showSubscribe }">
+		<lightning:button name="subscribe" variant="brand" label="Subscribe" onclick="{! c.doSubscribe }" disabled="{! v.disable }" />
+	</aura:if>
+	
+	<aura:if isTrue="{! v.showUnSubscribe }">
+		<lightning:button name="unsubscribe" label="Unsubscribe" onclick="{! c.doUnsubscribe }" disabled="{! v.disable }" />
+	</aura:if>
+	
+	<aura:if isTrue="{! v.showSpecialSubscribe }">
+		<lightning:button name="specialsubscribe" label="Subscribe" onclick="{! c.doSpecialSubscribe }" disabled="{! v.disable }" />
+	</aura:if>
+	
+</aura:component>

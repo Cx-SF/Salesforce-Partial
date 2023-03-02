@@ -1,0 +1,11 @@
+<aura:component description="CaseUpdateNotification"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId">
+    <lightning:empApi aura:id="empApi"/>
+    <aura:attribute name="channel" type="String" default="/event/Case_Modification__e"/>
+    <aura:attribute name="subscription" type="Map" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="currentCase" type="Case"/>
+    <force:recordData aura:id="recordHandler" recordId="{!v.recordId}" layoutType="FULL"
+                      fields="Id, Description, CaseNumber" targetFields="{!v.currentCase}"/>
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+</aura:component>

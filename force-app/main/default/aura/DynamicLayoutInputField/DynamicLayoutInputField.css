@@ -1,0 +1,116 @@
+.THIS label.slds-form-element__label {
+    display: none !important;
+}
+
+.THIS span.slds-form-element__label {
+    display: none !important;
+}
+
+.THIS div.slds-form-element__legend {
+    display: none !important;
+}
+
+
+.THIS legend.slds-form-element__legend {
+    display: none !important;
+}
+
+.THIS .layout-output-field-container_edit {
+    display: flex;
+}
+
+.THIS .layout-output-field-container_view {
+    display: flex; 
+    border-bottom: 1px solid rgb(221, 219, 218);
+}
+
+.THIS .reference-field-icon-container {
+    float:left;
+    margin-right: 0.25rem;
+}
+
+.THIS .change-field-icon-container {
+    float:right;
+    margin-left: 0.25rem;
+}
+
+.THIS label.slds-form-element__label_custom {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    display: inline-block;
+    color: rgb(62, 62, 60);
+    font-size: .75rem;
+    padding-right: .5rem;
+    padding-top: .25rem;
+    margin-top: 0.25rem;
+    margin-bottom: .125rem;
+}
+
+.THIS lightning-input-field.dynamic-input-filed lightning-helptext {
+    display:none;
+}
+
+.THIS lightning-output-field.dynamic-output-filed lightning-helptext {
+    display:none;
+}
+
+.THIS div.slds-form-element {
+    margin-bottom: 0rem !important;
+}
+
+.THIS lightning-output-field.slds-form-element {
+    margin-bottom: 0rem !important;
+}
+
+.THIS lightning-input-field.slds-form-element,
+.THIS lightning-input.slds-form-element,
+.THIS lightning-textarea.slds-form-element,
+.THIS lightning-combobox.slds-form-element,
+.THIS lightning-grouped-combobox.slds-form-element
+{
+    margin-bottom: 0rem !important;
+}
+
+.THIS lightning-input.slds-form-element {
+    margin-bottom: 0rem !important;
+}
+
+.THIS .slds-input-has-icon_right_custom {
+    right: .5rem !important;
+}
+
+.THIS .input-clear-button {
+    height: 100%;
+    width: 1.5rem;
+    position: absolute;
+    right: 0rem;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.THIS .change-field-icon svg {
+    fill: rgb(236, 235, 234);
+}
+
+.THIS .change-field-icon svg {
+    fill: rgb(236, 235, 234);
+}
+
+.THIS .slds-form-element:hover .change-field-icon svg {
+    fill: rgb(112, 110, 107);
+}
+
+.THIS button.slds-button_icon:hover .change-field-icon svg {
+    fill: rgb(0, 112, 210);
+}
+
+.THIS .form-element-hint-custom {
+    color: #6592b1;
+}
+
+.THIS .slds-form-element__control {
+    padding-left: unset !important;
+}

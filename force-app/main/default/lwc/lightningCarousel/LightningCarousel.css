@@ -1,0 +1,18 @@
+slot[interop-carousel_carousel] {
+    display: contents  !important;   
+    width: 300px  !important;
+    height: 345px  !important;
+}
+
+.slds-carousel__content{
+    height: 200px  !important;
+}
+
+.appImage {
+    position: relative;
+    display: block;
+    max-height: 105px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}

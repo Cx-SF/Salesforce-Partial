@@ -1,0 +1,22 @@
+<apex:page id="EditScreeningCaseFields" standardController="tr_wc1__KYC_Screening_Case__c" standardStylesheets="false">
+    <apex:form >
+        <apex:pageBlock title="Edit record Fields"   >
+            <apex:pageMessages showDetail="false" >
+            </apex:pageMessages>
+            <apex:pageBlockSection columns="1" >
+
+                <apex:inputField value="{!tr_wc1__KYC_Screening_Case__c.tr_wc1__Risk_Resolution__c}"  style="width: 550px" />
+                <apex:inputField value="{!tr_wc1__KYC_Screening_Case__c.tr_wc1__Feedback__c}"  style="width: 546px"  />
+                <apex:inputField value="{!tr_wc1__KYC_Screening_Case__c.Diligence_Completed__c}"  style="width: 30px"  />
+                <apex:inputField value="{!tr_wc1__KYC_Screening_Case__c.Cx_Diligence_Required__c}"  style="width: 30px"  />
+
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!Save}" value="   Save   " style="align:center"/>
+                <apex:commandButton action="{!Cancel}" value="  Cancel  " style="align:center"/>
+            </apex:pageBlockButtons>
+
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

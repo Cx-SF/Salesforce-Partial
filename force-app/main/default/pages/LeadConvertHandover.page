@@ -1,0 +1,2 @@
+<apex:page standardController="Lead" extensions="LeadConvertHandover_Controller" action="{!LeadConvertHandover_Action}">
+</apex:page>

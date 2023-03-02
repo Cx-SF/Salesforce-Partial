@@ -1,0 +1,11 @@
+<design:component>
+ 	<design:attribute name="ListView1" label="ListView 1" description="ListView Of the panel"  datasource="apex://ListViewsList" />
+ 	<design:attribute name="ListView1Style" label="ListView 1 Style" description="ListView Style Of the panel"  datasource="apex://ListViewsStylesList" />
+ 	<design:attribute name="ListView2" label="ListView 2" description="ListView Of the panel"  datasource="apex://ListViewsList" />
+ 	<design:attribute name="ListView2Style" label="ListView 2 Style" description="ListView Style Of the panel"  datasource="apex://ListViewsStylesList" />
+ 	<design:attribute name="ListView3" label="ListView 3" description="ListView Of the panel"  datasource="apex://ListViewsList" />
+ 	<design:attribute name="ListView3Style" label="ListView 3 Style" description="ListView Style Of the panel"  datasource="apex://ListViewsStylesList" />
+ 	<design:attribute name="ListView4" label="ListView 4" description="ListView Of the panel"  datasource="apex://ListViewsList" />
+ 	<design:attribute name="ListView4Style" label="ListView 4 Style" description="ListView Style Of the panel"  datasource="apex://ListViewsStylesList" />
+  
+</design:component>

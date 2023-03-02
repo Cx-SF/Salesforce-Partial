@@ -1,0 +1,27 @@
+.THIS .slds-avatar {
+    border-radius: 50% !important;	
+}
+
+.THIS .user-profile-name {
+    color: white;
+}
+
+.THIS div.user-profile-container {
+    margin-left: 1rem !important;
+    text-align: center;
+}
+
+.THIS .menu-item-icon-container {
+    float: left;
+    padding-right: 0.5rem;
+}
+
+.THIS .user-profile-menu-container {
+    min-width: 150px;
+    right: 0;
+    left: 15%;
+}
+
+.THIS .uiMenuItem>a {
+    text-align: left;
+}

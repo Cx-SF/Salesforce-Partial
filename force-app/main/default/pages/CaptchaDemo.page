@@ -1,0 +1,40 @@
+<apex:page sidebar="false" showHeader="false">
+    <html>
+        <head>
+            <script type="text/javascript">
+            var reCaptchaSiteKey = "{!$Label.GoogleRecaptchaKey}";//'6Lcm6AAaAAAAAGoxtKGq2PoXxyAOrnH7_bePZCaq'; /* '6Lfbe6cUAAAAAPxetpmMiKPpcW2ONHdyD1Hqd9Zd' */
+            var verifyCallback = function(response) {
+                var responseData = document.getElementById("g-recaptcha-response");
+                var message = {
+                    name: 'Unlock',
+                    responseRecaptcha: responseData.value.trim()
+                };
+                parent.postMessage(message, '{!$Site.BaseUrl}');
+            };
+            var onRecaptchaExpired = function(response) {
+                var message = {
+                    name: 'Expired',
+                    responseRecaptcha: null
+                };
+                parent.postMessage(message, '{!$Site.BaseUrl}');
+            };
+            var onloadCallback = function() {
+                grecaptcha.render('captcha', {
+                    'sitekey' : reCaptchaSiteKey,
+                    'callback' : verifyCallback,
+                    'expired-callback': onRecaptchaExpired,
+                });
+            };
+            </script>
+        </head>
+        <body>
+            <form action="?" method="POST">
+                <div id="captcha"></div>
+                <br/>
+                <input type="submit" value="Submit" style="display:none"/>
+            </form>
+            <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async="" defer="">
+            </script>
+        </body>
+    </html>
+</apex:page>

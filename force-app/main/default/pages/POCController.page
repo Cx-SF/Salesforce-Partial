@@ -1,0 +1,119 @@
+<apex:page controller="POCController" showHeader="false" sidebar="false">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"/>
+
+    <script>        
+        function showCorrectDate(value){
+            if(value == 'c'){
+                $('div[id*="outputExpDateId"]').css('display', 'none');
+                $('div[id*="inputExpDateId"]').css('display','inline');                                
+            }else{
+                $('div[id*="inputExpDateId"]').css('display', 'none');
+                $('div[id*="outputExpDateId"]').css('display','inline');                
+            }
+        } 
+    </script>
+    <body>
+    <apex:form >
+       
+    <!-- Buttons -->
+    <!-- action="load default values" -->
+
+        <apex:pageBlock title="" mode="edit" id="details">
+            <script type="text/javascript">
+            function end(){
+                if('{!refresh}' == 'true')
+                {
+                    window.opener.location.href="/{!$CurrentPage.parameters.id}";
+                    window.top.close();
+                }
+            }
+            </script>
+ 
+            <apex:pageMessages id="msgs"/>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Basic POC" action="{!loadDefaultValuesBasic}" rerender="details,msgs" status="DataStatus" immediate="true"/>
+                <apex:commandButton value="Advanced POC" action="{!loadDefaultValuesAdvanced}" rerender="details,msgs" status="DataStatus" immediate="true"/>
+                <!--
+                <apex:commandButton value="Production License" action="{!loadDefaultValuesSingle}" rerender="details,msgs" status="DataStatus" immediate="true"/>
+                -->
+                
+                <!-- Hided - DON'T Delete!
+                <apex:commandButton value="Multi Period Production" action="{!loadDefaultValuesMulti}" rerender="details,msgs" status="DataStatus" immediate="true"/>
+                -->
+                <apex:commandButton value="Save" action="{!DoSave}" rerender="details" oncomplete="end();"/>
+                <apex:commandButton value="Cancel" onclick="window.close();" />
+            </apex:pageBlockButtons>
+         
+            <!--  Fields -->  
+            <apex:pageBlockSection title="License Details" columns="1" >   
+                <apex:actionFunction name="calcExpDate" action="{!calcExpDate}" rerender="details,msgs" status="DateStatus" immediate="true"/>
+                <apex:actionStatus id="DataStatus"  startText="Getting Data..." />
+                
+                <apex:inputField value="{!license.license_Edition__c}" required="true"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel >
+                        <div align="right">
+                            <apex:outputLabel value="{!$ObjectType.License__c.fields.Number_of_Engines__c.label}"/>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:inputField value="{!license.Number_of_Engines__c}" required="true" style="text-align:center" />
+                </apex:pageBlockSectionItem>
+        
+                <apex:inputField value="{!license.Number_of_Admin_users__c}" required="true" style="text-align:center" />
+                <apex:inputField value="{!license.Number_of_Auditors__c}" required="true" style="text-align:center" />
+                <apex:inputField value="{!license.Number_of_Scanners__c}" required="true" style="text-align:center" />
+                <apex:inputField value="{!license.Number_of_Reviewers__c}" required="true" style="text-align:center" />
+                <apex:inputField value="{!license.Maximum_lines_of_code__c}" required="true" style="text-align:center" />
+                <apex:inputField value="{!license.Projects__c}" required="true" style="text-align:center" />
+                      
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Expiration Date"/>
+                    <apex:actionRegion >
+                        <apex:repeat value="{!items2}" var="row">
+                            <apex:outputPanel layout="none" rendered="{!radioButton == row}">
+                                <input type="radio" name="expDate" value="{!row}" checked="checked" onClick="showCorrectDate(this.value); document.getElementById('{!$Component.radioValue}').value = this.value; calculateExpDate(this.value);" /><span>{!itemsAndLabel[row]}</span>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!radioButton != row}">
+                                <input type="radio" name="expDate" value="{!row}" onClick="showCorrectDate(this.value); document.getElementById('{!$Component.radioValue}').value = this.value; calculateExpDate(this.value);"  /><span>{!itemsAndLabel[row]}</span>
+                            </apex:outputPanel>
+                        </apex:repeat>                        
+                        <apex:inputHidden id="radioValue" value="{!radioValue}"/>                        
+
+                        <apex:actionFunction name="calculateExpDate" action="{!calculateExpDate}" rerender="ExpDateIdPanel, msgs" status="DateStatus">
+                            <apex:param name="radioButton" assignTo="{!radioButton}" value="" />
+                        </apex:actionFunction>
+                    </apex:actionRegion>                    
+                </apex:pageBlockSectionItem>
+                
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value=""/>
+                    <apex:outputPanel id="ExpDateIdPanel">
+                        <apex:outputPanel id="inputExpDateId" layout="block">
+                            <apex:inputField value="{!license.Expiration_Date__c}" label=" " rendered="{!radioButton == 'c'}" />
+                        </apex:outputPanel>    
+                        <apex:outputPanel id="outputExpDateId" layout="block">
+                            <apex:outputField value="{!license.Expiration_Date__c}" label=" " rendered="{!radioButton != 'c'}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!license.Languages__c}" required="true"/>
+                <apex:inputField value="{!license.OSA__c}"/>
+                <apex:inputField value="{!license.OSA_Type__c}"/>
+                <!--<apex:inputField value="{!license.AppSec_Coach__c}"/>-->
+                <apex:inputField value="{!license.HID__c}" required="true" style="width:200px;height:25px;"/>
+                <apex:inputTextarea value="{!oppDesc}" label="Instruction to Presale " rows="4" style="width:200px;"/>
+                <apex:inputTextarea value="{!license.Comments__c}" label="Comments for this License" rows="4" style="width:200px;"/>
+                
+            </apex:pageBlockSection>
+            
+             
+            <apex:pageBlockSection title="Add Contact" columns="1">
+                <apex:inputField value="{!Numberoflicenses.Issued_To__c}" label="Contact" required="true"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    </body>
+</apex:page>

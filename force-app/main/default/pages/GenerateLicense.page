@@ -1,0 +1,117 @@
+<apex:page standardController="License__c" extensions="GenerateLicense_Controller" sidebar="false" showHeader="false" cache="false" action="{!doAction}" >
+    
+    <style>
+        body{
+            background-color:rgb(192,192,192);
+        }
+        #central{
+        position:absolute;    
+        top:40%;
+        left: 40%;
+        margin-top: -100px;
+        margin-left: -100px;
+        
+        }
+        
+        .detailList {
+            width:540px !important;
+        }
+        
+        .leftColum{
+            text-align: right;
+            width:100%;
+        }
+        
+        .rightColum{
+            text-align: right;
+        }
+        
+    </style>
+
+    <div id="central">
+
+    <apex:pageBlock > 
+    <apex:form style="width: 300px">
+        <apex:pagemessages ></apex:pagemessages>
+        <apex:actionFunction action="{!Process}" status="processing" name="ProcessJS" reRender="closeWindow"/>
+        <!--
+        <apex:actionFunction action="{!SaveHID}" status="processing" name="SaveHIDJS" reRender="closeWindow">
+            <apex:param assignTo="{!HID}" name="HID" value="" />
+        </apex:actionFunction>
+        -->
+            <span>Please wait. We are processing your request...</span>
+            <apex:actionStatus id="processing">
+                <apex:facet name="start">
+                    <apex:outputPanel layout="inline">                                
+                        <img src="/img/loading.gif"/>
+                    </apex:outputPanel>
+                </apex:facet>    
+                <apex:facet name="stop"></apex:facet>
+            </apex:actionStatus>
+            
+        <apex:outputPanel id="closeWindow" >
+            <apex:outputPanel rendered="{!closeWindow}" >
+                <script type="text/javascript">
+                    
+                    var RefreshMeTimer;
+                    if( "{!response}" == "HID cannot be empty.\n" ){
+                        var hid = '';
+                        
+                        while( hid == '' ){
+                            hid = prompt("{!response}Please insert HID to generate the license or press cancel to return to the opportunity.\nHID:","");
+                        }
+                        if( hid == null ){
+                            window.location.href = '/{!License__c.Opportunity__c}';
+                        }else{
+                            //SaveHIDJS(hid);
+                            
+                            //RefreshMeTimer = setTimeout(function(){location.reload();clearTimeout(RefreshMeTimer);},5000);
+                            window.location.href = '/apex/GenerateLicense?id={!License__c.Id}&hid=' + escape(hid);
+                            //location.reload();
+                        }
+                    }else{
+                        if( "{!response}" != "" ){
+                            alert("{!response}");
+                        }else{
+                            alert("The request was sent successfuly.");
+                        }
+                        window.location.href = '/{!License__c.Opportunity__c}';
+                    }
+                </script>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <script type="text/javascript">
+            if(window.addEventListener){
+              window.addEventListener('load',ProcessJS,false);
+            }else if(window.attachEvent){  
+                window.attachEvent('onload',ProcessJS);
+            }
+            
+            function RefreshParent(){
+                
+                var winMain = window.opener;
+                if (null == winMain){
+                    winMain = window.parent.opener;
+                }
+                winMain.location.href = "/" + "{!License__c.Opportunity__c}";
+                top.location.reload();
+                CloseWindow();
+            }
+            
+            function CloseWindow(){
+                var winMain =window;
+                if (null == winMain.opener){
+                    winMain = window.parent;
+                }
+                if (null == winMain.opener){
+                    winMain = window.parent.parent;
+                }
+                winMain.close();
+            }
+        </script>
+        
+    </apex:form>
+    </apex:pageBlock>
+    </div>
+</apex:page>

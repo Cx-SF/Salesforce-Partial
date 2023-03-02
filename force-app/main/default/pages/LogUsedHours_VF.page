@@ -1,0 +1,208 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">    
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+
+<head>
+  <title>Page Title</title>
+  <apex:stylesheet value="{!URLFOR($Resource.LightningZipNew, 'styles/salesforce-lightning-design-system.css')}" />
+</head>    
+<body>    
+  <div class="slds">    
+      <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped slds-table_col-bordered">
+        <thead>
+          <tr class="slds-text-title_caps">
+            <th>
+              Logged Used hours
+            </th>
+            <th>
+              Info
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              <center>
+                <B>--------------Billable--------------</B>
+              </center>
+            </th>
+            <td>
+               
+            </td>
+          </tr>
+          <tr>
+            <th>
+              ASA
+            </th>
+            <td>
+              ASA hours consumed
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Consulting
+            </th>
+            <td>
+              Discussing customer architecture, planning, AppSec, etc.
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Automation/Integration
+            </th>
+            <td>
+              Helping customers automate or integrate with Checkmarx
+            </td>
+          </tr>
+           <tr>
+            <th>
+              On-boarding
+            </th>
+            <td>
+              Hosting result review / on-boarding sessions with customers
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Query Customization
+            </th>
+            <td>
+              Working on query customizations for customers
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Training
+            </th>
+            <td>
+              Providing training to Customers on engagements
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <center>
+                <B>--------------Non-Billable--------------</B>
+              </center>
+            </th>
+            <td>
+               
+            </td>
+          </tr>
+          <tr>
+            <th>
+              Administrative
+            </th>
+            <td>
+              Completing expense reports, travel planning, HR activities
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Documentation
+            </th>
+            <td>
+              Documenting knowledge @ Confluence
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Employee Development
+            </th>
+            <td>
+              Taking or giving training, learning a new language, taking a course, getting familiar with a technology Checkmarx
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Field Development
+            </th>
+            <td>
+              Working on internal products/code (e.g., dynamic engines, ALG, Jenkins plugin) from the field
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Internal Meetings
+            </th>
+            <td>
+              Quarterly TS meetings, SKOs, weekly/monthly meetings
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Internal Project
+            </th>
+            <td>
+              Working projects assigned by one’s leadership
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Post Engagement
+            </th>
+            <td>
+              Post-engagement follow-up with CSM, Sales, other PS, and the customer
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Preparation
+            </th>
+            <td>
+              Preparing for an engagement
+            </td>
+          </tr>
+           <tr>
+            <th>
+              PTO
+            </th>
+            <td>
+              Paid time off
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Recruiting
+            </th>
+            <td>
+              Interviewing and vetting prospective candidates
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Sales Support
+            </th>
+            <td>
+              Facilitating pre-sales
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Support
+            </th>
+            <td>
+              Working support tickets including submitting bugs
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Travel
+            </th>
+            <td>
+              Frolicking to and from
+            </td>
+          </tr>
+           <tr>
+            <th>
+              Webinars / Partner Training
+            </th>
+            <td>
+              Conducting weekly group webinars or providing partner training
+            </td>
+          </tr>
+        </tbody>
+      </table>  
+  </div>
+</body>
+</html>
+</apex:page>

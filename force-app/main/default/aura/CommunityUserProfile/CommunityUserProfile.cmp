@@ -1,0 +1,27 @@
+<aura:component implements="forceCommunity:profileMenuInterface,lightning:isUrlAddressable" access="global" controller="CommunityUserProfileCtrl">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="user" type="user" default="{'sobjectType' : 'User'}"/>
+    <aura:attribute name="profileMenuItems" type="Object[]"/>
+    
+    <div class="slds-scope">
+        <div class="user-profile-container">
+            <ui:menu class="selfServiceUserProfileMenu">
+                <ui:menuTriggerLink aura:id="trigger" label="{!v.user.Name}" class="selfServiceProfileMenuTrigger user-profile-name">
+                    <lightning:avatar variant="circle" src="{!v.user.SmallPhotoUrl}" alternativeText="{!v.user.Name}"/>
+                </ui:menuTriggerLink>
+                <ui:menuList class="actionMenu user-profile-menu-container" aura:id="actionMenu">
+                    <aura:iteration items="{!v.profileMenuItems}" var="menuItem">
+                        <ui:actionMenuItem label="{!menuItem.itemLabel}" click="{!c.handleClick}">
+                            <div class="menu-item-icon-container">
+                        		<lightning:icon iconName="{!menuItem.itemIcon}" size="x-small" title="" />
+                        	</div>
+                            {!menuItem.itemLabel}
+                        </ui:actionMenuItem>
+                    </aura:iteration>
+                </ui:menuList>
+            </ui:menu>
+    	</div>
+    </div>
+</aura:component>

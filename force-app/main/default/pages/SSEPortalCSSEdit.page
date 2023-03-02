@@ -1,0 +1,41 @@
+<apex:page cache="false" showHeader="false" contentType="text/css">
+    
+    /*Looks like we have ourselves a perfectionist. 
+    Add any custom CSS for your portal in this page.
+    Some sample tags are included below.*/
+    
+    /*If adding styles for communities you may 
+    need to add !important to your CSS atrributes*/
+    
+    /*The body*/
+    body{}
+    
+    /*The container*/
+    #portalwrapper{}
+    
+    /*The body*/
+    #portalbody{
+    }
+    
+    /*The header*/
+    #portalheader{}
+    
+    /*The user section*/
+    #portalheadertop{}
+    
+    /*The logo*/
+    #portalheadermid{}
+    
+    /*The slider*/
+    #portalheaderbot{}
+    
+    /*The footer*/
+    #portalfooter{}
+    
+    /*The sidebar*/
+    #sidebarDiv{}
+    
+    /*The tabbar*/
+    .tabNavigation{}
+
+</apex:page>

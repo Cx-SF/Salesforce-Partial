@@ -1,0 +1,27 @@
+<aura:component 
+    implements="lightning:hasPageReference,lightning:isUrlAddressable,force:lightningQuickAction,lightning:actionOverride,forceCommunity:availableForAllPageTypes" 
+    access="global">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:attribute name="sObjectName" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="recordTypeId" type="String"/>
+    <aura:attribute name="layoutMode" type="String"/>
+    <aura:attribute name="defaultValues" type="Object"/>
+    <aura:attribute name="isOpened" type="boolean" default="false"/>
+    
+    <aura:registerEvent name="DynamicLayoutDialogStarter" type="c:DynamicLayoutDialogStarter"/>
+    <aura:handler event="c:DynamicLayoutDialogStarter" action="{!c.dynamicLayoutDialogStarter}"/>
+    <aura:handler event="c:DynamicLayoutDialogStoper" action="{!c.dynamicLayoutDialogStoper}"/>
+    
+    <aura:if isTrue="{!v.isOpened}">
+        <c:DynamicLayoutDialog sObjectName="{!v.sObjectName}" 
+                               recordTypeId="{!v.recordTypeId}" 
+                               recordId="{!v.recordId}" 
+                               layoutMode="{!v.layoutMode}"
+                               defaultValues="{!v.defaultValues}"
+                               caller="COMMUNITY"/>
+    </aura:if>
+    
+</aura:component>

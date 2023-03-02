@@ -1,0 +1,199 @@
+/*style*/
+/* scrolltable rules */
+/* .titelH { color: #2b292a; font-family: 'Open Sans', sans-serif; font-size: 1.5rem; font-weight: 300; line-height: 40px; margin: 0 0 10px; } */
+
+.navBar{
+    position: sticky;
+    background-color: RGBA(0,0,255,0.14);
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 0px;
+    height: 60px;
+    /*display: flex;*/
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 75px;
+    z-index: 2;
+}
+
+.navBar ul {
+    display: flex;
+    align-items: center;
+}
+
+.navBar ul li {
+    margin: 0.5rem;
+    display: inherit;
+    align-items: center;
+    font-family: sans-serif;
+    font-size: 1rem;
+}
+
+.navBar ul li .navInfut{
+padding-left: 5px;
+padding-bottom: 20px;
+width: 220px;
+text-align: center;
+}
+
+.updateRecordA{
+    background: rgba(10, 177, 255, 0.4);
+    color: white;
+    padding: 0.5rem;
+    margin-left: 100px;
+    white-space: nowrap;
+    text-decoration: none; 
+}
+
+.updateRecordA:hover{
+    background: rgba(10, 177, 255);
+}
+
+.updateRecordDisable{
+    background: gray;
+    color: white;
+    padding: 0.5rem;
+    margin-left: 100px;
+    white-space: nowrap;
+    text-decoration: none; 
+}
+
+.disUpdate{
+    pointer-events: none;
+}
+
+/* .tableS {
+    width: 98.8vw;
+    position: absolute;
+    background-color: RGBA(0,0,255,0.14);
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 0px;
+    height: 500px;
+}
+
+.pageCard .accountTable{
+    text-align: center;
+}
+
+.accountTable { 
+    display: inline-block; 
+    overflow: auto; 
+    height: 400px; 
+    width: fit-content;  
+    border-collapse: collapse;
+
+    font-family: sans-serif;
+    box-shadow: 0 0 20px rgba(224, 215, 211, 0.849);
+    font-size: 1rem;
+ }
+.accHd th{
+    padding-right: 10px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 5px 0;
+    background-color: rgba(10, 177, 255, 0.9);
+    color: white;
+}
+
+.accBody tr:nth-child(even) { 
+    background: rgba(231, 227, 227, 0.4); 
+}
+
+.accBody td{
+    text-align: center;
+    background-color: rgba(139, 142, 143, 0.4);
+}
+
+.accountName{
+    width: 1345px;
+}
+
+.accountType{
+    width: 121px
+}
+
+.accountBilling{
+    width: 200px
+}
+
+.accountTotal{
+    width: 151px;
+}
+
+.accountOwnerName{
+    width: 200px;
+}
+.accountOpportunities{
+    width: 200px
+}
+
+.comboBoxIntd {
+}
+
+.mainCheck{
+    padding-left: 8px;
+}
+
+.tableList {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.9rem 0;
+}
+
+.tableList ul{
+    display: flex;
+    align-items: center;
+}
+
+.tableList ul li a{
+    background: rgba(10, 177, 255, 0.4);
+    color: white;
+    padding: 0.5rem;
+    margin: 0 0.45rem;
+    white-space: nowrap;
+    border-radius: 25%;
+    text-decoration: none;
+}
+
+.tableList ul li a:hover{
+    background: rgba(10, 177, 255);
+}
+
+.comboBoxIntd {
+    display: flex;
+}
+
+.noData {
+    font-size: 1.6rem;
+    color: red;
+    margin: 0 10px;
+}
+
+@media only screen and (max-width: 2000px ) {
+    .accountName{
+        width: 741px;
+    }
+}
+
+@media only screen and (max-width: 1700 ) {
+    .accountName{
+        width: auto;
+    }
+}
+
+@media only screen and (max-width: 1300px ) {
+    .accountTable { 
+        font-size: 0.7rem;
+     }
+
+     .tableS {
+        width: 98.2vw;
+        height: 250px;
+     }
+
+     .accountTable { 
+        height: 200px; 
+     } 
+} */

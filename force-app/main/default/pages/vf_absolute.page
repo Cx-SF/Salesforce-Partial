@@ -1,0 +1,2 @@
+<apex:page controller="vf_absolute" action="{!init}">
+</apex:page>

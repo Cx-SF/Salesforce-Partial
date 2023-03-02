@@ -1,0 +1,182 @@
+<aura:component >
+    
+    <aura:registerEvent name="cmpEvent" type="c:FieldChangedEvent"/>
+    
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="layoutMode" type="String" default="VIEW"/>
+    <aura:attribute name="layoutElementType" type="String" default="LayoutField"/>
+    <aura:attribute name="fieldType" type="String" default="Field"/>
+    <aura:attribute name="sectionId" type="String"/>
+    <aura:attribute name="rowId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="type" type="String"/>
+    <aura:attribute name="useAutosuggest" type="boolean" default="false"/>
+    <aura:attribute name="dummyPicklistRenderFlag" type="boolean" default="true"/>
+    <aura:attribute name="autosuggestOptionsOpened" type="boolean" default="false"/>
+    <aura:attribute name="autosuggestOptions" type="Object[]"/>
+    <aura:attribute name="autosuggestOptionsFiltered" type="Object[]"/>
+    <aura:attribute name="replaceEnabled" type="boolean" default="false"/>
+    <aura:attribute name="label" type="String"/>
+    <aura:attribute name="value" type="Object"/>
+    <aura:attribute name="class" type="String"/>
+    <aura:attribute name="required" type="boolean" default="false"/>
+    <aura:attribute name="disabled" type="boolean" default="false"/>
+    <aura:attribute name="readonly" type="boolean" default="false"/>
+    <aura:attribute name="isRendered" type="boolean" default="true"/>
+    <aura:attribute name="helpText" type="String"/>
+    <aura:attribute name="hasError" type="boolean" default="false"/>
+    <aura:attribute name="errorText" type="String" default=""/>
+    <aura:attribute name="objectIconName" type="String" default=""/>
+    <aura:attribute name="productArea" type="String" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:handler event="c:setDynamicLayoutFieldProperties" action="{!c.setFieldProperties}"/>
+    <aura:handler event="c:isFieldRendered" action="{!c.setRenderProperty}"/>
+    <aura:handler event="c:setFieldRequired" action="{!c.setRequiredProperty}"/>
+    <aura:handler event="c:setFieldDisabled" action="{!c.setDisabledProperty}"/>
+    <aura:handler event="c:handleError" action="{!c.handleError}"/>
+    <aura:handler event="c:setFieldValue" action="{!c.setFieldValue}"/>
+    <aura:handler event="c:setAutosuggestOptions" action="{!c.setAutosuggestOptions}"/>
+        
+	<div class="{!v.class}">
+        <aura:if isTrue="{!v.fieldType == 'Field'}">
+            <aura:if isTrue="{!v.isRendered}">
+                <div class="{!v.hasError? 'slds-form-element slds-has-error': 'slds-form-element'}">
+                    <label class="slds-form-element__label_custom">   
+                        <aura:if isTrue="{!v.layoutMode != 'VIEW'}">
+                            <aura:if isTrue="{!v.required}">
+                                <abbr class="slds-required" title="required">*</abbr>
+                            </aura:if>
+                            </aura:if>
+                        {!v.label}
+                    </label>
+                    
+                    
+                   
+                    
+                    
+                    <aura:if isTrue="{!v.layoutMode != 'VIEW'}">
+                        <aura:if isTrue="{!(v.helpText != null)}">
+                            <lightning:helptext content="{!v.helpText}"/>
+                        </aura:if>
+                    </aura:if>
+                    
+                    <!--  If Create New Case ... Changing Subject Field to Knowledge Search Component  -->
+                     <aura:if isTrue="{!v.helpText == 'KnowledgeSearchComponent'}">
+                         <c:knowledgeSearch style="width:100% !important" onvaluechange="{!c.getValueFromLwc}" productArea="{!v.productArea}"/>
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.helpText != 'KnowledgeSearchComponent'}">
+                         
+                    <aura:if isTrue="{!v.layoutMode != 'VIEW'}">
+						<aura:if isTrue="{!v.readonly}">
+                            <div class="layout-output-field-container_edit">
+                                <aura:if isTrue="{!v.type == 'REFERENCE'}">
+                                	<div class="{! 'reference-field-icon-container' + (v.objectIconName == null ? ' slds-hide' : '') }">
+                            			<lightning:icon iconName="{! 'standard:' + v.objectIconName }" size="x-small" title="" />
+                            		</div>
+                            	</aura:if>
+                            	<lightning:outputField aura:id="dynamicLayoutOutputField" fieldName="{!v.name}" class="dynamic-output-filed"/>
+							</div>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.useAutosuggest}">
+                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                        <!--
+                                        <aura:if isTrue="{!v.value != null}">
+                                        	<div class="input-clear-button" onclick="{!c.clearAutosuggest}">
+                                            	<lightning:icon class="slds-icon slds-input__icon slds-input__icon_right slds-input-has-icon_right_custom" iconName="utility:close" size="xx-small" title="" />
+                                            </div>
+                                            <aura:set attribute="else">
+                                                <lightning:icon class="slds-icon slds-input__icon slds-input__icon_right slds-input-has-icon_right_custom" iconName="utility:search" size="x-small" title="" />
+                                            </aura:set>
+                                        </aura:if>
+                                        -->
+                                        <div class="input-clear-button" title="Show all values" onclick="{!c.autosuggestShowAllValues}">
+                                            <lightning:icon class="slds-icon slds-input__icon slds-input__icon_right slds-input-has-icon_right_custom" iconName="utility:down" size="xx-small" title="" />
+                                        </div>    
+                                        <lightning:input 
+                                        	aura:id="dynamicLayoutInputField" 
+                                            placeholder="--None--" 
+                                            label="label" 
+                                            variant="label-hidden" 
+                                            onchange="{!c.autosuggestOnChange}" 
+                                            onblur="{!c.autosuggestOnBlur}" 
+                                            onfocus="{!c.autosuggestOnFocus}"        
+                                            disabled="{!v.disabled}" 
+                                            class="dynamic-input-filed"
+                                            name="{!v.name}"
+                                            aria-autocomplete="none"
+                                            autocomplete="off"/>
+                                        <!-- Autosuggest options -->
+                                        <div aura:id="autosuggestOptionsRn" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-dropdown_left slds-hide">
+                                            <ul>
+                                                <aura:iteration items="{!v.autosuggestOptionsFiltered}" var="option">
+                                                    <li aura:id="autosuggestOption" 
+                                                        class="slds-media slds-listbox__option slds-media_center slds-media_small slds-listbox__option_plain"
+                                                        data-value="{!option.value}"
+                                                        data-label="{!option.label}"
+                                                        title="{!option.value}" 
+                                                        onclick="{!c.autosuggestOptionSelected}">
+                                                        {!option.label}
+                                                    </li>
+                                                </aura:iteration>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- 
+									We have to add hidden recordEditForm field for standard picklist to avoid form errors for dependent picklists.
+									Also dummyPicklistRenderFlag allows us re-render this dummy picklist when value of autosuggest is changed.
+									So it will re-render picklist with actual value. This is important for dependent picklists.
+									-->
+                                    <aura:if isTrue="{!v.dummyPicklistRenderFlag}">
+                                        <div class="slds-hide">
+                                            <lightning:inputField aura:id="dynamicLayoutInputFieldDummyPicklist" value="{!v.value}" fieldName="{!v.name}" disabled="true"/>
+                                        </div>
+                                    </aura:if>
+                                    <aura:set attribute="else">
+                                    	<lightning:inputField aura:id="dynamicLayoutInputField" fieldName="{!v.name}" onchange="{!c.onchange}" disabled="{!v.disabled}" class="dynamic-input-filed"/>
+                                	</aura:set>
+                                </aura:if> 
+                        	</aura:set>
+                        </aura:if>
+                        <aura:if isTrue="{!v.hasError}">
+                            <div class="slds-form-element__help">{!v.errorText}</div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.useAutosuggest}">
+                            <div class="slds-form-element__help form-element-hint-custom">Start typing into field to filter values or use * to list all values</div>
+                        </aura:if>
+                        <aura:set attribute="else">
+                            <div class="layout-output-field-container_view">
+                                <aura:if isTrue="{!v.type == 'REFERENCE'}">
+                                	<div class="{! 'reference-field-icon-container' + (v.objectIconName == null ? ' slds-hide' : '') }">
+                            			<lightning:icon iconName="{! 'standard:' + v.objectIconName }" size="xx-small" title="" />
+                            		</div>
+                            	</aura:if>
+                            	<lightning:outputField aura:id="dynamicLayoutOutputField" fieldName="{!v.name}" class="dynamic-output-filed"/>
+                                <aura:if isTrue="{!v.replaceEnabled}">
+                                	<div class="change-field-icon-container"> 
+                            			<lightning:button
+                                                variant="base"
+                                                name="{!v.name}"
+                                                class="slds-button slds-button_icon slds-button_icon-small slds-shrink-none slds-button_icon-container" 
+                                                type="button" 
+                                                onclick="{!c.replaceFieldValue}" 
+                                                title="Change Record Type">
+                                        	<lightning:icon class="change-field-icon" iconName="utility:replace" size="x-small" title="Change Record Type"/>
+                                            <span class="slds-assistive-text" >Change Record Type</span>
+                                        </lightning:button>
+                            		</div>
+                            	</aura:if>
+							</div>
+                        </aura:set>
+                    </aura:if>        
+                   
+                    </aura:if>
+                    
+                </div>
+            </aura:if>
+        </aura:if>
+    </div>
+
+</aura:component>

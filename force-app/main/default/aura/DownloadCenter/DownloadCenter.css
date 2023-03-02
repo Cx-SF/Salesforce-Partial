@@ -1,0 +1,313 @@
+@font-face {
+   font-family: 'OpenSans';
+   src: url(/resource/DownloadCenterMaterials/OpenSansFont/OpenSans-Regular.ttf);
+}
+@font-face {
+   font-family: 'OpenSansBold';
+   src: url(/resource/DownloadCenterMaterials/OpenSansFont/OpenSans-Bold.ttf);
+}
+.THIS {
+}
+    .THIS.wrap-all{
+        position: relative;
+        padding-bottom: 12px;
+        min-height: 148px;
+        background-color: #F2F5F7;
+    }
+        .THIS.wrap-all .inner {
+            width: 1248px;
+            padding: 0 24px 0 24px;
+            margin: 0 auto;
+        }
+    .THIS .block-page {
+        color: #d10000;
+        font-size: 1.125rem;
+        font-weight: 600;
+        text-align: center;
+        padding: 32px 0 12px;
+    }
+    .THIS .main-header:before, .THIS .main-header:after{
+        display: table;
+    	content: '';
+    }
+	.THIS .main-header:after{
+        clear: both;
+    }
+    .THIS .main-header .pLeft{
+        float: left;
+        width: 782px;
+        padding-top: 178px;
+    }
+    .THIS .main-header .pRight{
+        float: right;
+        width: 418px;
+    }
+    .THIS .main-header h1{
+        color: #000;
+        font: normal normal normal 30px/21px OpenSansBold;
+        letter-spacing: -0.3px;
+    }
+    .THIS .main-header p{
+        font: normal normal normal 18px/28px OpenSans;
+        letter-spacing: -0.18px;
+        color: #606A70;
+        padding-top: 24px;
+    }
+    .THIS .product-btn-list > li {
+        float: left;
+        width: 588px;
+        display: block;
+        height: 353px;
+        background-color: #fff;
+        position: relative;
+        border-radius: 6px;
+        margin-right: 24px;
+        margin-bottom: 24px;
+    	padding: 30px;
+    }
+        .THIS .product-btn-list > li:nth-child(even){
+            margin-right: 0;
+        }
+        .THIS .product-btn-list li a {
+            color: #000;
+            display: table-cell;
+            vertical-align: middle;
+            text-decoration: none;
+        }
+            .THIS .product-btn-list li a .bottom {
+                position: absolute;
+                bottom: 24px;
+                width: calc(100% - 58px);
+                cursor: default;
+            }
+            .THIS .product-btn-list li a:hover {
+                text-decoration: none;
+            }
+                .THIS .product-btn-list li .top:before, .THIS .product-btn-list li .top:after, .THIS .product-btn-list li .bottom:before, .THIS .product-btn-list li .bottom:after{
+                    display: table;
+    				content: '';
+                }
+                .THIS .product-btn-list li .top:after, .THIS .product-btn-list li .bottom:after{
+                    clear: both;
+                }
+            .THIS .product-btn-list li a .prod-img-container {
+                border-radius: 0.25rem;
+                overflow: hidden;
+    			float: left;
+    			width: 120px;
+            }
+            .THIS .product-btn-list li a .prod-text-container{
+                float: left;
+                max-width: 408px;
+                padding: 8px 0 0 30px;
+            }
+			.THIS .product-btn-list li a .prod-name {
+                text-align: left;
+                font: normal normal normal 20px/27px OpenSansBold;
+            }
+            .THIS .product-btn-list li a .prod-desc {
+                text-align: left;
+    			font: normal normal normal 14px/21px OpenSans;
+                color: #606A70;
+    			min-height: 120px;
+    			padding-bottom: 18px;
+            }
+            .THIS .product-btn-list li .dl-btn-container {
+                position: absolute;
+                width: 48px;
+                height: 48px;
+                bottom: 30px;
+                right: 30px;
+            }
+    .THIS .tag-list:before, .THIS .tag-list:after{
+        display: table;
+        content: '';
+    }
+    .THIS .tag-list:after{
+        clear: both;
+    }
+		.THIS .tag-list li{
+    		background: rgba(96, 106, 112, 0.12);
+    		float: left;
+    		font: normal normal normal 13px/21px OpenSans;
+            letter-spacing: -0.13px;
+            color: #606A70;
+            border-radius: 4px;
+    		margin-bottom: 7px;
+    		margin-right: 12px;
+            position: relative;
+		}
+        .THIS .tag-list li:before, .THIS .tag-list li:after{
+            display: table;
+            content: '';
+        }
+        .THIS .tag-list li:after{
+            clear: both;
+        }
+        .THIS .tag-list li .img{
+            float: left;
+        	padding: 3px 0 0 10px;
+        }
+		.THIS .tag-list li .text{
+            float: left;
+    		padding: 4px 14px 4px 8px;
+    		opacity: 0.7;
+        }
+    .THIS .tab-content .slds-tabs_scoped__content.slds-show {
+        background-color: #fafaf9;
+    }
+        .THIS .tab-content-section {
+            background-color: #fff;
+            padding: 48px 14px 12px;
+            font-size: 16px;
+            line-height: 28px;
+            font-family: 'OpenSans';
+            margin-bottom: 16px;
+        }
+            .THIS .tab-content-section.recommended {
+                border: 2px solid #b3dfad;
+            }
+            .THIS .tab-content-section:hover {
+                box-shadow: 0 0 2px 5px #d7efd3;
+            }
+            .THIS .tab-content-section.plugins {
+                background-color: #D7EFD3;
+            }
+            .THIS .tab-content-section.plugins:hover {
+                box-shadow: none;
+            }
+    .THIS .tab-row {
+        margin-bottom: 12px;
+    }
+        .THIS .tab-row.indi-container {
+            background-color: #fff;
+            border-radius: 6px;
+            padding: 25px 14px;
+        }
+        .THIS .tab-row .label {
+            font-weight: 600;
+        }
+        .THIS .tab-row .slds-button {
+            width: 224px;
+        }
+    .THIS .back-btn {
+        margin-top: 12px;
+    }
+    .THIS .dl-link {
+        display: inline-block;
+        font: normal normal normal 14px/28px OpenSansBold;
+        background: rgba(84, 184, 72, 0.2);
+        color: #54b848;
+        width: 132px;
+        padding: 4px 0px 4px 12px;
+        border-radius: 2px;
+        float: right;
+    }
+        .THIS .dl-link.btn {
+            border: none;
+            width: 132px;
+        }
+            .THIS .dl-link.btn:focus {
+                outline: none;
+                box-shadow: none;
+            }
+        .THIS .dl-link span {
+            margin-right: 24px;
+        }
+        .THIS .dl-link.btn span {
+            margin-right: 16px;
+        }
+        .THIS .dl-link:hover {
+            text-decoration: none;
+        }
+        .THIS .dl-link .on-btn {
+            margin-right: 34px;
+        }
+    .THIS .dl-page-header {
+        padding-bottom: 30px;
+        padding-top: 100px;
+    }
+        .THIS .dl-page-header:before, .THIS .dl-page-header:after {
+            display: table;
+            content: '';
+        }
+        .THIS .dl-page-header:after {
+            clear: both;
+        }
+        .THIS .dl-page-header .prod-img-container {
+            float: left;
+            width: 160px;
+        }
+            .THIS .dl-page-header .prod-text-container{
+                float: left;
+                max-width: 1040px;
+                padding: 8px 0 0 44px;
+            }
+            .THIS .dl-page-header .prod-text-container .prod-name {
+                text-align: left;
+                font: normal normal normal 36px/36px OpenSansBold;
+                letter-spacing: -0.36px;
+            }
+            .THIS .dl-page-header .prod-text-container .prod-desc {
+                text-align: left;
+    		    font: normal normal normal 18px/28px OpenSans;
+                color: #606A70;
+    		    padding-top: 8px;
+                letter-spacing: -0.18px;
+            }
+
+    .THIS .pi-label {
+        font-family: OpenSansBold;
+        display: inline-block;
+        font-size: 22px;
+        min-width: 282px;
+        margin-right: 18px;
+    }
+    .THIS .tab-row > div {
+        /*max-width: 300px;*/
+    }
+    .THIS .sub-ttl {
+        display: block;
+    }
+        .THIS .sub-ttl.grey {
+            color: #697278;
+        }
+        .THIS .sub-ttl.indent {
+            padding-left: 26px;
+        }
+        .THIS .sub-ttl.main {
+            font-weight: 600;
+        }
+    .THIS .page-footer {
+        position: relative;
+        padding-top: 48px;
+        font: normal normal normal 18px/28px OpenSans;
+        letter-spacing: -0.18px;
+    }
+        .THIS .page-footer .txt {
+            border-radius: 6px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 40px 55px 40px 458px;
+            background-color: #D7EFD3;
+        }
+            .THIS .page-footer .txt .b {
+                font: normal normal normal 18px/28px OpenSansBold;
+            }
+        .THIS .page-footer .footer-img {
+            padding-left: 30px;
+            position: relative;
+            z-index: 1;
+        }
+    .THIS .error-box button {
+        border: 1px solid #d10000;
+    }
+.THIS .account-selector-wrap{
+    height: 222px;
+    overflow: visible;
+}
+.THIS .account-selector-container {
+    position: relative;
+}

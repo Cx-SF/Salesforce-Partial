@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION">
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="autosuggestOptions" type="String[]"/>
+</aura:event>

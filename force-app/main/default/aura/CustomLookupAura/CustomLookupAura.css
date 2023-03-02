@@ -1,0 +1,59 @@
+.THIS{
+    width:100%;
+}
+.THIS .fullWidth{
+    width:100%;
+}
+.THIS .slds-listbox__item:hover {
+    background: #d8edff;
+    text-shadow: none;
+    color: #16325c;
+}
+
+.THIS .optionParent1{
+    line-height: 1.5;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8125rem;
+}
+
+.THIS .optionIcon {
+   margin-top: 0.50rem;
+}
+
+.THIS .optionTitle{
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    margin-bottom: 0.125rem;
+}
+
+.THIS .optionline{
+        display: block;
+    margin-top: -0.25rem;
+    color: #54698d;
+}
+.THIS .singleRow{
+    padding-top:5px;
+}
+
+.THIS .hide{
+    display:none;
+}
+.THIS .slds-pill{
+	width: 98.2%;
+    margin: 1px 0 2px 2px;
+}
+.THIS .slds-pill a.slds-pill__action{
+	text-align: left;
+	padding-left: 3px;
+}
+    .THIS .inner-wrap.true, .THIS .inner-wrap.true .slds-pill, .THIS .inner-wrap.true .slds-pill a {
+        background-color: rgb(236, 235, 234);
+        cursor: not-allowed;
+    }
+    .THIS.error-box input.slds-input.slds-combobox__input{
+        border: 1px solid #cf0011;
+        border-radius: 0.25rem;
+    }

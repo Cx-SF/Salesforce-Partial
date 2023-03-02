@@ -1,0 +1,44 @@
+<aura:component extends="c:LCC_GenericLightningComponent" implements="force:lightningQuickAction" controller="LicenseWS">
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="currentLicense" type="License__c"/>
+
+    <force:recordData aura:id="recordHandler" recordId="{!v.recordId}" layoutType="FULL"
+                      fields="Id, Opp_Support_Status__c, HID__c" targetFields="{!v.currentLicense}"/>
+    
+    <aura:attribute name="isHIDnumber1" type="Boolean" default="false"/>
+    <aura:attribute name="isHIDnumber0" type="Boolean" default="false"/>
+
+    <aura:attribute name="condition1" type="Boolean" default="false"/>
+    <aura:attribute name="succeeded" type="Boolean" default="false"/>
+    
+    <aura:attribute name="alert" type="String"/>
+    <!--aura:attribute name="failed" type="Boolean" default="false"/-->
+    
+    <aura:handler name="change" value="{!v.currentLicense.HID__c}" action="{!c.itemsChange}"/>
+	
+    <!--aura:handler name="init" value="{!this}" action="{!c.doInit}"/-->
+
+    <!-- User Interface-->
+	<div class="{!or(v.currentLicense.Opp_Support_Status__c == 'Do NOT Deliver', v.condition1) ? 'slds-redBox' : (v.succeeded ? 'slds-greenBox' : '')}">
+        <!--Hi isHIDnumber1: "{!v.isHIDnumber1}", isHIDnumber0: "{!v.isHIDnumber0}", v.condition1: "{!v.condition1}"-->
+        <div class="slds-scrollable slds-p-around_medium slds-text-heading_small slds-redBox" id="modal-content-id-1">
+            <aura:if isTrue="{!v.currentLicense.Opp_Support_Status__c == 'Do NOT Deliver'}">
+                You cannot generate license as Support Status of Opportunity is "Do NOT Deliver"!
+                <aura:set attribute="else">
+                    <aura:if isTrue= "{!v.condition1}">
+                        HID should start with # and contain only numbers until first appearance of underscore ( _ ).
+                    	<aura:set attribute="else">
+                            <aura:if isTrue= "{!not(v.succeeded)}">
+                                {!v.alert}
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+            <aura:if isTrue= "{!v.succeeded}">
+                License has been created successfully!
+            </aura:if>
+        </div>
+   </div>
+</aura:component>

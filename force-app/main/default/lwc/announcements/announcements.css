@@ -1,0 +1,47 @@
+:host .slds-page-header{
+    background-color:white;
+}
+
+:host .data-list {
+    padding:0 12px 0 0 !important;
+}
+
+:host .adjust-padding {
+    padding:0 0 0 12px;
+}
+
+:host .float-left {
+    float:left;
+}
+
+:host .size {
+    line-height: 1rem;
+    font-size: 1rem;
+}
+
+:host .size:hover {
+    cursor: pointer;
+
+}
+
+:host .title {
+    line-height: 1rem;
+}
+
+.announcements-table{    
+    width: 100%;
+}
+
+.img-size{
+    width: 30px;
+    height:30px;
+}
+
+.AnnouncementText{
+    color: rgb(68, 68, 68);
+    font-family: OpenSans-SemiBold;
+    font-size: 16px;
+    font-weight: 600;
+    height: 22px;
+    width: 262px;
+}

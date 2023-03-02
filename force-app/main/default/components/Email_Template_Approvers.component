@@ -1,0 +1,27 @@
+<apex:component id="Email_Template_Approvers" controller="Email_Approvers_Ctrl" allowDML="true" access="global"   >
+    <style>
+        .outBorder {
+        border:3px outset black;
+        }
+        .inBorder{
+        border-top:0.5px solid   black;
+        border-left:0.5px solid   black;
+        }
+        .HClass {align:left !important;}
+        .Custom11Tab .bPageBlock { border-color:white;}
+        .Custom11Tab .secondaryPalette
+    </style>
+        <apex:attribute name="QuoteIdR"  type="String" description="Junction object name"  assignTo="{!ParentId}" />
+    <apex:dataTable id="documentsTable" value="{!RecordsToDisplay}" var="prod"   styleclass="outBorder" headerClass="HClass" 
+                    style="align:left;font-size:13px;border-collapse: collapse ; border-width:thin;border-style:solid;width:40%;border-color:gray;background-color:#9fd9fc; color: black;" >
+        
+        <apex:column headerValue="Name" styleclass="inBorder"  style="{!if(prod.sbaa__Status__c='Approved','background-color: #3ADF00; color: #000000 ', 'background-color: #FFFFFF; color: #000000 ')}">
+            <apex:outputtext value="{!prod.WDCX_ConsolidatedApprover__c  }"  styleClass="slds-output" /> 
+        </apex:column>
+        <apex:column headerValue="Status" styleclass="inBorder" style="{!if(prod.sbaa__Status__c='Approved','background-color: #3ADF00; color: #000000 ', 'background-color: #FFFFFF; color: #000000 ')}">
+            <apex:outputtext value="{!prod.sbaa__Status__c}"  styleClass="slds-output"   />
+        </apex:column>
+        
+    </apex:dataTable>
+    
+</apex:component>

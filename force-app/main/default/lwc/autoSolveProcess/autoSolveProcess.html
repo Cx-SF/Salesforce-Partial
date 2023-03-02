@@ -1,0 +1,30 @@
+<template>
+    <div class="navBar">
+        <!-- <div>Chase Id</div> -->
+        <lightning-input class="caseInput" data-id="inputId" label="Case Id:"></lightning-input>
+        <hr class="divider">
+        <button class="butt" onclick={submitHandler}>Submit</button>
+    </div>
+    <div class="bodyCard">
+        <div class="tabelCard">
+            <table class="table">
+                <tr class="trThTable">
+                    <th class="thTable">Class Name</th>
+                    <th class="thTable">Status</th>
+                    <!-- <th class="thTable">Progress</th> -->
+                    <th class="thTable">Number Of Error</th>
+                    <th class="thTable">Error</th>
+                </tr>
+                <template for:each={classRunsList} for:item="recourd" for:index="index">
+                    <tr key={recourd.className} class="trThTable">
+                        <td>{recourd.className}</td>
+                        <td>{recourd.Status}</td>
+                        <!-- <td>{recourd.Progress}</td> -->
+                        <td>{recourd.NumberError}</td>
+                        <td>{recourd.Error}</td>
+                    </tr>
+                </template>
+            </table>
+        </div>
+    </div>
+</template>

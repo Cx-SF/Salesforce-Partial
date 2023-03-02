@@ -1,0 +1,104 @@
+.pageCard {
+    width: 75%;
+    position: relative;
+    margin: 0 auto 54px;
+    background-color: RGBA(0,0,255,0.14);
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 0px;
+    max-width: 900px;
+    height: 650px;
+    min-height: 320px;
+    text-align: center;
+}
+
+.pageCard .card_filter{
+    text-align: center;
+}
+
+.iconTitle{
+    display: inline-block;
+    font-size: xx-large;
+    margin-left: 2px;
+}
+
+.box_filter {
+    /*border-style: outset;
+    border-color: RGBA(127,202,255,0.42);
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 0px;*/
+    position: relative;
+    /* width: 65%; */
+    width: 100%;
+    margin: 0 auto 5px;
+    height: 250px;
+    padding: 16px;
+    background-color: RGBA(119,118,118,0.05);
+    text-align: center;
+    padding-bottom: 10px;
+    text-align: left;
+}
+
+.extra {
+    height: 50px;
+    margin-bottom: 100px;
+}
+
+.card_filter {
+    width:45%;
+    display: inline-block;
+}
+
+.comboBox {
+    display:inline-block;
+    width: 240px;
+    padding-left: 2px;
+}
+
+.labelFiled {
+    display:inline-block;
+    /* margin-left: 12px; */
+    width: 140px;
+    text-align: right;
+    padding-right: 2px;
+}
+
+.labelFiled p{
+    display:inline;
+    text-align: right;
+}
+
+.filterButton {
+  margin: 30px auto;
+  appearance: button;
+  background-color: #1899D6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round,sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  line-height: 20px;
+  text-transform: uppercase;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  vertical-align: middle;
+  display: block;
+
+}/* @sldsValidatorIgnore */
+  
+
+.filterButton:hover{
+    background-color: #6AC7F2;
+}
+
+.requiredField {
+    border-color: red;
+    border-style: solid;
+}

@@ -1,0 +1,202 @@
+<template>
+    <lightning-record-view-form record-id={recordId} object-api-name="Quota_Planning__c"></lightning-record-view-form>
+    <template if:true={spinner}>
+        
+        <div class="spinerHolder">
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={isModalOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Note</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p><b>{noteMess}
+                    </b></p>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <template if:true={notComment}>
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Back</button>
+                    </template>
+                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">Continue</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <div class="cardACtion">
+        <template if:true={dataIsSet}>
+        <div class="cardACtionFilter">
+            <h1 class="title">Filter Quota Planning</h1>
+            <div class="card_filter">
+                <lightning-input class="comboBox" label="RSM:" onchange={rsmHandelChange} onblur={rsmHandelBlur} placeholder='Select RSM' value={selectedRsm} disabled={rsmDisabled}></lightning-input>
+                <template if:true={rsmFilter}>
+                    <div class="cardList">
+                        <ul>
+                            <template for:each={filterRsmOptions} for:item="rsm">
+                                <li key={rsm.rsmId} data-id={rsm.rsmId} data-target-id={rsm.name} class="onRow" onmouseup={rowOnMousUpRsm} onmouseover={rowOnMousOver} onmouseleave={rowOnMousLeave}>{rsm.name}</li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+            <div class="card_filter">
+                <lightning-input class="comboBox" label="TBH:" onchange={tbhHandelChange} onblur={tbhHandelBlur} placeholder='Select TBH' value={selectedTbh} disabled={tbhDisabled}></lightning-input>
+                <template if:true={tbhFilter}>
+                    <div class="cardList">
+                        <ul>
+                            <template for:each={filterTbhOptions} for:item="tbh">
+                                <li key={tbh.tbhId} data-id={tbh.tbhId} data-target-id={tbh.name} class="onRow" onmouseup={rowOnMousUpTbh} onmouseover={rowOnMousOver} onmouseleave={rowOnMousLeave}>{tbh.name}</li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+            <div class="card_filter">
+                <lightning-input class="comboBox" label="Position Id:" onchange={positionHandelChange} onblur={positionHandelBlur} placeholder='Select Position Id' value={selectedPosition} disabled={positionDisabled}></lightning-input>
+                <template if:true={postionFilter}>
+                    <div class="cardList">
+                        <ul>
+                            <template for:each={filterPositionOptions} for:item="position">
+                                <li key={position.positionId} data-target-id={position.positionId} class="onRow" onmouseup={rowOnMousUpPosition} onmouseover={rowOnMousOver} onmouseleave={rowOnMousLeave}>{position.positionId}</li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+            <lightning-button variant="brand" label="Submit" onclick={handelSubmit}></lightning-button>
+        </div>
+        </template>
+        <div class="cardTable">
+            <template if:true={tableTemp}>
+                <table class="quotaTable">
+                    <tr class="quotaHd">
+                        <th style="width: 12px;"></th>
+                        <th>Label</th>
+                        <th>Position ID</th>
+                        <th>RSM</th>
+                        <th>TBH</th>
+                        <th>Region</th>
+                        <th>Sub Region</th>
+                    </tr>
+                    <tbody class="quotaBody" style="text-align: left;">
+                        <template for:each={resultTable} for:item="row" for:index="index">
+                            <tr key={row.Id}>
+                                <td><lightning-input 
+                                    style="padding-left: 5px;"
+                                    data-id="tdtable" 
+                                    data-target-id={row.Id}
+                                    type="checkbox" 
+                                    onchange={handelClick}
+                                    ></lightning-input></td>
+                                <td>{row.Name}</td>
+                                <td>{row.RSM_PositionId__c}</td>
+                                <td>{row.rsmName}</td>
+                                <td>{row.tbhName}</td>
+                                <td>{row.Region__c}</td>
+                                <td>{row.Sub_Region__c}</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+        </template>
+        </div>
+        <template if:true={compaerTable}>
+            <div class="compaerTable">
+                <div class="currentQuota">
+                    <div class="titleStyle">Source Record</div>
+                    <div class="secondTitleStyle">Some Details:</div>
+                    <ul>
+                        <template if:false={currentPlanningQuota.TBH__c}>
+                            <li><span class="boldTitle">RSM:</span> {currentPlanningQuota.Name}</li>
+                            <li><span class="boldTitle">TBH:</span></li>
+                        </template>
+                        <template if:false={currentPlanningQuota.RSM__c}>
+                            <li><span class="boldTitle">RSM:</span></li>
+                            <li><span class="boldTitle">TBH:</span> {currentPlanningQuota.Name}</li>
+                        </template>
+                        <li><span class="boldTitle">Position Id:</span> {currentPlanningQuota.RSM_PositionId__c}</li>
+                        <br>
+                        <li><span class="boldTitle">Region:</span> {currentPlanningQuota.Region__c}</li>
+                        <br>
+                        <li><span class="boldTitle">SubRegion:</span> {currentPlanningQuota.Sub_Region__c}</li>
+                        <br>
+                        <li><span class="boldTitle">Target Year:</span> {currentPlanningQuota.Target_Year__c}</li>
+                        <li><span class="boldTitle">Active:</span> {currentPlanningQuota.Active__c}</li>
+                        <li><span class="boldTitle">Role:</span> {currentPlanningQuota.Sales_Planning_Role_del__c}</li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleStyle">NB Targets &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="boldTitle"><button onclick={moveQuotaHandel}>Move Quota</button></span></div>
+                    <ul>
+                        <li><span class="boldTitle">Q1 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ1NBLi" class="inputE" value={currentPlanningQuota.Q1_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ1NB" class="inputNB"></input></li>
+                        <li><span class="boldTitle">Q2 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ2NBLi" class="inputE" value={currentPlanningQuota.Q2_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ2NB" class="inputNB"></input></li>
+                        <li><span class="boldTitle">Q3 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ3NBLi" class="inputE" value={currentPlanningQuota.Q3_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ3NB" class="inputNB"></input></li>
+                        <li><span class="boldTitle">Q4 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ4NBLi" class="inputE" value={currentPlanningQuota.Q4_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ4NB" class="inputNB"></input></li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleStyle">Upsell Targets</div>
+                    <ul>
+                        <li><span class="boldTitle">Q1 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ1UPLi" class="inputE" value={currentPlanningQuota.Q1_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ1Up" class="inputNB"></input></li>
+                        <li><span class="boldTitle">Q2 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ2UPLi" class="inputE" value={currentPlanningQuota.Q2_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ2Up" class="inputNB"></input></li>
+                        <li><span class="boldTitle">Q3 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ3UPLi" class="inputE" value={currentPlanningQuota.Q3_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ3Up" class="inputNB"></input></li>
+                        <li><span class="boldTitle">Q4 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ4UPLi" class="inputE" value={currentPlanningQuota.Q4_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ4Up" class="inputNB"></input></li>
+                    </ul>
+                </div>
+                <div class="newQuota">
+                    <div class="titleStyle">Target Record</div>
+                    <div class="secondTitleStyle">Some Details:</div>
+                    <ul>
+                        <template if:false={quotaSelected.TBH__c}>
+                            <li><span class="boldTitle">RSM:</span> {quotaSelected.Name} </li>
+                            <li><span class="boldTitle">TBH:</span></li>
+                        </template>
+                        <template if:false={quotaSelected.RSM__c}>
+                            <li><span class="boldTitle">RSM:</span></li>
+                            <li><span class="boldTitle">TBH:</span> {quotaSelected.Name}</li>
+                        </template>
+                        <li><span class="boldTitle">Position Id:</span> {quotaSelected.RSM_PositionId__c}</li>
+                        <br>
+                        <li><span class="boldTitle">Region:</span> {quotaSelected.Region__c}</li>
+                        <br>
+                        <li><span class="boldTitle">SubRegion:</span> {quotaSelected.Sub_Region__c}</li>
+                        <br>
+                        <li><span class="boldTitle">Target Year:</span> {quotaSelected.Target_Year__c}</li>
+                        <li><span class="boldTitle">Active:</span> {quotaSelected.Active__c}</li>
+                        <li><span class="boldTitle">Role:</span> {quotaSelected.Sales_Planning_Role_del__c}</li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleStyle">NB Targets<button style="height: 21px; background-color: gray; border: 0"></button></div>
+                    <ul>
+                        <li><span class="boldTitle">Q1 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ1NB" class="inputTNB" value={quotaSelected.Q1_NB_Target_ACV__c} disabled></input></li>
+                        <li><span class="boldTitle">Q2 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ2NB" class="inputTNB" value={quotaSelected.Q2_NB_Target_ACV__c} disabled></input></li>
+                        <li><span class="boldTitle">Q3 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ3NB" class="inputTNB" value={quotaSelected.Q3_NB_Target_ACV__c} disabled></input></li>
+                        <li><span class="boldTitle">Q4 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ4NB" class="inputTNB" value={quotaSelected.Q4_NB_Target_ACV__c} disabled></input></li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleStyle">Upsell Targets</div>
+                    <ul>
+                        <li><span class="boldTitle">Q1 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ1Up" class="inputTNB" value={quotaSelected.Q1_Upsell_Target_ACV__c} disabled></input></li>
+                        <li><span class="boldTitle">Q2 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ2Up" class="inputTNB" value={quotaSelected.Q2_Upsell_Target_ACV__c} disabled></input></li>
+                        <li><span class="boldTitle">Q3 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ3Up" class="inputTNB" value={quotaSelected.Q3_Upsell_Target_ACV__c} disabled></input></li>
+                        <li><span class="boldTitle">Q4 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ4Up" class="inputTNB" value={quotaSelected.Q4_Upsell_Target_ACV__c} disabled></input></li>
+                    </ul>
+                </div>
+            </div>
+            <input class="inputCommentTitle" value="Move Targets Comments:" disabled></input><input class="inputComment" data-id="comment" onkeyup={commentOnChange}></input>
+            <lightning-button data-id="saveButt" variant="brand" label="Save" onclick={handelSave} disabled="true"></lightning-button>
+        </template>
+    </div>
+</template>

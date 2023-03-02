@@ -1,0 +1,36 @@
+<aura:component >
+    
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="layoutElementType" type="String" default="LayoutSection"/>
+    <aura:attribute name="sectionId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="childComponents" type="Aura.Component[]"/>
+    <aura:attribute name="sectionTitle" type="String"/>
+    <aura:attribute name="isExpandable" type="boolean" default="false"/>
+    <aura:attribute name="isRendered" type="boolean" default="true"/>
+    <aura:attribute name="isExpanded" type="boolean" default="true"/>
+    
+    <aura:handler event="c:isFieldRendered" action="{!c.setRenderProperty}"/>
+    
+    <aura:if isTrue="{!v.isRendered}">
+        <div class="{! 'slds-section slds-section-custom' + (v.isExpanded ? ' slds-is-open' : '')}">
+            <h3 class="slds-section__title slds-theme_shade">
+                <aura:if isTrue="{!v.isExpandable}">
+                	<button aria-controls="{!v.sectionId}" aria-expanded="{!v.isExpanded}" class="slds-button slds-section__title-action" onclick="{!c.changeSectionState}">
+                    	<lightning:icon class="slds-section__title-action-icon slds-button__icon slds-button__icon_left" iconName="utility:switch" size="x-small" title="" />
+                    	<span class="slds-truncate" title="{!v.sectionTitle}">{!v.sectionTitle}</span>
+                    </button>
+                	<aura:set attribute="else">
+                        <span class="slds-truncate slds-p-horizontal_small" title="{!v.sectionTitle}">{!v.sectionTitle}</span>
+                    </aura:set>
+                </aura:if>  
+            </h3>
+            <div aria-hidden="{!!v.isExpanded}" class="slds-section__content section__content" id="{!v.sectionId}">
+                <div class="slds-form slds-form_stacked slds-is-editing" role="list">
+                    {!v.childComponents}
+                </div>
+            </div>
+        </div>
+    </aura:if>
+    
+</aura:component>

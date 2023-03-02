@@ -1,0 +1,159 @@
+<apex:page standardController="SBQQ__Quote__c" extensions="Sync_to_Alternate_Cntl" tabstyle="lead" id="leadPage" lightningstylesheets="true">
+    <script type="text/javascript">
+    function setOption (result)
+    {   //alert("I am an alert box! " + result);
+        SelectS(result);}
+     function GetIndex(index){
+    //Here i am concatinating index because when you will see list item using inspect element tab you will see index 0,1,2(array index) before id.
+      var firstname1 = document.getElementById('pg:form:pageBlockContact:'+index+':Name}').value;
+      alert('Here is your first name taa daaa '+firstname1 );
+ }
+    </script>  
+    <apex:form id="form" >
+        <style>
+            .colHeadr {text-align:center;} 
+            .pbSubheader{
+            color: black !important
+            }
+            
+        </style>
+        <br/><br/><br/>
+        <apex:pageblock title="Sync to Alternate" id="pageBlock">
+            <apex:messages style="color:red"/>
+            <apex:pageBlockSection columns="1">
+                <apex:outputLabel value="Please choose an existing upsell opportunity as an alternate opportunity this quote is to be synced-to" style="font-size: 150%;"></apex:outputLabel>
+                <!---apex:selectList size="1" value="{!optionsO}"  style="font-size: 150%;">
+                    <apex:selectOptions value="{!optionsOL}"/>
+                </apex:selectList---> 
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <apex:pageblock id="allcons" title="Upsell Opportunities">
+
+               <apex:pageblocktable id="allconsl" value="{!AllOpp}" var="allcon">
+
+                    <apex:column headervalue="Set as Primary">                   
+
+                       <apex:actionsupport action="{!selectcon}" event="onclick" rerender="consel,allcons"> 
+
+                        <input type="radio" />                   
+
+                            <apex:param name="conid" value="{!allcon.Id}">
+
+                        </apex:param></apex:actionsupport>                           
+
+                    </apex:column>   
+
+                    <apex:column headervalue="Name">
+
+                        <apex:outputfield value="{!allcon.Name}">
+
+                    </apex:outputfield></apex:column>
+
+                    <apex:column headervalue="Amount">
+
+                           <apex:outputText value="{0, number, 000,000.00}">
+                      <apex:param value="{!allcon.Amount}" />
+                         </apex:outputText>
+                      </apex:column> 
+
+                    <apex:column headervalue="Stage Name">
+
+                        <apex:outputfield value="{!allcon.StageName}">
+
+                    </apex:outputfield></apex:column> 
+
+                    <apex:column headervalue="Created By">
+
+                        <apex:outputfield value="{!allcon.CreatedBy.NAME}">
+
+                    </apex:outputfield></apex:column> 
+
+                </apex:pageblocktable>
+
+</apex:pageblock>
+
+<apex:pageblock id="consel" title="Selected Opportunity">
+
+            <apex:pageblocktable id="allcons" value="{!selectedContact}" var="selcon">                      
+
+                    <apex:column headervalue="Name">
+
+                        <apex:outputfield value="{!selcon.Name}">
+
+                    </apex:outputfield></apex:column>
+                
+
+                     <apex:column headervalue="Amount">
+
+                           <apex:outputText value="{0, number, 000,000.00}">
+                      <apex:param value="{!selcon.Amount}" />
+                         </apex:outputText>
+                      </apex:column> 
+                 <apex:column headervalue="Stage Name">
+
+                        <apex:outputfield value="{!selcon.StageName}">
+
+                    </apex:outputfield></apex:column> 
+
+                    <apex:column headervalue="Created By">
+
+                        <apex:outputfield value="{!selcon.CreatedBy.NAME}">
+
+                    </apex:outputfield></apex:column> 
+
+                </apex:pageblocktable>
+
+</apex:pageblock>        
+                
+                
+                
+                
+                
+                
+                 <br/>
+                 <br/>
+                
+            </apex:pageBlockSection>
+            <br/>
+
+<!---apex:pageBlock id="pageBlockContact"> 
+<apex:pageBlockSection columns="1"> 
+       <apex:variable var="index" value="{!0}" />
+    <apex:pageBlockTable value="{!AllOpp}" var="item" rules="rows" id="example" onRowClick="GetIndex({!index});" > 
+<apex:column value="{!item.Name}" id="Name" styleclass="name" /> 
+        <apex:variable var="index" value="{!index + 1}" /> 
+</apex:pageBlockTable> 
+</apex:pageBlockSection>
+</apex:pageBlock>        
+            
+         
+<apex:pageBlockTable value="{!AllOpp}" var="item" rules="rows" id="example">
+ <apex:column headerValue="Claims Name">
+<apex:inputField value="{!item.Name}"   id="name"/>
+</apex:column>
+</apex:pageBlockTable>
+        <!---apex:selectRadio value="{!optionsO}">
+            <apex:selectOptions value="{!optionsOL}"/>
+            </apex:selectRadio---><p/>
+            <apex:outputLabel value="Please Note: 
+Sync to an alternate opportunity deletes current quote's opportunity. 
+Sync to an alternate opportunity permanently delete the alternate opportunity's current products.
+Continue?" style="font-size: 130%;"></apex:outputLabel>
+            <div align="right"  >
+            <apex:pageBlockButtons location="bottom"  id="saveBtn"  style="align=right"  >
+                <apex:commandButton value="Approve" action="{!saveIt}" status="status"  style="background:LightBlue;width:70px;" /><!--rendered="{!optionsO != ''}"-->
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <apex:commandButton value="Cancel" action="{!Cancel}" status="status" style="width:70px;" /><!--rendered="{!optionsO != ''}"-->
+
+                </apex:pageBlockButtons>
+            </div>    
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

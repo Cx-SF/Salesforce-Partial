@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="Label" label="Display Label"/>
+    <design:attribute name="apiName" label="Field API Name"/>
+</design:component>

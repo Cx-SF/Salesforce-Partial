@@ -1,0 +1,201 @@
+<aura:component controller="TileController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+		<!-- DESIGN ATTRIBUTES -->
+		<aura:attribute name="Title" type = "String" description="Title for the panel" />
+<!-- 		<aura:attribute name="ObjectName" type = "String" description="Object Of the panel" /> -->
+		<aura:attribute name="ListView1" type = "String" description="Object Of the panel" />
+		<aura:attribute name="ListView2" type = "String" description="ListView Of the panel" />
+		<aura:attribute name="ListView3" type = "String" description="ListView Of the panel" />
+		<aura:attribute name="ListView4" type = "String" description="ListView Of the panel" />
+
+		<aura:attribute name="ListView1Id" type="String"/>
+		<aura:attribute name="ListView1Object" type="String"/>
+		<aura:attribute name="ListView1ObjectName" type="String"/>
+		<aura:attribute name="ListView1Style" type="String"/>
+		<aura:attribute name="ListView1Name" type="String"/>
+		<aura:attribute name="ListView1Count" type="String"/>
+
+		<aura:attribute name="ListView2Id" type="String"/>
+		<aura:attribute name="ListView2Object" type="String"/>
+		<aura:attribute name="ListView2ObjectName" type="String"/>
+		<aura:attribute name="ListView2Style" type="String"/>
+		<aura:attribute name="ListView2Name" type="String"/>
+		<aura:attribute name="ListView2Count" type="String"/>
+
+		<aura:attribute name="ListView3Id" type="String"/>
+		<aura:attribute name="ListView3Object" type="String"/>
+		<aura:attribute name="ListView3ObjectName" type="String"/>
+		<aura:attribute name="ListView3Style" type="String"/>
+		<aura:attribute name="ListView3Name" type="String"/>
+		<aura:attribute name="ListView3Count" type="String"/>
+
+		<aura:attribute name="ListView4Id" type="String"/>
+		<aura:attribute name="ListView4Object" type="String"/>
+		<aura:attribute name="ListView4ObjectName" type="String"/>
+		<aura:attribute name="ListView4Style" type="String"/>
+		<aura:attribute name="ListView4Name" type="String"/>
+		<aura:attribute name="ListView4Count" type="String"/>
+
+		<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+		<div class="c-container">
+
+			<lightning:layout pullToBoundary="medium"  multipleRows="true">
+				<aura:if isTrue="{!and(v.ListView1Id!=null, v.ListView1Id!='') }">
+					<lightning:layoutItem size="3" flexibility="auto" padding="around-small">
+						<lightning:card  class="{!'CustomCardCss '+ v.ListView1Style}">
+						    <div class="c-container">
+						        <lightning:layout horizontalAlign="center" verticalAlign="center" pullToBoundary="medium"
+						                          multipleRows="true">
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<p style="font-size: 4.25rem; color: White; font-weight: 100;">
+						                	  {!v.ListView1Count}
+						                	        
+						                	</p>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div style="margin-top: -29px;margin-right: 8px;margin-left: 8px;">
+						                    <div class="slds-hide" aura:id="dropDown">
+						                    </div>
+						                    <div aura:id="title">
+						                        <div class="flex-container">
+						                            <div class="Title slds-truncate lineHeigth">
+						                            	<p class="listName" style="word-wrap: break-word; text-align: center; font-size:1.4em; font-weight:600;">
+							                            	<ui:outputText value="{!v.ListView1Name}" title="{!v.ListView1Name}"/>
+						                            	</p>
+						                            </div>
+						                        </div>
+						                    </div>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<button onclick="{!c.navigateToList}" id = "{!v.ListView1Id}" name="{!v.ListView1Object}" class="slds-btn slds-button slds-button_brand">View Details</button>
+					                </div>
+						            </lightning:layoutItem>
+						        </lightning:layout>
+							    </div>
+						</lightning:card>
+					</lightning:layoutItem>
+				</aura:if>
+				<aura:if isTrue="{!and(v.ListView2Id!=null, v.ListView2Id!='') }">
+					<lightning:layoutItem size="3" flexibility="auto" padding="around-small">
+						<lightning:card class="{!'CustomCardCss '+ v.ListView2Style}">
+						    <div class="c-container">
+						        <lightning:layout horizontalAlign="center" verticalAlign="center" pullToBoundary="medium"
+						                          multipleRows="true">
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<p style="font-size: 4.25rem; color: White; font-weight: 100;">
+						                	   {!v.ListView2Count}
+						                	</p>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div style="margin-top: -29px;margin-right: 8px;margin-left: 8px;">
+						                    <div class="slds-hide" aura:id="dropDown">
+						                    </div>
+						                    <div aura:id="title">
+						                        <div class="flex-container">
+						                            <div class="Title slds-truncate lineHeigth">
+						                            	<p class="listName" style="word-wrap: break-word; text-align: center; font-size:1.4em; font-weight:600;">
+							                             	<ui:outputText value="{!v.ListView2Name}" title="{!v.ListView2Name}"/>
+						                            	</p>
+       
+						                            </div>
+						                        </div>
+						                    </div>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<button onclick="{!c.navigateToList}" id = "{!v.ListView2Id}" name="{!v.ListView2Object}" class= "slds-btn slds-button slds-button_brand">View Details</button>
+					                </div>
+						            </lightning:layoutItem>
+						        </lightning:layout>
+						    </div>
+						</lightning:card>
+					</lightning:layoutItem>
+				</aura:if>	
+				<aura:if isTrue="{!and(v.ListView3Id!=null, v.ListView3Id!='') }">
+					<lightning:layoutItem size="3" flexibility="auto" padding="around-small">
+						<lightning:card class="{!'CustomCardCss '+ v.ListView3Style}">
+						    <div class="c-container">
+						        <lightning:layout horizontalAlign="center" verticalAlign="center" pullToBoundary="medium"
+						                          multipleRows="true">
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<p style="font-size: 4.25rem; color: White; font-weight: 100;">
+						                	   {!v.ListView3Count}
+						                	</p>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div style="margin-top: -29px;margin-right: 8px;margin-left: 8px;">
+						                    <div class="slds-hide" aura:id="dropDown">
+						                    </div>
+						                    <div aura:id="title">
+						                        <div class="flex-container">
+						                            <div class="Title slds-truncate lineHeigth">
+						                            	<p class="listName" style="word-wrap: break-word; text-align: center; font-size:1.4em; font-weight:600;">
+							                             	<ui:outputText value="{!v.ListView3Name}" title="{!v.ListView3Name}"/>
+						                            	</p>
+      
+						                            </div>
+						                        </div>
+						                    </div>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<button onclick="{!c.navigateToList}" id = "{!v.ListView3Id}" name="{!v.ListView3Object}" class= "slds-btn slds-button slds-button_brand">View Details</button>
+					                </div>
+						            </lightning:layoutItem>
+						        </lightning:layout>
+						    </div>
+						</lightning:card>
+					</lightning:layoutItem>
+				</aura:if>	
+				<aura:if isTrue="{!and(v.ListView4Id != null, v.ListView4Id != '')}">
+					<lightning:layoutItem size="3" flexibility="auto" padding="around-small">
+						<lightning:card class="{!'CustomCardCss '+ v.ListView4Style}">
+						    <div class="c-container">
+						        <lightning:layout horizontalAlign="center" verticalAlign="center" pullToBoundary="medium"
+						                          multipleRows="true">
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<p style="font-size: 4.25rem; color: White; font-weight: 100;">
+						                	   {!v.ListView4Count}
+						                	</p>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div style="margin-top: -29px;margin-right: 8px;margin-left: 8px;">
+						                    <div class="slds-hide" aura:id="dropDown">
+						                    </div>
+						                    <div aura:id="title">
+						                        <div class="flex-container">
+						                            <div class="Title slds-truncate lineHeigth">
+						                            	<p class="listName" style="word-wrap: break-word; text-align: center; font-size:1.4em; font-weight:600;">
+							                            	<ui:outputText value="{!v.ListView4Name}" title="{!v.ListView4Name}"/>
+						                            	</p>
+       
+						                            </div>
+						                        </div>
+						                    </div>
+						                </div>
+						            </lightning:layoutItem>
+						            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+						                <div class="slds-align_absolute-center">
+						                	<button onclick="{!c.navigateToList}" id = "{!v.ListView4Id}" name="{!v.ListView4Object}" class= "slds-btn slds-button slds-button_brand">View Details</button>
+					                </div>
+						            </lightning:layoutItem>
+						        </lightning:layout>
+						    </div>
+						</lightning:card>
+					</lightning:layoutItem>
+				</aura:if>	
+			</lightning:layout>
+		</div>
+</aura:component>

@@ -1,0 +1,110 @@
+<template>
+    <div class={componentClass}>
+        <span class="title"  if:true={displayHeader}><h1><b>Knowledge Search Component</b><span class="size"></span></h1></span>
+        <div id="container">
+            <lightning-layout if:true={displayCategory}>    
+                    <!-- Record Types -->
+                    <lightning-layout-item padding="around-small" size="6" >
+                        <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="record-types">Category</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                <select class="slds-select" id="record-types" onchange={handleCible}>
+                                        <option value="All" selected>All</option>
+                                    <template for:each={rtList} for:item="r" for:index='index'>
+                                            <option key={r} value={r}>{r}</option>    
+                                    </template>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+
+                <lightning-layout if:true={displayProductArea}>    
+                    <!-- Product area -->
+                    <lightning-layout-item padding="around-small" size="6" >
+                        <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="product-area">Product area</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                <select class="slds-select" id="product-area" onchange={handleCiblePA}>
+                                        <option value="--None--" selected>--None--</option>
+                                    <template for:each={paList} for:item="pa" for:index='index'>
+                                            <option key={pa} value={pa}>{pa}</option>    
+                                    </template>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+                
+                <lightning-layout  >
+                    <div class='homePageLinkInHeader'></div>
+                <lightning-layout-item padding="around-small" size="12" >
+                <div   class="slds-form-element">
+                                          
+                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                      <div if:true={IfToShowIcon}  class="searchIconDivClass">
+                        <lightning-icon if:true={IfToShowIcon}  size=" x-small" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default searchIconClass" icon-name="utility:search"></lightning-icon>                                               
+                      </div>                   
+                    <lightning-input  class="slds-has-focus customSearchInput" label="Hi, how can we help ?"  onchange={changeHandler} onfocus={changeHandlerOnFocus} onblur={changeHandlerOnBlur}></lightning-input> 
+                     <div class="cSearchPublisher"></div>                                                         
+                  <!--
+                        <lightning-icon  onclick={deleteInput} style="z-index:1;position: absolute;top: 35px;" size=" x-small" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default deleteInputIcon"  icon-name="utility:close"></lightning-icon> 
+                    -->
+                   
+                    <template if:true={articleList} class="slds-modal__content">
+                        <div id="listbox-id-1"
+                            class={boxClass}
+                            role="listbox" >
+                            <ul class="slds-listbox slds-listbox_vertical customArticleList" role="presentation">
+                                <template for:each={articleList} for:item="a">
+                                    <li key={a.data.Id}  data-id={a.data.Id} role="presentation customArticle">
+                                        <span class="slds-lookup__item-action slds-lookup__item-action--label"
+                                            role="option">
+                                            <div class="highlights-icon-container slds-avatar slds-m-right_small icon"
+                                            style="background-color: rgb(242, 207, 91);width:40px;height:40px">
+                                           <!-- <img src="https://checkmarx--gilsteam.my.salesforce.com/img/icon/t4v35/custom/custom55_120.png"  > --> 
+                                               <img src="https://support.checkmarx.com/img/icon/t4v35/custom/custom55_120.png"   >
+                                            
+                                           </div>
+                                      
+                                            <a key={a.data.Id} data-toto={a.data.Id} class="slds-truncate" href={a.url} onclick={redirectToArticle} style="width:85%"><p key={a.data.Title}>{a.data.Title}</p></a>                                        
+                                        </span>
+                                    </li>
+                                </template>                           
+                            </ul>
+                        </div>
+                    </template>
+
+                        </div>
+                </div>
+                </lightning-layout-item>                           
+            </lightning-layout>
+
+            <!--
+            <template if:false={articleList} >
+                <lightning-layout>
+                   <lightning-layout-item padding="around-small" class="adjust-padding NoArticleFound">
+                        No article(s) found
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            -->
+            <lightning-layout style="display:none">
+                <lightning-layout-item class="data-list">
+                <div class="data-list adjust-padding">
+                    <template if:true={articleList} >
+                        <template for:each={articleList} for:item="a">
+                            <a key={a.data.Id} data-toto={a.data.Id} href={a.url} onclick={redirectToArticle} ><p key={a.data.Title}>{a.data.Title}</p></a>
+                        </template>
+                    </template>
+                    <template if:false={articleList}><i>No articles found.</i></template>
+                </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </div>
+    </template>

@@ -1,0 +1,30 @@
+<apex:page controller="IdeaHistoryTrackingController">
+    <apex:form >
+    
+        <apex:pageBlock title="Feture Request History" id="PB">
+        	<apex:pageBlockButtons >
+        		<apex:commandButton action="{!cancel}" value="Back To Feature Request" id="CancelButton"/>
+                <apex:commandButton value="FirstPage" action="{!FirstPage}" rerender="pgTable,PB"
+                                    status="status" disabled="{!DisablePrevious}" />
+                <apex:commandButton value="Previous" action="{!Previous}" rerender="pgTable,PB"
+                                    status="status" disabled="{!DisablePrevious}" />
+                <apex:commandButton value="Next" action="{!Next}" reRender="pgTable,PB"
+                                    status="status" disabled="{!DisableNext}" />
+                <apex:actionStatus id="status" startText="Please Wait..."/>
+			</apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!records}" var="rec" id="pgTable">
+             
+                   <apex:column headerValue="Modified By"> <apex:outputField value="{!rec.CreatedBy.Name}"/></apex:column>
+                   <apex:column headerValue="Date Modified"> <apex:outputField value="{!rec.CreatedDate}"/></apex:column>
+                   <apex:column headerValue="Assigned PM Previous"> <apex:outputField value="{!rec.Assigned_PM_Previous__c}"/></apex:column>
+                   <apex:column headerValue="Assigned PM New"> <apex:outputField value="{!rec.Assigned_PM_New__c}"/></apex:column>
+                   <apex:column headerValue="Planned Version Previous"> <apex:outputField value="{!rec.Planned_version_Previous__c}"/></apex:column>
+                   <apex:column headerValue="Planned Version New"> <apex:outputField value="{!rec.Planned_version_New__c}"/></apex:column>
+                   <apex:column headerValue="Status Previous"> <apex:outputField value="{!rec.status_Previous__c}"/></apex:column>
+                   <apex:column headerValue="Status New"> <apex:outputField value="{!rec.status_New__c}"/></apex:column>
+                   
+           </apex:pageBlockTable>
+        </apex:pageBlock>
+         
+    </apex:form>
+</apex:page>

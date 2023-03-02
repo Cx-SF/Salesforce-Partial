@@ -1,0 +1,21 @@
+<apex:page id="CommunityUsersManagementAccount"  standardController="Account">
+
+    <apex:includeScript value="/lightning/lightning.out.js"/>
+    <script>
+        $Lightning.use("c:CommunityUsersManagement2VF", function () {
+            $Lightning.createComponent(
+                "c:CommunityUsersManagement",
+                    {
+                        recordId : '{!Account.Id}',
+                        avoidToasts : true
+                    },
+                "communityUsers",
+                function (cmp) {
+                    //console.log("Component created!");
+                    //console.log(cmp);
+                });
+        });
+    </script>
+
+    <div id="communityUsers"></div>
+</apex:page>

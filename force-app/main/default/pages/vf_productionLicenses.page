@@ -1,0 +1,147 @@
+<apex:page controller="vf_productionLicenses" showHeader="false" sidebar="false">
+    <body>
+        <apex:form id="frmError" rendered="{!error}">
+            <apex:pageBlock >
+                <apex:pageBlockButtons location="top">
+                    <apex:commandButton value="Close" onclick="window.close();" />
+                </apex:pageBlockButtons>
+                
+                <apex:outputText value="New licenses can not be created while the Opportunity is closed or during an approval process" />
+            </apex:pageBlock>
+        </apex:form>
+            
+        <apex:form id="frm" rendered="{!Not(error)}">
+            
+            <script type="text/javascript">
+                function endAndApproval()
+                {
+                    if('{!refresh}' == 'true')
+                    {
+                        window.opener.location.href = '{!ApprovalProcessURL}' ;
+                        window.top.close();
+                    }
+                }
+            </script>
+            
+            <apex:pageMessages id="msgs"/>
+            
+            <apex:pageBlock title="License Type" rendered="{!(firstPhase == 0)}" >
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="Next" action="{!DoNext}" reRender="frm" oncomplete="endAndApproval();"/>
+                    <apex:commandButton value="Cancel" onclick="window.close();" />
+                </apex:pageBlockButtons>
+                
+                <apex:selectRadio value="{!selectedLicense}" >
+                    <apex:selectOptions value="{!licenseOption}" />
+                </apex:selectRadio> 
+            </apex:pageBlock>
+ 
+            <apex:pageBlock title="" mode="edit" id="serviceDetails" rendered="{!(firstPhase == 3)}" >
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="Submit" action="{!submitService}" reRender="frm" oncomplete="endAndApproval();"/>
+                    <apex:commandButton value="Cancel" onclick="window.close();" />
+                </apex:pageBlockButtons>
+                <apex:outputText value="You are about to submit an Opportunity with no licenses " />
+               <!-- <apex:inputField value="{!license.Expiration_Date__c}" required="true" style="text-align:center"/> --><!-- rendered="{!selectedLicense == 'Term License'}"  -->
+            </apex:pageBlock>
+            
+            <apex:pageBlock title="" mode="edit" id="details" rendered="{!(firstPhase == 1) || (firstPhase == 2)}" >               
+                <!-- <apex:pageBlockButtons >  -->
+                  <!--  <apex:commandButton value="Basic" action="{!loadDefaultValuesBasic}" rerender="details,msgs" status="DataStatus" immediate="true"/> -->
+                  <!--  <apex:commandButton value="Advanced" action="{!loadDefaultValuesAdvanced}" rerender="details,msgs" status="DataStatus" immediate="true"/> -->
+                  <apex:commandButton value="CX – Entry" action="{!loadDefaultValuesCXEntry}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="CX - Starter" action="{!loadDefaultValuesCXStarter}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="CX – Advanced" action="{!loadDefaultValuesCXAdvanced}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="CX - Comprehensive" action="{!loadDefaultValuesCXComprehensive}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="CX – Single" action="{!loadDefaultValuesCXSingle}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="CX – Server" action="{!loadDefaultValuesCXServer}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="2 Weeks Scan" action="{!loadDefaultValues2WeeksScan}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="10X2 Week Scan" action="{!loadDefaultValues10X2WeekScan}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="Scan-All-You-Can Single" action="{!loadDefaultValuesScanAllYouCanSingle}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  <apex:commandButton value="Scan-All-You-Can Multi" action="{!loadDefaultValuesScanAllYouCanMulti}" rerender="details,msgs" status="DataStatus" immediate="true"/> 
+                  
+            <!--   </apex:pageBlockButtons> -->
+              
+              <apex:pageBlockButtons >
+                    <apex:commandButton value="Save&Submit" action="{!DoSave}" rerender="frm" oncomplete="endAndApproval();"/>
+                    <apex:commandButton value="Cancel" onclick="window.close();" />
+                </apex:pageBlockButtons>
+ 
+<!--------------------------------LicenseDetailsNotVolume  -------------------------------> 
+                <apex:pageBlockSection title="License Details" id="LicenseDetailsNotVolume" columns="1" rendered="{!(firstPhase == 1)}" >  <!-- --> 
+                    <apex:actionStatus id="DataStatus"  startText="Getting Data..." />
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputPanel >
+                            <div align="right">
+                                <apex:outputLabel value="{!$ObjectType.License__c.fields.Number_of_Engines__c.label}"/>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:inputField value="{!license.Number_of_Engines__c}" required="false" style="text-align:center" />
+                    </apex:pageBlockSectionItem>
+            
+                    <!-- <apex:inputField value="{!license.Number_of_Admin_users__c}" required="true" style="text-align:center" /> -->
+                    <apex:inputField value="{!license.Number_of_Auditors__c}" required="true" style="text-align:center" />
+                    <apex:inputField value="{!license.Number_of_Scanners__c}" required="true" style="text-align:center" />
+                    <apex:inputField value="{!license.Number_of_Reviewers__c}" required="true" style="text-align:center" />
+                    <apex:inputField value="{!license.Maximum_lines_of_code__c}" required="true" style="text-align:center" />
+                    <apex:inputField value="{!license.Number_of_Servers__c}" required="false" style="text-align:center" />
+                                        
+                    <apex:inputField value="{!license.Languages__c}" required="true"/>
+                    <apex:inputField value="{!license.Expiration_Date__c}" required="false" /> <!-- rendered="{!selectedLicense == 'Term License'}"  -->
+                     
+                    <apex:inputTextarea value="{!oppDesc}" label="Instruction to Presale " rows="4" style="width:200px;"/>
+                    <apex:inputTextarea value="{!license.Comments__c}" label="Comments for this License" rows="4" style="width:200px;"/>
+                    
+                </apex:pageBlockSection>
+
+<!--------------------------------LicenseDetailsVolume ------------------------------->                 
+                <apex:pageBlockSection title="License Details" id="LicenseDetailsVolume" columns="1" rendered="{!(firstPhase == 2)}">  <!--  --> 
+                    <apex:actionStatus id="DataStatus"  startText="Getting Data..." />
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputPanel >
+                            <div align="right">
+                                <apex:outputLabel value="{!$ObjectType.License__c.fields.Number_of_Engines__c.label}"/>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:inputField value="{!license.Number_of_Engines__c}" required="false" style="text-align:center" />
+                    </apex:pageBlockSectionItem>
+            
+                    <apex:inputField value="{!license.Number_of_Admin_users__c}" required="true" style="text-align:center" />
+                    <apex:inputField value="{!license.Number_of_Auditors__c}" required="false" style="text-align:center" />
+                    <apex:inputField value="{!license.Number_of_Scanners__c}" required="false" style="text-align:center" />
+                    <apex:inputField value="{!license.Number_of_Reviewers__c}" required="false" style="text-align:center" />
+                    <apex:inputField value="{!license.Maximum_lines_of_code__c}" required="false" style="text-align:center" />
+                    <apex:inputField value="{!license.Number_of_Servers__c}" required="false" style="text-align:center" />
+                                        
+                    <apex:inputField value="{!license.Languages__c}" required="true"/>
+                    <apex:inputField value="{!license.Expiration_Date__c}" required="false" /> <!-- Kfir-->
+                    <apex:inputTextarea value="{!oppDesc}" label="Instruction to Presale " rows="4" style="width:200px;"/>
+                    <apex:inputTextarea value="{!license.Comments__c}" label="Comments for this License" rows="4" style="width:200px;"/>
+                    
+                </apex:pageBlockSection>
+                
+                
+                <apex:actionRegion rendered="{!selectedLicense == 'Term License'}" >
+                    <apex:pageBlockSection title="Multi Period Licenses" columns="1" id="MultiPeriodLicensesId">
+                        <apex:pageBlockSectionItem >                
+                            <!-- 
+                            <apex:outputLabel value="Is Multi Period License"/>
+                            <apex:selectList id="IsMultiPeriodLicenseItems" value="{!isMultiPeriodLicenseItem}" size="1" >
+                                <apex:selectOptions value="{!isMultiPeriodLicenseItemsitems}" />
+                                <apex:actionSupport event="onchange" action="{!dummyisMultiPeriodLicenseItems}" reRender="MultiPeriodLicensesId" />
+                            </apex:selectList> 
+                            -->
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!Numberoflicenses.Number_of_Engines__c}" label="Number of Licenses" rendered="{!isMultiPeriodLicenseItem == 'Yes'}" required="false" style="text-align:center" />
+                    </apex:pageBlockSection>
+                </apex:actionRegion>
+                 
+                <apex:pageBlockSection title="Add Contact" columns="1">
+                    <apex:inputField value="{!Numberoflicenses.Issued_To__c}" label="Contact" required="true"/>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+    </body>
+</apex:page>

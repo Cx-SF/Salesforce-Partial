@@ -1,0 +1,3 @@
+<design:component>
+	<design:attribute name="dtHeight" label="Datatable height" description="Datatable height"  datasource="apex://dataTableClassesList" />	
+</design:component>

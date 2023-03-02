@@ -1,0 +1,42 @@
+<template >
+    <div style="margin-bottom: 0 !important;background: rgb(16, 156, 241);color:white">
+    <lightning-layout >
+        <lightning-layout-item class="data-list" style="margin: auto;width: 70%;">
+        <div class="data-list adjust-padding">
+            <template if:true={announcements} >
+                <template for:each={announcements} for:item="announcement">
+                    <table key={announcement.data.Id} class="announcements-table">
+                        <tr>
+                             <td class="img-size" 
+                              style="text-align:right">               
+                                <div key={announcement.data.Id}
+                                     class="slds-avatar slds-m-right_small icon">
+                                <img src={announcement.data.Image_Url__c} 
+                                     class="img-size" >
+                               </div>
+                             </td>
+                             <td style="width: 80%;">
+                                <div key={announcement.data.Id}>
+                                <span key={announcement.data.Id} 
+                                       data-toto={announcement.data.Id}  >
+                                       <lightning-formatted-rich-text  value={announcement.data.Announcement_Rich_Text__c}></lightning-formatted-rich-text>
+                                     <!--  <p key={announcement.data.Header__c} class="AnnouncementText">{announcement.data.Announcement_Rich_Text__c}</p>-->
+                                    </span>
+                                   <!-- <a key={announcement.data.Id} 
+                                       data-toto={announcement.data.Id} 
+                                       href={announcement.url} 
+                                       onclick={redirectToArticle} >
+                                       <p key={announcement.data.Header__c} class="AnnouncementText">{announcement.data.Announcement__c}</p>
+                                    </a> -->
+                                </div>
+                            </td>
+                        </tr>
+                    </table>                                     
+                </template>
+            </template>
+            <template if:false={announcements}><i>No articles found.</i></template>
+        </div>
+        </lightning-layout-item>
+    </lightning-layout>
+    </div>
+</template>

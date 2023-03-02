@@ -1,0 +1,186 @@
+/* Css file */
+.cardACtion{
+ min-height: 200px;
+ text-align: center;
+ margin-bottom: 40px;
+}
+
+.cardACtionFilter{
+    min-height: 130px;
+    text-align: center;
+}
+
+.cardList {
+    position:absolute;
+    box-shadow: 0 0 20px rgba(153, 147, 144, 0.205);
+    background-color: white;
+    width: 200px;
+    padding: 1px;
+    text-align: center;
+    z-index: 10;
+}
+
+.onRow {
+    cursor: pointer;
+    margin-bottom: 1px;
+}
+
+.onRowBlue {
+    background-color: #0176D3;
+}
+
+.title {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 5px;
+    
+}
+
+.card_filter {
+    text-align: left;
+    display:inline-block;
+    margin-right: 10px;
+}
+
+.comboBox {
+    display:inline-block;
+    width: 200px;
+    padding-left: 2px;
+}
+
+/* Table */
+.quotaTable { 
+    display: inline-block; 
+    overflow: auto; 
+    width: 800px;  
+    border-collapse: collapse;
+    font-family: sans-serif;
+    box-shadow: 0 0 20px rgba(224, 215, 211, 0.849);
+    font-size: 1rem;
+ }
+
+ .quotaHd th{
+    padding-right: 10px;
+    width: 148px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    padding: 5px 0;
+    background-color: #0176D3;
+    color: white;
+}
+
+.quotaBody tr:nth-child(even) { 
+    background: rgba(245, 243, 243, 0.938); 
+}
+
+.quotaBody td{
+    text-align: center;
+    background-color: rgba(100, 102, 102, 0.35);
+}
+
+.compaerTable{
+    min-height: 200px;
+}
+
+.titleStyle{
+    font-size: 16px;
+    color: red;
+}
+
+.secondTitleStyle {
+    background-color: gray;
+    color: white;
+    text-align: left;
+}
+
+.currentQuota{
+    position: inherit;
+    display: inline-block;
+    box-shadow: 0 0 20px rgba(153, 147, 144, 0.205);
+    background-color: white;
+    width: 45%;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 2px;
+    padding: 1px;
+    text-align: left;
+}
+
+.newQuota{
+    position: inherit;
+    display: inline-block;
+    box-shadow: 0 0 20px rgba(153, 147, 144, 0.205);
+    background-color: white;
+    width: 45%;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 2px;
+    padding: 1px;
+    text-align: left;
+}
+
+.newQuota ul li {
+    text-align: left;
+}
+
+.inputNB{
+    display: inline-block;
+    width: 50px;
+    border: 0;
+    padding: 0;
+    text-align: center;
+    background-color: gainsboro;
+    margin-bottom: 1px;
+}
+
+.inputTNB{
+    display: inline-block;
+    width: 50px;
+    border: 0;
+    padding: 0;
+    text-align: center;
+    margin-bottom: 1px;
+}
+
+.inputE{
+    display: inline-block;
+    width: 50px;
+    border: 0;
+    padding: 0;
+    text-align: center;
+    background-color: white;
+    margin-bottom: 1px;
+}
+
+.boldTitle {
+    font-weight: bold;
+    color: black;
+}
+
+.inputCommentTitle {
+    border: 0;
+    background-color: gainsboro;
+    text-align: left;
+    float: left;
+    margin-top: 10px;
+    margin-left: 5%;
+    margin-bottom: 10px;
+}
+
+.inputComment {
+    border: 0;
+    background-color: gainsboro;
+    text-align: left;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 75%;
+}
+
+.spinerHolder{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}

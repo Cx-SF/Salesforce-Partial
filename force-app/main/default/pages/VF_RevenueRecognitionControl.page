@@ -1,0 +1,97 @@
+<apex:page standardController="Opportunity" extensions="VF_RevenueRecognitionControl">
+<Style>
+    /*
+    .CSSTableGenerator {margin:0px;padding:0px; width:40%; border:1px solid #000000; margin: auto; height: 100px;
+                        -moz-border-radius-bottomleft:13px; -webkit-border-bottom-left-radius:13px; border-bottom-left-radius:13px;
+                        -moz-border-radius-bottomright:13px; -webkit-border-bottom-right-radius:13px; border-bottom-right-radius:13px;
+                        -moz-border-radius-topright:13px; -webkit-border-top-right-radius:13px; border-top-right-radius:13px;
+                        -moz-border-radius-topleft:13px; -webkit-border-top-left-radius:13px; border-top-left-radius:13px;
+    }
+    .CSSTableGenerator table{
+                        border-collapse: collapse; border-spacing: 0; width:100%; height:100%; margin:0px;padding:0px;
+    }
+    .CSSTableGenerator tr:last-child td:last-child {
+                        -moz-border-radius-bottomright:13px; -webkit-border-bottom-right-radius:13px; border-bottom-right-radius:13px;
+    }
+    .CSSTableGenerator table tr:first-child td:first-child {
+                        -moz-border-radius-topleft:13px; -webkit-border-top-left-radius:13px; border-top-left-radius:13px;
+    }
+    .CSSTableGenerator table tr:first-child td:last-child {
+                        -moz-border-radius-topright:13px; -webkit-border-top-right-radius:13px; border-top-right-radius:13px;
+    }
+    .CSSTableGenerator tr:last-child td:first-child{
+                        -moz-border-radius-bottomleft:13px; -webkit-border-bottom-left-radius:13px; border-bottom-left-radius:13px;
+    }
+    .CSSTableGenerator td{
+                        vertical-align:middle; background-color:#e5e5e5; border:1px solid #000000; border-width:0px 1px 1px 0px; text-align:left;
+                        padding:10px; font-size:10px; font-family:Arial; font-weight:normal; color:#000000; 
+    }
+    .CSSTableGenerator tr:last-child td{
+                        border-width:0px 1px 0px 0px; 
+    }
+    .CSSTableGenerator tr td:last-child{
+                        border-width:0px 0px 1px 0px;
+    }
+    .CSSTableGenerator tr:last-child td:last-child{
+                        border-width:0px 0px 0px 0px;
+    }
+    .CSSTableGenerator tr:first-child td:first-child{
+                        border-width:0px 0px 1px 0px;
+    }
+    .CSSTableGenerator tr:first-child td:last-child{
+                        border-width:0px 0px 1px 1px;
+    }
+    .CSSTableGenerator .colstyle {width:50%}
+    */
+</Style>
+<apex:sectionHeader title="Revenue Recognition Control" subtitle="{!RRC.Opportunity_Name__r.Name}"/>
+<apex:form id="formId">
+    <apex:pageMessages />
+    <apex:pageBlock title="Revenue Recognition Control" mode="view">
+    <apex:pageBlockButtons location="bottom">
+        <apex:commandButton action="{!SaveRRC}" title="Save" value="Save" disabled="{!disableButtons}"/>
+        <apex:commandButton action="{!Cancel}" title="Cancel" value="Cancel"/>
+        <apex:commandButton action="{!GenerateRR}" title="Generate" value="Generate" disabled="{!disableButtons}"/> 
+    </apex:pageBlockButtons>
+    <!--
+    <div width="100%" style="padding:20px;">
+        <div class="CSSTableGenerator">
+            <apex:panelGrid columns="2" id="theGrid" width="100%" columnClasses="colstyle">
+                <apex:outputtext value="test"/><apex:outputtext value="test"/><apex:outputtext value="test"/><apex:outputtext value="test"/><apex:outputtext value="test"/>
+            </apex:panelGrid>
+        </div>
+    </div>
+    -->
+    <apex:pageBlockSection columns="2" collapsible="false"><!--title="Opportunity Details"-->
+        <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.Revenue_Recognition_Control_Fields}" var="f">
+            <apex:outputfield value="{!record[f]}"/>
+        </apex:repeat>
+    </apex:pageBlockSection>
+    <br/>
+    <apex:pageblockSection columns="1" collapsible="false" title="Product Control">
+        <!--<h3>Product Control</h3>-->
+        <apex:pageblockTable value="{!RRC.Product_Control__r}" var="pc">
+            <apex:column headerValue="Product Name">
+                <apex:outputfield value="{!pc.Product_Name__c}"/>
+            </apex:column>
+            <apex:column headerValue="Original Total Price (Read Only)">
+                <apex:outputfield value="{!pc.Original_Total_Price__c}"/>
+            </apex:column>
+            <apex:column headerValue="Total Price for Revenue Recognition">
+                <apex:inputfield value="{!pc.Total_Price_for_Revenue_Recognition__c}" rendered="{!pc.Locked_Revenue_Recognition__c=0}"/><!-- rendered="{!pc.Total_Price_for_Revenue_Recognition__c>0}" -->
+                <apex:outputfield value="{!pc.Total_Price_for_Revenue_Recognition__c}" rendered="{!pc.Locked_Revenue_Recognition__c>0}"/><!-- rendered="{!pc.Total_Price_for_Revenue_Recognition__c>0}" -->
+            </apex:column>
+            <apex:column headerValue="Locked Revenue Recognition">
+                <apex:outputfield value="{!pc.Locked_Revenue_Recognition__c}"/>
+            </apex:column>
+            <apex:column headerValue="Start Date">
+                <apex:inputfield value="{!pc.Start_Date__c}" rendered="{!pc.Locked_Revenue_Recognition__c=0}"/>
+                <apex:outputfield value="{!pc.Start_Date__c}" rendered="{!pc.Locked_Revenue_Recognition__c>0}"/>
+            </apex:column>
+        </apex:pageblockTable>
+    </apex:pageblockSection>    
+    
+    
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

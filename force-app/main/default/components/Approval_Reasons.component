@@ -1,0 +1,22 @@
+<apex:component id="Approval_Reasons" controller="Approval_Reasons_Ctrl" allowDML="true" access="global"   >
+    <style>
+       .outBorder {
+    border:3px outset black;
+   }
+   .inBorder{
+    border-top:0.5px solid   black;
+    border-left:0.5px solid   black;
+   }
+        .HClass {align:left !important;}
+        .Custom11Tab .bPageBlock { border-color:white;}
+        .Custom11Tab .secondaryPalette
+    </style>
+        <apex:attribute name="approver"      type="String" description="Junction object name"  assignTo="{!ParentId}" />
+        <apex:attribute name="QuoteId"      type="String" description="Junction object name"  assignTo="{!CurrQuote}" />
+   <apex:repeat value="{!ResList}" var="res">
+     
+        <li style="font-size:13px; text-align: justify;">{!Res}</li>
+       <!---apex:outputText escape="true" value="{!Res}" style="align:left;font-size:13px; width:100%;">    </apex:outputText> <br /--->
+    </apex:repeat>
+  
+</apex:component>

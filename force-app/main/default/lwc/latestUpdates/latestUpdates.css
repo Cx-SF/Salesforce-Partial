@@ -1,0 +1,14 @@
+.LatestUpdatesDiv{
+    width: 33.3%;
+}
+
+slot[interop-carousel_carousel] {
+    display: contents  !important;
+    max-width: 100%;
+    width: 300px  !important;
+    height: 345px  !important;
+}
+
+.slds-carousel__content{
+    height: 200px  !important;
+}

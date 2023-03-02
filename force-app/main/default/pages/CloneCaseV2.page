@@ -1,0 +1,161 @@
+<apex:page standardController="Case" extensions="CaseCloneControllerV2">
+    <apex:includeScript value="/lightning/lightning.out.js"/>
+    <apex:pageMessages />
+    <apex:form rendered="{!isCaseClosed != 'Y'}">
+        <br/>
+        <br/>
+        <apex:commandButton value="Return" action="{!returnToOriginalCase}" />
+    </apex:form>
+    <div id="dynamicLayoutDialog"/>
+    <script>
+        if ("{!isCaseClosed}" == "Y") {
+            
+            var siteType = '{!$Site.SiteType}';
+            console.log('SiteType = ' + siteType);
+            
+            /*
+            sforce.one.createRecord('Case', null, { 
+                Status : "{!newCase.Status}",
+                OwnerId : "{!newCase.OwnerId}",
+                FollowUpCaseId__c : "{!newCase.FollowUpCaseId__c}",            
+                RecordTypeId : "{!newCase.RecordTypeId}",
+                //Assigned_To__c : "{!newCase.Assigned_To__c}",
+                Assigned_group__c : "{!newCase.Assigned_group__c}",
+                AccountId : "{!newCase.AccountId}", 
+                ContactId : "{!newCase.ContactId}", 
+                Product_area__c : "{!newCase.Product_area__c}", 
+                Subject : "{!newCase.Subject}",
+                Description : "{!JSINHTMLENCODE(newCase.Description)}", 
+                Access_Management_Protocol__c : "{!newCase.Access_Management_Protocol__c}", 
+                Languages__c : "{!newCase.Languages__c}", 
+                Source_Repository__c : "{!newCase.Source_Repository__c}", 
+                IDE_Plugin__c : "{!newCase.IDE_Plugin__c}", 
+                Plugin_Version__c : "{!newCase.Plugin_Version__c}", 
+                Build_Server_Plugin__c : "{!newCase.Build_Server_Plugin__c}", 
+                System_Integrating__c : "{!newCase.System_Integrating__c}", 
+                Case_Type__c : "{!newCase.Case_Type__c}", 
+                Outcome__c : "{!newCase.Outcome__c}", 
+                Component__c : "{!newCase.Component__c}", 
+                Solved_by__c : "{!newCase.Solved_by__c}", 
+                Sub_component__c : "{!newCase.Sub_component__c}", 
+                Number_of_webex__c : "{!newCase.Number_of_webex__c}", 
+                Ticket_Quality__c : "{!newCase.Ticket_Quality__c}", 
+                IsEscalated : {!newCase.IsEscalated}, 
+                Assigned_group__c : "{!newCase.Assigned_group__c}", 
+                Bug_number__c : "{!newCase.Bug_number__c}", 
+                Hotfix__c : "{!newCase.Hotfix__c}", 
+                Deployment__c : "{!newCase.Deployment__c}", 
+                Fix_target_version__c : "{!newCase.Fix_target_version__c}", 
+                Priority : "{!newCase.Priority}", 
+                cc__c : "{!newCase.cc__c}", 
+                External_ticket__c : "{!newCase.External_ticket__c}", 
+                Trello_Link__c : "{!newCase.Trello_Link__c}", 
+                POC__c : {!newCase.POC__c}, 
+                Origin : "{!newCase.Origin}", 
+                Released_in_Version__c : "{!newCase.Released_in_Version__c}", 
+                //AssetId : "{!newCase.AssetId}", 
+                //BusinessHoursId : "{!newCase.BusinessHoursId}", 
+                //SourceId : "{!newCase.SourceId}"
+                //Related_Case__c : "{!newCase.Related_Case__c}", 
+            });
+            */
+            
+            var defaultValues = { 
+                Status : "{!newCase.Status}",
+                OwnerId : "{!newCase.OwnerId}",
+                FollowUpCaseId__c : "{!newCase.FollowUpCaseId__c}",            
+                RecordTypeId : "{!newCase.RecordTypeId}",
+                //Assigned_To__c : "{!newCase.Assigned_To__c}",
+                Assigned_group__c : "{!newCase.Assigned_group__c}",
+                AccountId : "{!newCase.AccountId}", 
+                ContactId : "{!newCase.ContactId}", 
+                Product_area__c : "{!newCase.Product_area__c}", 
+                Subject : "{!newCase.Subject}",
+                Description : "{!JSINHTMLENCODE(newCase.Description)}", 
+                Access_Management_Protocol__c : "{!newCase.Access_Management_Protocol__c}", 
+                Languages__c : "{!newCase.Languages__c}", 
+                Source_Repository__c : "{!newCase.Source_Repository__c}", 
+                IDE_Plugin__c : "{!newCase.IDE_Plugin__c}", 
+                Plugin_Version__c : "{!newCase.Plugin_Version__c}", 
+                Build_Server_Plugin__c : "{!newCase.Build_Server_Plugin__c}", 
+                System_Integrating__c : "{!newCase.System_Integrating__c}", 
+                Case_Type__c : "{!newCase.Case_Type__c}", 
+                Outcome__c : "{!newCase.Outcome__c}", 
+                Component__c : "{!newCase.Component__c}", 
+                Solved_by__c : "{!newCase.Solved_by__c}", 
+                Sub_component__c : "{!newCase.Sub_component__c}", 
+                Number_of_webex__c : "{!newCase.Number_of_webex__c}", 
+                Ticket_Quality__c : "{!newCase.Ticket_Quality__c}", 
+                IsEscalated : {!newCase.IsEscalated}, 
+                Assigned_group__c : "{!newCase.Assigned_group__c}", 
+                Bug_number__c : "{!newCase.Bug_number__c}", 
+                Hotfix__c : "{!newCase.Hotfix__c}", 
+                Deployment__c : "{!newCase.Deployment__c}", 
+                Fix_target_version__c : "{!newCase.Fix_target_version__c}", 
+                Priority : "{!newCase.Priority}", 
+                cc__c : "{!newCase.cc__c}", 
+                External_ticket__c : "{!newCase.External_ticket__c}", 
+                Trello_Link__c : "{!newCase.Trello_Link__c}", 
+                POC__c : {!newCase.POC__c}, 
+                Origin : "{!newCase.Origin}", 
+                Released_in_Version__c : "{!newCase.Released_in_Version__c}",
+                Version__c : "{!newCase.Version__c}",
+                case.recordType: "{!newCase.recordType}"
+            };
+            
+            if (siteType != null && siteType != '') {
+                
+                console.log('Open dialog from community...');
+                
+                layoutAttributes = {
+                    sObjectName : 'Case',
+                    recordTypeId : '{!newCase.RecordTypeId}',
+                    layoutMode: 'NEW',
+                    caller: 'COMMUNITY_VF',
+                    defaultValues: defaultValues                
+                };
+                
+                $Lightning.use('c:DynamicLayoutDialog2VF', function () {
+                    $Lightning.createComponent('c:DynamicLayoutDialog', layoutAttributes, 'dynamicLayoutDialog',
+                        function (cmp) {
+                            $A.eventService.addHandler({
+                                event: 'force:navigateToSObject',
+                                handler: function(event) {
+                                    
+                                    console.log('In force:navigateToSObject event VF handler');
+                                    
+                                    sforce.one.navigateToSObject(event.$params$.recordId);
+                                }
+                            });
+                            
+                            $A.eventService.addHandler({
+                                event: 'force:navigateToObjectHome',
+                                handler: function(event) {
+                                    
+                                    console.log('In force:navigateToObjectHome event VF handler');
+                                    
+                                    sforce.one.navigateToSObject(event.$params$.scope);
+                                }
+                            });
+
+                            console.log("Component created!");
+                            console.log(cmp);
+                        });
+                });
+                
+                /*
+                var cmpAttributes = {action: 'FollowUpCase', sObjectName:"Case", recordTypeId:"{!newCase.RecordTypeId}", layoutMode:"NEW", defaultValues:defaultValues};
+                window.history.back();
+                parent.postMessage(cmpAttributes, '{!$Site.BaseUrl}');
+                */
+                
+            } else {
+            	var cmpDef = {componentDef:"c:DynamicLayoutDialog"};
+                var cmpAttributes = {sObjectName:"Case", recordTypeId:"{!newCase.RecordTypeId}", layoutMode:"NEW", defaultValues:defaultValues};
+                cmpDef.attributes = cmpAttributes;
+                var cmpDefEncoded = btoa(JSON.stringify(cmpDef));
+                sforce.one.navigateToURL('/one/one.app#' + cmpDefEncoded);
+            }
+        }
+    </script>
+</apex:page>

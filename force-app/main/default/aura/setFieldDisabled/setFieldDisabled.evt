@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="Field disabled property changed">
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="isDisabled" type="boolean"/>
+</aura:event>

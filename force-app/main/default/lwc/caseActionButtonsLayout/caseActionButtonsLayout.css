@@ -1,0 +1,10 @@
+.wrap-all{
+    padding: 8px 0 8px 8px;
+    max-width: 1642px;
+}
+.close-btn{
+    padding-right: 6px;
+}
+.slds-modal__content.slds-p-around_medium{
+    position: relative;
+}

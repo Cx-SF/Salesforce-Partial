@@ -1,0 +1,56 @@
+<template>
+    <template if:true={spinner}>
+        <div class="spinner">
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+    </template>
+    <div class="navBar">
+        <ul>
+            <li>Current Owner: <lightning-input 
+                data-id="currentOwner" 
+                class="navInfut" 
+                disabled="true" 
+                type="text" 
+                value={currentOwner}></lightning-input>
+            </li>
+
+            <li class="navInfut">New Owner: <c-lookup
+                    onsearch={handleLookupSearch}
+                    onselectionchange={handleLookupSelectionChange}
+                    label="Search"
+                    placeholder="Search Owner"
+                    is-multi-entry={isMultiEntry}
+                    new-record-options={newRecordOptions}
+                    >
+                </c-lookup>
+            </li>
+
+            <li>New Assignment Reason: <lightning-combobox 
+                class="navInfut"
+                options={assigmentReasonList}
+                data-id="assigmentReasons"
+                onchange={handleNewAssigmentChange}
+                placeholder="Selected Reason"
+                ></lightning-combobox>
+            </li>
+
+            <template if:true={profileSalesOperation}>
+                <li class="navInfut">Additional Approver: <c-lookup
+                    onsearch={handleLookupByProfileSearch}
+                    onselectionchange={handleLookupProfileSelectionChange}
+                    label="Search"
+                    placeholder="Search Approver"
+                    is-multi-entry={isMultiEntry}
+                    new-record-options={newRecordOptions}
+                    >
+                    </c-lookup>
+                </li>
+            </template>
+
+            <li data-id="updateRecords" type="button" onclick={handleConfirm} class="updateBut"><a data-id="updateRecordAId" class="updateRecordA">Update Records</a></li>
+        </ul>
+    </div>
+    <div><c-owner-management-process-account-list getaccountdata={dataForAccount} onaccountupdaterecord={handelAccountListChange}></c-owner-management-process-account-list></div>
+    <br>
+    <c-owner-management-process-opportunities-list getaccountidlist={accountIdList} getopportunitydata={dataForOpportunity} onopportunityupdaterecord={handelopportunityListChange}></c-owner-management-process-opportunities-list>
+</template>

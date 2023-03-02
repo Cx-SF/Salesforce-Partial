@@ -1,0 +1,73 @@
+<!--
+/******************************************************************************* 
+Name              : QuoteSendToApproval
+Description       : that sends quote to Approval Process
+Revision History  :-
+Created/Modified by   Created/Modified Date     Requested by          Related Task/Issue             
+----------------------------------------------------------------------------------------
+1. Hernan               25/03/2013                  Itay                    [SW-4881]
+*******************************************************************************/
+-->
+<apex:page standardController="Quote" extensions="QuoteSendToApproval_Controller" action="{!DoAction}" showHeader="false" sidebar="false" >
+    <script type="text/javascript">
+        
+        if("{!$CurrentPage.parameters.close}" == "1")
+        {
+            RefreshParent();
+        }
+    
+        function RefreshParent()
+        {
+            var winMain = window.opener;
+            if (null == winMain)
+            {
+                winMain = window.parent.opener;
+            }
+            winMain.location.href = "/" + "{!Quote.Id}";
+            //top.location.reload();
+            CloseWindow();
+        }
+        
+        function CloseWindow()
+        {
+            var winMain =window;
+            if (null == winMain.opener)
+            {
+                winMain = window.parent;
+            }
+            if (null == winMain.opener)
+            {
+                winMain = window.parent.parent;
+            }
+            winMain.close();
+        }
+    </script>
+    <apex:form >
+        <apex:pageMessages />
+        
+        <apex:outputPanel rendered="false">
+            {!Quote.Opportunity.IsClosed}{!Quote.IsSyncing}
+        </apex:outputPanel>
+        
+        <apex:pageBlock title="Quote Approval Process" rendered="{!NOT(isError)}" >
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!DoSave}" />
+                <apex:commandButton value="Cancel" onclick="CloseWindow();" />
+            </apex:pageBlockButtons>
+            
+            <apex:outputLabel value="Select a billing contact: " />&nbsp;&nbsp;
+            <div style="display: inline-block;">
+                <apex:inputField required="true" value="{!Quote.Billing_Contact__c}" />
+            </div>
+            
+        </apex:pageBlock>
+        
+        <apex:outputPanel rendered="{!isError}">
+            <div style="text-align:center;">
+                <apex:commandButton value="Close" onclick="CloseWindow();" />
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+    
+</apex:page>

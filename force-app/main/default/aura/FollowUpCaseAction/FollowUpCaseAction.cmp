@@ -1,0 +1,37 @@
+<aura:component 
+    implements="flexipage:availableForRecordHome,lightning:hasPageReference,lightning:isUrlAddressable,force:hasRecordId,force:lightningQuickAction,lightning:actionOverride,forceCommunity:availableForAllPageTypes" 
+   	access="global" 
+    controller="FollowUpCaseActionCtrl"  >
+	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:registerEvent name="DynamicLayoutDialogStarter" type="c:DynamicLayoutDialogStarter"/>
+    <!--
+    <aura:handler event="c:DynamicLayoutDialogStarter" action="{!c.dynamicLayoutDialogStarter}"/>
+    -->
+	<aura:handler event="c:DynamicLayoutDialogStoper" action="{!c.dynamicLayoutDialogStoper}"/>
+    
+    <aura:attribute name="isFollowUpAllowed" type="boolean" default="false"/>
+    <aura:attribute name="caller" type="String" default="COMMUNITY"/>
+    <aura:attribute name="sObjectName" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="recordTypeId" type="String"/>
+    <aura:attribute name="layoutMode" type="String"/>
+    <aura:attribute name="defaultValues" type="Object"/>
+    <aura:attribute name="isOpened" type="boolean" default="false"/>   
+    
+    <aura:if isTrue="{!v.isFollowUpAllowed}">
+        <div class="">
+            <lightning:button variant="neutral" label="Follow-Up Case" onclick="{!c.followUpCase}" />
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isOpened}">
+        <c:DynamicLayoutDialog sObjectName="{!v.sObjectName}" 
+                               recordTypeId="{!v.recordTypeId}" 
+                               layoutMode="{!v.layoutMode}"
+                               defaultValues="{!v.defaultValues}"
+                               caller="{!v.caller}"/>
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,10 @@
+({
+	doInit: function (cmp, evt, hlp) {
+		var accId = cmp.get('v.recordId');
+		console.log('Account.Id: ' + accId);
+		var frameSrc = 'https://checkmarx.sisense.com/app/main#/dashboards/5fff08fb03af6f13e81b1418?filter= %5B%7B%22jaql%22%3A%7B%22table%22%3A%22DIM_Account%22%2C%22column%22%3A%22AccountID%22%2C%22dim%22%3A%22%5BDIM_Account.AccountID%5D%22%2C%22datatype%22%3A%22text%22%2C%22merged%22%3Atrue%2C%22title%22%3A%22AccountID%22%2C%22collapsed%22%3Atrue%2C%22datasource%22%3A%7B%22title%22%3A%22Product%20Retention%22%2C%22fullname%22%3A%22LocalHost%2FProduct%20Retention%22%2C%22id%22%3A%22aLOCALHOST_aPRODUCTIAAaRETENTION%22%2C%22address%22%3A%22LocalHost%22%2C%22database%22%3A%22aProductIAAaRetention%22%2C%22lastBuildTime%22%3A%222021-01-13T06%3A00%3A02.697Z%22%7D%2C%22filter%22%3A%7B%22explicit%22%3Atrue%2C%22multiSelection%22%3Atrue%2C%22members%22%3A%5B%22' + accId + '%22%5D%7D%7D%2C%22instanceid%22%3A%22CE47F-C36D-2E%22%2C%22isCascading%22%3Afalse%2C%22disabled%22%3Afalse%2C%22%24%24events%22%3A%7B%7D%2C%22%24filter%22%3A%7B%7D%2C%22%24permissionsService%22%3A%7B%22sourceToGlobalObjects%22%3A%7B%22dashboard%22%3A%22prism.activeDashboard.userAuth%22%2C%22widget%22%3A%22prism.activeWidget.dashboard.userAuth%22%7D%7D%2C%22%24%24guid%22%3A%22DFB60-B460-2EF7-486A%22%2C%22%24%24hashKey%22%3A%22object%3A1224%22%7D%5D&h=false&t=false&l=false&r=false&embed=true';
+
+		cmp.set('v.frameSrc', frameSrc);
+		cmp.set('v.showFrame', true);
+	}
+})

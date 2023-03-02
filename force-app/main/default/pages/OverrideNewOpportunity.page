@@ -1,0 +1,20 @@
+<apex:page standardcontroller="Opportunity" extensions="NewOpp" lightningstylesheets="true">
+    <apex:outputPanel rendered="{!NOT(bBack)}">
+        <script>
+            location.href = '/setup/ui/recordtypeselect.jsp?nooverride=1&ent=Opportunity&retURL=%2F{!con.Id}&save_new_url=%2F006%2Fe%3Flookupcmpgn%3D1%26retURL%3D%252F{!con.Id}%26accid%3D{!con.AccountId}%26conid%3D{!con.Id}%26opp6%3DEmail';
+        </script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!bBack}">
+        <script>
+            alert('Opportunities can only be created from a contact record or upon lead conversion.');
+            location.href = '{!$CurrentPage.parameters.retURL}';
+        </script>
+    </apex:outputPanel>
+    <!--
+    <apex:form >                           
+       <apex:pageMessages />
+       <apex:commandButton value="Back" action="{!cancel}" rendered="{!bBack}"/>       
+    </apex:form>
+    -->
+</apex:page>

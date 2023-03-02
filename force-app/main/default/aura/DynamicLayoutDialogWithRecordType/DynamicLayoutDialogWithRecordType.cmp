@@ -1,0 +1,64 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,lightning:hasPageReference,lightning:isUrlAddressable,force:hasRecordId,force:hasSObjectName,force:lightningQuickAction,lightning:actionOverride,forceCommunity:availableForAllPageTypes" 
+    access="global" 
+    controller="DynamicLayoutDialogWithRecordTypeCtrl">
+
+    <lightning:workspaceAPI aura:id="workspace" />
+    
+	<aura:attribute name="sObjectName" type="String" />
+	<aura:attribute name="AccountId" type="String" />
+	<aura:attribute name="sObjectPrefix" type="String" />
+	<aura:attribute name="recordId" type="String"/>
+	<aura:attribute name="recordTypeId" type="String"/>
+	<aura:attribute name="layoutMode" type="String"/>
+	<aura:attribute name="defaultValues" type="Object"/>
+	<aura:attribute name="isOpened" type="boolean" default="false"/>
+	<aura:attribute name="fromVF" type="boolean" default="false"/>
+	<aura:attribute name="caller" type="String" default="APP"/>
+	<aura:attribute name="isSingleRecordType" type="boolean" default="true"/>
+	<aura:handler event="c:DynamicLayoutDialogStarter" action="{!c.dynamicLayoutDialogStarter}"/>
+	<aura:handler event="c:DynamicLayoutDialogStoper" action="{!c.dynamicLayoutDialogStoper}"/>
+	<aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+	<aura:attribute name="recordTypes" type="List"/>
+
+	<aura:if isTrue="{!!v.isOpened}">
+	<!-- <aura:if isTrue="{!and(!v.isOpened, !v.isSingleRecordType)}"> -->
+<!-- 		<div class = 'slds-grid'>
+			<div class = "slds-col_size-1-of-2">
+				<lightning:select name="colorId" label="Select a color:" aura:id="colorId" value="{!v.selectedValue}">
+				    <aura:iteration items="{!v.recordTypes}" var="rt">
+				        <option text="{!rt.label}" value="{!rt.id}" selected="{!rt.selected}"/>
+				    </aura:iteration>
+				</lightning:select>
+			</div>
+		</div> -->
+
+			
+		<div aura:id="editDialog" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" style="{!if(v.isSingleRecordType, 'display: none;', '')}">
+		    <div class="modal-container slds-modal__container">
+		        <div class="modal-header slds-modal__header">
+		            <h2 class="slds-text-heading--medium">New {!v.sObjectName}</h2>
+		        </div>
+		        <div class="modal-body scrollable slds-modal__content slds-p-around--medium">                
+		            <lightning:radioGroup aura:id="recordTypeRadioSelector" value="{!v.recordTypeId}" label="Please select a case type" options="{!v.recordTypes}"  type="radio"/>
+		            <!-- value="{!v.defaultRecordType}"-->
+		        </div>
+		        <div class="modal-footer slds-modal__footer">                
+		            <lightning:button variant="neutral" label="Cancel" onclick="{!c.onTypeSelectionCancel}" />
+		            <lightning:button variant="brand" label="Next" onclick="{!c.onTypeSelectionNext}" />
+		        </div>
+		    </div>
+		</div>
+		<div class="slds-backdrop slds-backdrop--open"></div>
+	</aura:if>
+
+<aura:if isTrue="{!v.isOpened}">
+    <c:DynamicLayoutDialog sObjectName="{!v.sObjectName}" 
+                           recordTypeId="{!v.recordTypeId}" 
+                           recordId="{!v.recordId}" 
+                           layoutMode="{!v.layoutMode}"
+                           caller="{!v.caller}"
+                           defaultValues="{!v.defaultValues}"/>
+</aura:if>
+
+</aura:component>

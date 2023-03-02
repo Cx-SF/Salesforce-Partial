@@ -1,0 +1,33 @@
+<template>
+    <div class="wrap-all">
+        <template if:true={canClose}>
+            <lightning-button label="Close Case" title="Non-primary action" onclick={handleClose} class="slds-var-m-left_x-small close-btn" disabled={disableCloseBtn}></lightning-button>
+        </template>
+        <template if:true={canEscalate}>
+            <lightning-button label={escalateBtnLabel} icon-name={escalateBtnIcon} title="Non-primary action" onclick={handleEscalate} class="sslds-var-m-left_x-small" disabled={disableEscalateBtn}></lightning-button>
+        </template>
+    </div>
+    <template if:true={showEscalationFlow}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeEscalationModal}>
+                X
+                <span class="slds-assistive-text">Cancel and close</span>
+              </button>
+              <div class="slds-modal__header">
+                <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate" tabindex="-1">Case Escalation</h1>
+              </div>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <p>
+                    <lightning-flow 
+                        flow-api-name='Escalation_request_from_Portal' 
+                        flow-input-variables={flowVariables} 
+                        onstatuschange={escalateFinished}>
+                    </lightning-flow>
+                </p>
+              </div>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>        
+    </template>
+</template>

@@ -1,0 +1,56 @@
+<apex:page standardController="SBQQ__Quote__c" extensions="WDCX_CreateQuoteController" recordSetVar="Quotes" action="{!createAndRedirect}" lightningstylesheets="true">
+     
+    <apex:form id="form" >
+        <style>
+            .colHeadr {text-align:center;} 
+            .pbSubheader{
+            color: black !important
+            }
+        </style>
+        <br/><br/><br/>
+        <!---apex:pageblock title="Price Book" id="pageBlock"  rendered="{!!isError}">
+            <apex:messages style="color:red"/>
+            <apex:pageMessages />
+            <apex:pageBlockSection columns="1">
+                <!---apex:outputLabel style="font-size: 130%;"> Only <b> Checkmarx Global Price Book </b> can be used for quoting.</apex:outputLabel>
+             
+                 <apex:outputLabel style="font-size: 130%;"><b>Approve </b>to replace the opportunity's price book to Checkmarx Global Price Book, or <b>Cancel</b> to return to the opportunity.</apex:outputLabel>
+                            
+                   <apex:outputLabel value="Please Note: Changing the price book permanently deletes all products from the opportunity. Continue?" style="font-size: 130%;"></apex:outputLabel>
+                
+                 <br/>
+            </apex:pageBlockSection>
+            <!----apex:pageBlockSection columns="1" rendered="{!isError}">
+                <apex:outputLabel style="font-size: 130%; color:red;"> {!textError}</apex:outputLabel>
+             
+                 <br/>
+            </apex:pageBlockSection>
+            <br/>
+            <div align="center"  >
+            <apex:pageBlockButtons location="bottom"  id="saveBtn"  style="float:centre"  >
+                <apex:commandButton value="Approve" action="{!Approve}" status="status"  /><-rendered="{!optionsO != ''}"->
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                </apex:pageBlockButtons>
+            </div>    
+        </apex:pageblock--->
+        <apex:pageblock title="Opportunity" id="pageBlockOppError" rendered="{!isError}">
+            <apex:messages style="color:red"/>
+            <apex:pageMessages />
+            <apex:pageBlockSection columns="1" >
+                <apex:outputLabel style="font-size: 130%; color:red;"> {!textError}</apex:outputLabel>
+             
+                 <br/>
+            </apex:pageBlockSection>
+            <br/>
+            <div align="center"  >
+            <apex:pageBlockButtons location="bottom"  id="pageBlockButtons"  style="float:centre"  >
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <apex:commandButton value="Cancel" action="{!Cancel}" status="status"  /><!--rendered="{!optionsO != ''}"-->
+
+                </apex:pageBlockButtons>
+            </div>    
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

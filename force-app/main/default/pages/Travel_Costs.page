@@ -1,0 +1,5 @@
+<apex:page standardController="Campaign" sidebar="false" showHeader="false">
+  <iframe id="gridFrame" scrolling="auto" height="600" width="100%" frameborder="0"
+    src="/apex/gbfree__Grid?gname=Travel Costs&id={!Campaign.Id}&sh=0&ssb=0&sbb=1">
+  </iframe>
+</apex:page>

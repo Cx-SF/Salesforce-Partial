@@ -1,0 +1,19 @@
+<aura:component >
+    
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="layoutElementType" type="String" default="LayoutRow"/>
+    <aura:attribute name="sectionId" type="String"/>
+    <aura:attribute name="rowId" type="String"/>
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="childComponents" type="Aura.Component[]"/>
+    <aura:attribute name="isRendered" type="boolean" default="true"/>
+    
+    <aura:handler event="c:isFieldRendered" action="{!c.setRenderProperty}"/>
+    
+    <aura:if isTrue="{!v.isRendered}">
+        <div class="slds-grid slds-wrap slds-gutters_small">
+            {!v.childComponents}
+        </div>
+    </aura:if>
+    
+</aura:component>

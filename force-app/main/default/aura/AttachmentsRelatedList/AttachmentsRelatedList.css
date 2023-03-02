@@ -1,0 +1,19 @@
+.THIS {
+}
+.THIS .slds-card__header {
+	padding-bottom: 10px;
+	background: rgba(235, 235, 235, 0.61);
+}
+
+.THIS .dtmaxHeight300 .slds-scrollable_y {
+	max-height: 300px;
+}
+
+.THIS .dtmaxHeight300 .slds-scrollable--y {
+	max-height: 300px;
+}
+
+.THIS .slds-text-heading_small {
+	font-weight: 600;
+    font-size: 1.6em;
+}

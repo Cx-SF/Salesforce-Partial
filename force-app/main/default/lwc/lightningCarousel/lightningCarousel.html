@@ -1,0 +1,22 @@
+<template>
+    <div class='{dynamicWidthClass}'>
+        <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around_x-small" >
+            <div class='{helperClassForTitle}'>
+                <img class='announcementIcon' if:true='{ifToShowAnnouncementIcon}' >{boxTitle}</div>
+            <lightning-carousel >
+                <template for:each={announcements} for:item="announcement" >            
+                    <lightning-carousel-image
+                                             key = '{announcement.data.id}' 
+                                             src = '{announcement.data.Image_Url__c}' 
+                                             header =  '{announcement.data.Header__c}' 
+                                             description =   '{announcement.data.Announcement__c}'                                              
+                                             alternative-text =  '{announcement.data.Name}'
+                                             href = '{announcement.url}'
+                                             style="height:400px;"
+                                             class= 'appImage' >
+                    </lightning-carousel-image>            
+                </template>               
+            </lightning-carousel>
+        </div>
+    </div>
+</template>
