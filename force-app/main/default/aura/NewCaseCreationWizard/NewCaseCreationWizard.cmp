@@ -26,11 +26,6 @@
 	<aura:attribute name="selected_account" type="String" />
 	<aura:attribute name="downloadModalOpen" type="Boolean" default="false" />
 	<aura:attribute name="isPowerPartner" type="Boolean" default="false" />
-    <aura:attribute name="isOne" type="Boolean" default="false" />
-    <aura:attribute name="tenant_list_filter" type="String" />
-    <aura:attribute name="isSelectTenantREQ" type="Boolean" default="false" />
-    <aura:attribute name="selected_tenant_obj" type="Object" />
-    <aura:attribute name="selected_tenant" type="String" />
 	
 	
     <div class="slds-scope">
@@ -121,25 +116,15 @@
 		<aura:if isTrue="{! v.downloadModalOpen }">
 			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
 				<div class="slds-modal__container">
+					<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">X</button>
 					<div class="slds-modal__header">
 						<h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">End Customer Account Selection</h1>
 					</div>
 					<div class="slds-modal__content slds-p-around_medium account-selector-wrap" id="modal-content-id-1">
 						<p class="account-selector-container">
 							<label class="common-label">{! $Label.c.Partner_Account_selection_label }</label>
-							<lightning:combobox aura:id="AccountCombo" variant="label-hidden" options="{! v.available_accounts }" value="{! v.selected_account }" 
-                                                onchange="{! c.partnerAccountSelected }" />
+							<lightning:combobox aura:id="AccountCombo" variant="label-hidden" options="{! v.available_accounts }" value="{! v.selected_account }" />
 						</p>
-                        <aura:if isTrue="{! v.isOne }">
-                            <p class="account-selector-container">
-                                <label class="common-label">Select Tenant List</label>
-                                <div class="c-lookup-wrap">
-                                    <c:CustomLookupAura aura:id="tenantlookup" objectName="Tenant__c" singleChoose="false" field_API_text="Name" field_API_val="Id" 
-                                                        field_API_search="Name" limit="25" lookupIcon="custom:custom57" placeholder="Search Tenants" 
-                                                        selItem="{! v.selected_tenant_obj }" query_literal="{! v.tenant_list_filter }"></c:CustomLookupAura>
-                                </div>
-                            </p>
-                        </aura:if>
 					</div>
 					<div class="slds-modal__footer">
 						<lightning:button label="Cancel" onclick="{! c.closeAccountSelectionModal }" />
@@ -150,33 +135,6 @@
 			<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
 		</aura:if>
 		<!-- .Account select modal -->
-
-        <!-- Tenant list select modal -->
-		<aura:if isTrue="{! v.isSelectTenantREQ }">
-			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
-				<div class="slds-modal__container">
-					<div class="slds-modal__header">
-						<h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Tenant list Selection</h1>
-					</div>
-					<div class="slds-modal__content slds-p-around_medium account-selector-wrap" id="modal-content-id-1">
-						<p class="account-selector-container">
-							<label class="common-label">Select Tenant List</label>
-							<div class="c-lookup-wrap">
-                                <c:CustomLookupAura aura:id="tenantlookup" objectName="Tenant__c" singleChoose="false" field_API_text="Name" field_API_val="Id" 
-                                                    field_API_search="Name" limit="25" lookupIcon="custom:custom57" placeholder="Search Tenants" 
-                                                    selItem="{! v.selected_tenant_obj }" query_literal="{! v.tenant_list_filter }"></c:CustomLookupAura>
-                            </div>
-						</p>
-					</div>
-					<div class="slds-modal__footer">
-						<lightning:button label="Cancel" onclick="{! c.closeTenantSelectionModal }" />
-						<lightning:button variant="brand" label="Select and Continue" onclick="{! c.selectTenantListAndContinue }" />
-					</div>
-				</div>
-			</section>
-			<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
-		</aura:if>
-		<!-- .Tenant list select modal -->
 
     </div>
     

@@ -6,6 +6,7 @@ public class TestObjectCreator {
         a.Name = 'ACME Test';
         a.ShippingCountry = 'United States';
         a.ShippingState = 'New York';
+        a.Developers__c = 1;
         return a;
     }
 

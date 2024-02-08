@@ -1,25 +1,45 @@
 <apex:component id="Email_Template_Approvers" controller="Email_Approvers_Ctrl" allowDML="true" access="global"   >
     <style>
         .outBorder {
-        border:3px outset black;
+            border: 3px outset black;
+            column-width:100px;
         }
-        .inBorder{
-        border-top:0.5px solid   black;
-        border-left:0.5px solid   black;
+        .inBorder {
+            border-top: 0.5px solid black; 
+            border-left: 0.5px solid black;
         }
-        .HClass {align:left !important;}
+        .HClass {
+            align: left !important;
+        }
         .Custom11Tab .bPageBlock { border-color:white;}
         .Custom11Tab .secondaryPalette
     </style>
         <apex:attribute name="QuoteIdR"  type="String" description="Junction object name"  assignTo="{!ParentId}" />
-    <apex:dataTable id="documentsTable" value="{!RecordsToDisplay}" var="prod"   styleclass="outBorder" headerClass="HClass" 
-                    style="align:left;font-size:13px;border-collapse: collapse ; border-width:thin;border-style:solid;width:40%;border-color:gray;background-color:#9fd9fc; color: black;" >
-        
-        <apex:column headerValue="Name" styleclass="inBorder"  style="{!if(prod.sbaa__Status__c='Approved','background-color: #3ADF00; color: #000000 ', 'background-color: #FFFFFF; color: #000000 ')}">
+        <apex:attribute name="ccName"  type="String" description="name" assignTo="{!cc_Name}" />
+        <apex:attribute name="groupId"  type="String" description="name" assignTo="{!cc_groupId}" />
+        <apex:attribute name="userId"  type="String" description="name" assignTo="{!cc_userId}" />
+        <apex:attribute name="OwnerId"  type="String" description="name" assignTo="{!cc_OwnerId}" />
+        <apex:variable var="listGroup" value="{!''}{!memberGroup}" />
+    <apex:dataTable id="documentsTable" value="{!RecordsToDisplay}" var="prod" headerClass="align: left !important;" 
+                    style="align: left; font-size: 13px; border: 3px outset black; width: 100%; background-color: #9fd9fc; color: black; border: 3px outset black; column-width: 100px;" >
+        <!--"color: #000000; background-color: #FFFFFF;"-->
+        <apex:column headerValue="Approver Name"  style="{!if((prod.WDCX_ConsolidatedApprover__c = ccName || prod.WDCX_ConsolidatedApprover__c = inTheGroup || CONTAINS(listGroup, prod.WDCX_ConsolidatedApprover__c)),'color: #000000; background-color: #e3e32b; border-top:0.5px solid black; border-left:0.5px solid black;', 'color: #000000; background-color: #FFFFFF; border-top:0.5px solid black; border-left:0.5px solid black;')}">
             <apex:outputtext value="{!prod.WDCX_ConsolidatedApprover__c  }"  styleClass="slds-output" /> 
         </apex:column>
-        <apex:column headerValue="Status" styleclass="inBorder" style="{!if(prod.sbaa__Status__c='Approved','background-color: #3ADF00; color: #000000 ', 'background-color: #FFFFFF; color: #000000 ')}">
-            <apex:outputtext value="{!prod.sbaa__Status__c}"  styleClass="slds-output"   />
+        <apex:column headerValue="Status" style="{!if(prod.sbaa__Status__c='Approved','color: #000000; background-color: #56b835; font-size:14px; border-top: 0.5px solid  black; border-left:0.5px solid black;', if((prod.WDCX_ConsolidatedApprover__c = ccName || prod.WDCX_ConsolidatedApprover__c = inTheGroup || CONTAINS(listGroup, prod.WDCX_ConsolidatedApprover__c)),'color: #000000; background-color: #e3e32b; border-top: 0.5px solid black; border-left:0.5px solid black;','color: #000000; background-color: #FFFFFF; border-top: 0.5px solid  black; border-left:0.5px solid black;'))}">
+            <apex:outputtext value="{!prod.sbaa__Status__c}"  style="slds-output; text-align: center;"   />
+        </apex:column>
+        <apex:column headerValue="Approval Chain" style="background-color: #FFFFFF; color: #000000; border-top: 0.5px solid black; border-left: 0.5px solid black;">
+            <apex:outputtext value="{!prod.sbaa__ApprovalChain__r.name}"  style="slds-output; text-align: center;"   />
+        </apex:column>
+        <apex:column headerValue="Approval Step" style="background-color: #FFFFFF; color: #000000; text-align: center; border-top: 0.5px solid black; border-left: 0.5px solid black;">
+            <apex:outputtext value="{!prod.sbaa__ApprovalStep__c}"  style="slds-output"   />
+        </apex:column>
+        <apex:column headerValue="Approval reason" style="color: #000000; background-color: #FFFFFF; border-top: 0.5px solid black; border-left: 0.5px solid black;">
+            <apex:outputtext value="{!prod.sbaa__Rule__r.Name}"  style="slds-output"   />
+        </apex:column>
+        <apex:column headerValue="Comments" style="color: #000000; background-color: #FFFFFF; border-top: 0.5px solid black; border-left: 0.5px solid black; ">
+            <apex:outputtext value="{!prod.sbaa__CommentsLong__c}"  style="slds-output"   />
         </apex:column>
         
     </apex:dataTable>

@@ -4,8 +4,8 @@ public class Email_Template_test  {
         
         Account testAcc = new Account(Name = 'TestAcc');
 		insert testAcc;
-		Contact con = new Contact(LastName = 'TestContact', Account = testAcc , MailingCountry = 'France');
-		insert con;			
+		//Contact con = new Contact(LastName = 'TestContact', Account = testAcc , MailingCountry = 'France');
+		//insert con;			
 		
 	
 		Opportunity testOpp = new Opportunity(Name = 'TestOpp',StageName = 'Prospecting',CloseDate = Date.today().addDays(5));
@@ -16,7 +16,7 @@ public class Email_Template_test  {
         
         SBQQ__QuoteLine__c ql = new SBQQ__QuoteLine__c (SBQQ__Quote__c  = quote.id);
         //insert ql; 
-        sbaa__Approver__c approver = new sbaa__Approver__c(name = 'app');
+        sbaa__Approver__c approver = new sbaa__Approver__c(name = 'app', sbaa__GroupId__c = null);
         insert approver;
         sbaa__ApprovalChain__c chaim = new sbaa__ApprovalChain__c(Name = 'Renewal' , sbaa__TargetObject__c  = 'SBQQ__Quote__c' ) ;
         insert chaim;
@@ -36,7 +36,25 @@ public class Email_Template_test  {
         set<string> ANS = RES.ResList;
         Email_Approvers_Ctrl Approvers = new Email_Approvers_Ctrl();
         Approvers.ParentId = quote.id;
+		//Approvers.cc_aproverId = approver.Id;
+		//Approvers.cc_groupId = 
+		Approvers.cc_Name = 'test';
+		Approvers.cc_userId = UserInfo.getUserId();
+		Approvers.cc_OwnerId = UserInfo.getUserId();
+		String nn = Approvers.inTheGroup;
+		List<String> strList = Approvers.memberGroup;
         list <sbaa__Approval__c> apps = Approvers.RecordsToDisplay; 
+
+		Email_Template_renewal_Info_Ctrl info = new Email_Template_renewal_Info_Ctrl();
+		info.Acv_Difference_Amount = '45';
+		info.Acv_Difference_Percent = '1';
+		info.Acv_DownSell_Amount = '54';
+		info.Acv_DownSell_Percent = '2';
+		info.AcvDifference_Amount = 66;
+		info.AcvDifference_Percent = 2;
+		info.AcvDownSell_Amount = 76;
+		info.AcvDownSell_Percent = 4;
+		info.currencyISO = 'USD';
         test.stopTest();
     }
 }

@@ -23,12 +23,12 @@ global with sharing class OpportunityExpectedRenewalBatch implements Database.Ba
     	
     	if (test.isRunningTest()) 
     	return Database.getQueryLocator([Select o.Id, SBQQ__RenewedContract__c,
-    										(Select Id, CurrencyIsoCode, Status, Contract_Excepted_Renewal_ACV__c, Total_Expected_Renewal_ACV__c 
+    										(Select Id, CurrencyIsoCode, Status, Contract_Excepted_Renewal_ACV__c, Total_Expected_Renewal_ACV__c, CX_OLD_Total_Expected_Renewal_ACV__c 
     										From SBQQ__RenewedContracts__r where Contract_Excepted_Renewal_ACV__c != null) 
     									From Opportunity o where IsWon = true OR IsClosed = false limit 200]);
     									
     	else return Database.getQueryLocator([Select o.Id, 
-    										(Select Id, CurrencyIsoCode, Status, Contract_Excepted_Renewal_ACV__c, Total_Expected_Renewal_ACV__c 
+    										(Select Id, CurrencyIsoCode, Status, Contract_Excepted_Renewal_ACV__c, Total_Expected_Renewal_ACV__c, CX_OLD_Total_Expected_Renewal_ACV__c 
     										From SBQQ__RenewedContracts__r where Contract_Excepted_Renewal_ACV__c != null) 
     									From Opportunity o where IsWon = true OR IsClosed = false]); 
     									
@@ -66,9 +66,9 @@ global with sharing class OpportunityExpectedRenewalBatch implements Database.Ba
 				
 				for (contract cont_i : opp_i.SBQQ__RenewedContracts__r) {
 					
-					if (cont_i.Total_Expected_Renewal_ACV__c != renewalOppToTotalExpectedAcvMap.get(opp_i.Id)) {
+					if (cont_i.CX_OLD_Total_Expected_Renewal_ACV__c != renewalOppToTotalExpectedAcvMap.get(opp_i.Id)) {
 						
-						cont_i.Total_Expected_Renewal_ACV__c = renewalOppToTotalExpectedAcvMap.get(opp_i.Id);
+						cont_i.CX_OLD_Total_Expected_Renewal_ACV__c = renewalOppToTotalExpectedAcvMap.get(opp_i.Id);
 						ContractListToUpdate.add(cont_i);
 					}
 					

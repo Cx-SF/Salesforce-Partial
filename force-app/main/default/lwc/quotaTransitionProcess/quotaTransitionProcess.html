@@ -1,24 +1,17 @@
 <template>
+    <div class="actionCard">
     <lightning-record-view-form record-id={recordId} object-api-name="Quota_Planning__c"></lightning-record-view-form>
-    <template if:true={spinner}>
-        
+    <template if:true={spinner}>       
         <div class="spinerHolder">
-            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            <lightning-spinner class='spinnerCla' alternative-text="Loading" size="small"></lightning-spinner>
         </div>
     </template>
     <template if:true={isModalOpen}>
         <!-- Modal/Popup Box LWC starts here -->
-        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <!-- <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open"> -->
             <div class="slds-modal__container">
                 <!-- Modal/Popup Box LWC header here -->
                 <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
-                        <lightning-icon icon-name="utility:close"
-                            alternative-text="close"
-                            variant="inverse"
-                            size="small" ></lightning-icon>
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
                     <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Note</h2>
                 </header>
                 <!-- Modal/Popup Box LWC body starts here -->
@@ -29,18 +22,31 @@
                 <!-- Modal/Popup Box LWC footer starts here -->
                 <footer class="slds-modal__footer">
                     <template if:true={notComment}>
-                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Back</button>
+                        <button class="slds-button slds-button_neutral" onclick={closeModal}>Back</button>
                     </template>
-                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">Continue</button>
+                    <template if:false={anotherTransferNote}>
+                        <template if:true={closeAction}>
+                            <button class="slds-button slds-button_neutral" onclick={submitDetails}>Back</button>
+                            <button class="slds-button slds-button_brand" onclick={closeActionCard}>Exit</button>
+                        </template>
+                        <template if:false={closeAction}>
+                            <button class="slds-button slds-button_brand" onclick={submitDetails}>Continue</button>
+                        </template>
+                    </template>
+                    <template if:true={anotherTransferNote}>
+                        <button class="slds-button slds-button_neutral" onclick={canselTransfer}>Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={confirmTransfer}>Continue</button>
+                    </template>
+
                 </footer>
             </div>
-        </section>
+        <!-- </section> -->
         <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
     <div class="cardACtion">
-        <template if:true={dataIsSet}>
+        <template if:true={showFilter}>
         <div class="cardACtionFilter">
-            <h1 class="title">Filter Quota Planning</h1>
+            <h1 class="title">Transfer Targets from "{quotaSourceName}" to RSM/TBH:</h1>
             <div class="card_filter">
                 <lightning-input class="comboBox" label="RSM:" onchange={rsmHandelChange} onblur={rsmHandelBlur} placeholder='Select RSM' value={selectedRsm} disabled={rsmDisabled}></lightning-input>
                 <template if:true={rsmFilter}>
@@ -77,7 +83,7 @@
                     </div>
                 </template>
             </div>
-            <lightning-button variant="brand" label="Submit" onclick={handelSubmit}></lightning-button>
+            <lightning-button variant="brand" label="Search" onclick={handelSubmit}></lightning-button>
         </div>
         </template>
         <div class="cardTable">
@@ -129,34 +135,201 @@
                             <li><span class="boldTitle">TBH:</span> {currentPlanningQuota.Name}</li>
                         </template>
                         <li><span class="boldTitle">Position Id:</span> {currentPlanningQuota.RSM_PositionId__c}</li>
-                        <br>
+                        <!-- <br> -->
                         <li><span class="boldTitle">Region:</span> {currentPlanningQuota.Region__c}</li>
-                        <br>
+                        <!-- <br> -->
                         <li><span class="boldTitle">SubRegion:</span> {currentPlanningQuota.Sub_Region__c}</li>
-                        <br>
+                        <!-- <br> -->
                         <li><span class="boldTitle">Target Year:</span> {currentPlanningQuota.Target_Year__c}</li>
-                        <li><span class="boldTitle">Active:</span> {currentPlanningQuota.Active__c}</li>
+                        <!-- <li><span class="boldTitle">Active:</span> {currentPlanningQuota.Active__c}</li> -->
                         <li><span class="boldTitle">Role:</span> {currentPlanningQuota.Sales_Planning_Role_del__c}</li>
                     </ul>
                     <br>
-                    <div class="secondTitleStyle">NB Targets &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="boldTitle"><button onclick={moveQuotaHandel}>Move Quota</button></span></div>
+                    <div class="secondTitleStyle"><p style="margin-left: 150px;">NB Source</p></div>
                     <ul>
-                        <li><span class="boldTitle">Q1 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ1NBLi" class="inputE" value={currentPlanningQuota.Q1_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ1NB" class="inputNB"></input></li>
-                        <li><span class="boldTitle">Q2 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ2NBLi" class="inputE" value={currentPlanningQuota.Q2_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ2NB" class="inputNB"></input></li>
-                        <li><span class="boldTitle">Q3 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ3NBLi" class="inputE" value={currentPlanningQuota.Q3_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ3NB" class="inputNB"></input></li>
-                        <li><span class="boldTitle">Q4 NB Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ4NBLi" class="inputE" value={currentPlanningQuota.Q4_NB_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ4NB" class="inputNB"></input></li>
+                        <li>
+                            <span class="boldTitle">Q1 NB:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ1NBLi" class="inputE inputSNB" style="margin-bottom: 2px;" value={numberAfterTransfer.Q1_NB_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ1NB" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 NB:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ2NBLi" class="inputE inputSNB" value={numberAfterTransfer.Q2_NB_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ2NB" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 NB:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ3NBLi" class="inputE inputSNB" value={numberAfterTransfer.Q3_NB_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ3NB" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 NB:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ4NBLi" class="inputE inputSNB" value={numberAfterTransfer.Q4_NB_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ4NB" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">---------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total NB:</span> 
+                            &nbsp;&nbsp;&nbsp;
+                            <input data-id="totalSNb" class="inputE" style="margin-left: 65px" value={numberAfterTransfer.totalSNB} disabled></input>
+                        </li>
                     </ul>
                     <br>
-                    <div class="secondTitleStyle">Upsell Targets</div>
+                    <div class="secondTitleStyle"><p style="margin-left: 150px;">Upsell Source</p></div>
                     <ul>
-                        <li><span class="boldTitle">Q1 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ1UPLi" class="inputE" value={currentPlanningQuota.Q1_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ1Up" class="inputNB"></input></li>
-                        <li><span class="boldTitle">Q2 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ2UPLi" class="inputE" value={currentPlanningQuota.Q2_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ2Up" class="inputNB"></input></li>
-                        <li><span class="boldTitle">Q3 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ3UPLi" class="inputE" value={currentPlanningQuota.Q3_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ3Up" class="inputNB"></input></li>
-                        <li><span class="boldTitle">Q4 Upsell Target:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input data-id="SQ4UPLi" class="inputE" value={currentPlanningQuota.Q4_Upsell_Target_ACV__c} disabled></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<input data-id="SQ4Up" class="inputNB"></input></li>
+                        <li>
+                            <span class="boldTitle">Q1 Upsell:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ1UPLi" class="inputE inputSupsell" value={numberAfterTransfer.Q1_Upsell_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ1UP" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Upsell:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ2UPLi" class="inputE inputSupsell" value={numberAfterTransfer.Q2_Upsell_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ2UP" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Upsell:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ3UPLi" class="inputE inputSupsell" value={numberAfterTransfer.Q3_Upsell_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ3UP" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Upsell:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="SQ4UPLi" class="inputE inputSupsell" value={numberAfterTransfer.Q4_Upsell_Target_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ4UP" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">-----------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Upsell:</span>
+                            &nbsp;&nbsp;
+                            <input data-id="totalSUpsell" class="inputE" style="margin-left: 55px;" value={numberAfterTransfer.totalSUpsell} disabled></input>
+                        </li>
                     </ul>
+                    <br>
+                    <!-- <div class="secondTitleStyle">
+                            <table>
+                                <tr>
+                                    <th><p class="qtablels">Expected Renewal Source</p></th>
+                                    <th><p class="qtabler">Target Renewal Source</p></th>
+                                </tr>
+                            </table>
+                    </div> -->
+                    <div class="secondTitleStyle"><p style="margin-left: 140px;">Expected Renewal Source</p></div>
+                    <ul>
+                        <li>
+                            <span class="boldTitle">Q1 Expected Renewal:</span>
+                            <input data-id="SQ1RELi" class="inputE inputSrenewal" value={numberAfterTransfer.Q1_Expected_Renewal_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ1RE" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Expected Renewal:</span>
+                            <input data-id="SQ2RELi" class="inputE inputSrenewal" value={numberAfterTransfer.Q2_Expected_Renewal_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ2RE" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Expected Renewal:</span>
+                            <input data-id="SQ3RELi" class="inputE inputSrenewal" value={numberAfterTransfer.Q3_Expected_Renewal_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ3RE" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Expected Renewal:</span>
+                            <input data-id="SQ4RELi" class="inputE inputSrenewal" value={numberAfterTransfer.Q4_Expected_Renewal_ACV__c} disabled></input>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            -<input data-id="SQ4RE" class="inputNB"></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">---------------------------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Expected Renewal:</span>
+                            <input data-id="totalSRenewal" class="inputE" style="margin-left: 2px;" value={numberAfterTransfer.totalSRenewal} disabled></input>
+                        </li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleStyle"><p style="margin-left: 140px;">Target Renewal Source</p></div>
+                    <ul>
+                        <li>
+                            <span class="boldTitle">Q1 Target Renewal:</span>
+                            <input data-id="SQ1REF" class="inputTNB inputStargetR" value={numberAfterTransfer.calculatedNumQ1ExpectedR}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Target Renewal:</span>
+                            <input data-id="SQ1REF" class="inputTNB inputStargetR" value={numberAfterTransfer.calculatedNumQ2ExpectedR}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Target Renewal:</span>
+                            <input data-id="SQ1REF" class="inputTNB inputStargetR" value={numberAfterTransfer.calculatedNumQ3ExpectedR}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Target Renewal:</span>
+                            <input data-id="SQ1REF" class="inputTNB inputStargetR" value={numberAfterTransfer.calculatedNumQ4ExpectedR}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">---------------------------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Target Renewal:</span>
+                            <input data-id="totalSTargetRenewal" class="inputE" style="margin-left: 17px;" value={numberAfterTransfer.totalSTargetRenewal} disabled></input>
+                        </li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleTotalStyle"><p style="margin-left: 170px;">Total</p></div>
+                    <ul>
+                        <li>
+                            <span class="boldTitle">Q1 Total Target:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ1" class="inputE inputStotal" value={numberAfterTransfer.totalSQ1} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Total Target:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ2" class="inputE inputStotal" value={numberAfterTransfer.totalSQ2} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Total Target:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ3" class="inputE inputStotal" value={numberAfterTransfer.totalSQ3} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Total Target:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ4" class="inputE inputStotal" value={numberAfterTransfer.totalSQ4} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">---------------------------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Target:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="totalSTotalTarget" class="inputE" style="margin-left: 45px;" value={numberAfterTransfer.totalTotalS} disabled></input>
+                        </li>
+                    </ul>
+                    <br>
                 </div>
                 <div class="newQuota">
-                    <div class="titleStyle">Target Record</div>
+                    <div class="titleStyle">Destination record</div>
                     <div class="secondTitleStyle">Some Details:</div>
                     <ul>
                         <template if:false={quotaSelected.TBH__c}>
@@ -168,35 +341,183 @@
                             <li><span class="boldTitle">TBH:</span> {quotaSelected.Name}</li>
                         </template>
                         <li><span class="boldTitle">Position Id:</span> {quotaSelected.RSM_PositionId__c}</li>
-                        <br>
                         <li><span class="boldTitle">Region:</span> {quotaSelected.Region__c}</li>
-                        <br>
                         <li><span class="boldTitle">SubRegion:</span> {quotaSelected.Sub_Region__c}</li>
-                        <br>
                         <li><span class="boldTitle">Target Year:</span> {quotaSelected.Target_Year__c}</li>
-                        <li><span class="boldTitle">Active:</span> {quotaSelected.Active__c}</li>
                         <li><span class="boldTitle">Role:</span> {quotaSelected.Sales_Planning_Role_del__c}</li>
                     </ul>
                     <br>
-                    <div class="secondTitleStyle">NB Targets<button style="height: 21px; background-color: gray; border: 0"></button></div>
+                    <div class="secondTitleStyle"><p style="margin-left: 250px;">NB Destination</p></div>
                     <ul>
-                        <li><span class="boldTitle">Q1 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ1NB" class="inputTNB" value={quotaSelected.Q1_NB_Target_ACV__c} disabled></input></li>
-                        <li><span class="boldTitle">Q2 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ2NB" class="inputTNB" value={quotaSelected.Q2_NB_Target_ACV__c} disabled></input></li>
-                        <li><span class="boldTitle">Q3 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ3NB" class="inputTNB" value={quotaSelected.Q3_NB_Target_ACV__c} disabled></input></li>
-                        <li><span class="boldTitle">Q4 NB Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ4NB" class="inputTNB" value={quotaSelected.Q4_NB_Target_ACV__c} disabled></input></li>
+                        <li>
+                            <span class="boldTitle">Q1 NB Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ1NB" class="inputTNB inputDNB" value={numberAfterTransfer.DQ1_NB_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 NB Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ2NB" class="inputTNB inputDNB" value={numberAfterTransfer.DQ2_NB_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 NB Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ3NB" class="inputTNB inputDNB" value={numberAfterTransfer.DQ3_NB_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 NB Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ4NB" class="inputTNB inputDNB" value={numberAfterTransfer.DQ4_NB_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">---------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total NB:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="totalTNb" class="inputE" style="margin-left:65px" value={numberAfterTransfer.totalTNB} disabled></input>
+                        </li>
                     </ul>
                     <br>
-                    <div class="secondTitleStyle">Upsell Targets</div>
+                    <div class="secondTitleStyle"><p style="margin-left: 250px;">Upsell Destination</p></div>
                     <ul>
-                        <li><span class="boldTitle">Q1 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ1Up" class="inputTNB" value={quotaSelected.Q1_Upsell_Target_ACV__c} disabled></input></li>
-                        <li><span class="boldTitle">Q2 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ2Up" class="inputTNB" value={quotaSelected.Q2_Upsell_Target_ACV__c} disabled></input></li>
-                        <li><span class="boldTitle">Q3 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ3Up" class="inputTNB" value={quotaSelected.Q3_Upsell_Target_ACV__c} disabled></input></li>
-                        <li><span class="boldTitle">Q4 Upsell Target:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input data-id="TQ4Up" class="inputTNB" value={quotaSelected.Q4_Upsell_Target_ACV__c} disabled></input></li>
+                        <li>
+                            <span class="boldTitle">Q1 Upsell Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ1UP" class="inputTNB inputDupsell" value={numberAfterTransfer.DQ1_Upsell_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Upsell Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ2UP" class="inputTNB inputDupsell" value={numberAfterTransfer.DQ2_Upsell_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Upsell Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ3UP" class="inputTNB inputDupsell" value={numberAfterTransfer.DQ3_Upsell_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Upsell Destination:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            <input data-id="TQ4UP" class="inputTNB inputDupsell" value={numberAfterTransfer.DQ4_Upsell_Target_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">-----------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Upsell:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="totalSUpsell" class="inputE" style="margin-left:65px" value={numberAfterTransfer.totalTUpsell} disabled></input>
+                        </li>
                     </ul>
+                    <br>
+                    <!-- <div class="secondTitleStyle">
+                        <table>
+                            <tr>
+                                <th><p class="qtablel">Expected Renewal Target</p></th>
+                                <th><p class="qtabler">Target Renewal Destination</p></th>
+                            </tr>
+                        </table>
+                    </div> -->
+                    <div class="secondTitleStyle"><p style="margin-left: 230px;">Expected Renewal Target</p></div>
+                    <ul>
+                        <li>
+                            <span class="boldTitle">Q1 Expected Renewal Destination:</span>
+                            <input data-id="TQ1RE" class="inputTNB inputR"  value={numberAfterTransfer.DQ1_Expected_Renewal_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Expected Renewal Destination:</span>
+                            <input data-id="TQ2RE" class="inputTNB inputR" value={numberAfterTransfer.DQ2_Expected_Renewal_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Expected Renewal Destination:</span>
+                            <input data-id="TQ3RE" class="inputTNB inputR" value={numberAfterTransfer.DQ3_Expected_Renewal_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Expected Renewal Destination:</span>
+                            <input data-id="TQ4RE" class="inputTNB inputR" value={numberAfterTransfer.DQ4_Expected_Renewal_ACV__c} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">------------------------------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Expected Renewal:</span>
+                            <input data-id="totalTRenewal" class="inputE" style="margin-left: 115px;" value={numberAfterTransfer.totalTRenewal} disabled></input>
+                        </li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleStyle"><p style="margin-left: 230px;">Target Renewal Destination</p></div>
+                    <ul>
+                        <li>
+                            <span class="boldTitle">Q1 Target Renewal Destination:</span>
+                            <input data-id="TQ1REF" class="inputTNB inputDtarget" value={numberAfterTransfer.calculatedNumQ1ExpectedRT}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Target Renewal Destination:</span>
+                            <input data-id="TQ1REF" class="inputTNB inputDtarget" value={numberAfterTransfer.calculatedNumQ2ExpectedRT}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Target Renewal Destination:</span>
+                            <input data-id="TQ1REF" class="inputTNB inputDtarget"  value={numberAfterTransfer.calculatedNumQ3ExpectedRT}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Target Renewal Destination:</span>
+                            <input data-id="TQ1REF" class="inputTNB inputDtarget" value={numberAfterTransfer.calculatedNumQ4ExpectedRT}></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">------------------------------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Target Renewal:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="totalTRenewal" class="inputE" style="margin-left: 85px;" value={numberAfterTransfer.totalTTargetRenewal} disabled></input>
+                        </li>
+                    </ul>
+                    <br>
+                    <div class="secondTitleTotalStyle"><p style="margin-left: 290px;">Total</p></div>
+                    <ul>
+                        <li>
+                            <span class="boldTitle">Q1 Total Target:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ1" class="inputE inputDtotal" value={numberAfterTransfer.totalTQ1} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q2 Total Target:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ2" class="inputE inputDtotal" value={numberAfterTransfer.totalTQ2} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q3 Total Target:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ3" class="inputE inputDtotal" value={numberAfterTransfer.totalTQ3} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Q4 Total Target:</span> 
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="TotalQ4" class="inputE inputDtotal" value={numberAfterTransfer.totalTQ4} disabled></input>
+                        </li>
+                        <li>
+                            <span class="boldTitle">---------------------------</span>
+                        </li>
+                        <li>
+                            <span class="boldTitle">Total Target:</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input data-id="totalTTotalTarget" class="inputE" style="margin-left: 170px;" value={numberAfterTransfer.totalTotalT} disabled></input>
+                        </li>
+                    </ul>
+                    <br>
                 </div>
             </div>
-            <input class="inputCommentTitle" value="Move Targets Comments:" disabled></input><input class="inputComment" data-id="comment" onkeyup={commentOnChange}></input>
-            <lightning-button data-id="saveButt" variant="brand" label="Save" onclick={handelSave} disabled="true"></lightning-button>
+            <div><span class="requiredField">*</span><input class="inputCommentTitle" value="Transition Comments:" disabled></input><input class="inputComment" data-id="comment"></input></div>
+            <div>
+                <lightning-button data-id="changeButt" label="Apply Changes" onclick={moveQuotaHandel}></lightning-button>
+                &nbsp;
+                <lightning-button data-id="clearButt" label="Clear Changes" onclick={clearChangesHandler}></lightning-button>
+            </div>
+            <br>
+            <lightning-button data-id="saveButt" variant="brand" label="Save" onclick={handelSave}></lightning-button>
         </template>
+    </div>
+        <lightning-button data-id="closeButt" class="xButt" label="X" onclick={cancelAction}></lightning-button>
     </div>
 </template>

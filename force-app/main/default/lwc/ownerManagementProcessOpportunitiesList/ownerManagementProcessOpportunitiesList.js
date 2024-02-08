@@ -55,8 +55,9 @@ export default class OwnerManagementProcessOpportunitiesList extends LightningEl
         if(this.getopportunitydata.length > 0) this.showOpportunitiesTable = true;
         this.opportunityData = JSON.parse(JSON.stringify(this.getopportunitydata));
         for(let i=0; i<this.opportunityData.length; i++){
-            this.opportunityData[i].opportunityUrl = 'https://checkmarx--uat.sandbox.lightning.force.com/lightning/r/Opportunity/' + this.opportunityData[i].Id + '/view';
-            this.opportunityData[i].opportunityAccUrl = 'https://checkmarx--uat.sandbox.lightning.force.com/lightning/r/Account/' + this.opportunityData[i].AccountId + '/view';
+            let urll = window.location.href.split('com');
+            this.opportunityData[i].opportunityUrl = urll[0] + 'com/' + this.opportunityData[i].Id;
+            this.opportunityData[i].opportunityAccUrl = urll[0] + 'com/' + this.opportunityData[i].AccountId;
             this.opportunityData[i].rowNumber = i+1;
             this.opportunityData[i].ownerChange = '';
         }
