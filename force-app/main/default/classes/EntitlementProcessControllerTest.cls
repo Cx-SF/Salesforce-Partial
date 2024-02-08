@@ -4,9 +4,7 @@ public class EntitlementProcessControllerTest {
     @testSetup static void setup(){
         Account acc=new Account();
         acc.Name='EntitlementProcessControllerTest_Account';
-		acc.Developers__c = 0;
         insert acc;
-
         Opportunity opp=new Opportunity();
         opp.AccountId=acc.Id;
         opp.Name='Test opp';
@@ -20,12 +18,9 @@ public class EntitlementProcessControllerTest {
         con.ContractTerm=12;
         con.SBQQ__Opportunity__c=opp.id;
         insert con;
-
         Product2 prod=new Product2();
-        prod.Name= 'Test Product2';
-		prod.CX_Duplicate_product_code__c = false;
+        prod.Name='Test Product';
         insert prod;
-
         SBQQ__Subscription__c sub=new SBQQ__Subscription__c();
         sub.SBQQ__Account__c=acc.id;
         sub.SBQQ__Contract__c=con.Id;
@@ -61,7 +56,6 @@ public class EntitlementProcessControllerTest {
     static void EntitlementsProcessInactiveContractBatchTest(){
         Test.startTest();
         Account acc1=new Account();
-		acc1.Developers__c = 0;
         acc1.Name='EntitlementProcessControllerTest_Account 1';
         insert acc1;
         
@@ -97,7 +91,6 @@ public class EntitlementProcessControllerTest {
     static void EntitlementsProcessActiveContractBatchTest(){
         Test.startTest();
         Account acc1=new Account();
-		acc1.Developers__c = 0;
         acc1.Name='EntitlementProcessControllerTest_Account 1';
         acc1.Maximum_Portal_Users__c = 20;
         acc1.Override_maximum_Portal_Users__c = 10;
@@ -140,7 +133,6 @@ public class EntitlementProcessControllerTest {
         Test.startTest();
         
         Account acc1=new Account();
-		acc1.Developers__c = 0;
         acc1.Name='EntitlementProcessControllerTest_Account 1';
         acc1.Override_maximum_Portal_Users__c = 10;
         acc1.Override_Service_Availability__c = 'Standard';
@@ -191,7 +183,6 @@ public class EntitlementProcessControllerTest {
     static void EntitlementsProcessContractAndUsersBatchTest(){
         Test.startTest();
         Account acc1=new Account();
-		acc1.Developers__c = 0;
         acc1.Name='EntitlementProcessControllerTest_Account 1';
         //acc1.Override_maximum_Portal_Users__c = 10;
        // acc1.Override_Service_Availability__c = 'Standard';

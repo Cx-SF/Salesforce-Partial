@@ -20,14 +20,14 @@ global with sharing class ContractExceptedRenewalBatch implements Database.Batch
     	
     	if (test.isRunningTest()) 
     	return Database.getQueryLocator([Select SBQQ__Contract__r.SBQQ__RenewalOpportunity__c,SBQQ__Contract__c ,Subscription_ACV__c,
-    									SBQQ__Contract__r.Contract_Excepted_Renewal_ACV__c
+    									SBQQ__Contract__r.Contract_Excepted_Renewal_ACV__c, SBQQ__Contract__r.CX_OLD_Contract_Expected_Renewal_ACV__c
     									From SBQQ__Subscription__c 
     									where SBQQ__Contract__r.SBQQ__RenewalOpportunity__c != null
     									and NeedToBeCalculatedInBatch__c = true limit 50
     									]);
     									
     	else return Database.getQueryLocator([Select SBQQ__Contract__r.SBQQ__RenewalOpportunity__c,SBQQ__Contract__c ,Subscription_ACV__c,
-    									SBQQ__Contract__r.Contract_Excepted_Renewal_ACV__c
+    									SBQQ__Contract__r.Contract_Excepted_Renewal_ACV__c, SBQQ__Contract__r.CX_OLD_Contract_Expected_Renewal_ACV__c
     									From SBQQ__Subscription__c 
     									where SBQQ__Contract__r.SBQQ__RenewalOpportunity__c != null
     									and NeedToBeCalculatedInBatch__c = true
@@ -53,7 +53,7 @@ global with sharing class ContractExceptedRenewalBatch implements Database.Batch
 			contractIds.add(sub_i.SBQQ__Contract__c);
 		}
   		
-  		ContractList.addAll([Select Id, status, Contract_Excepted_Renewal_ACV__c,SBQQ__RenewalOpportunity__c,Total_Expected_Renewal_ACV__c,
+  		ContractList.addAll([Select Id, status, CX_OLD_Contract_Expected_Renewal_ACV__c, Contract_Excepted_Renewal_ACV__c, SBQQ__RenewalOpportunity__c,Total_Expected_Renewal_ACV__c,
   								(Select Id, Subscription_ACV__c From SBQQ__Subscriptions__r ) 
   							From contract where SBQQ__RenewalOpportunity__c != null and id in : contractIds ]);
   				   
@@ -69,9 +69,9 @@ global with sharing class ContractExceptedRenewalBatch implements Database.Batch
   				SubscriptionListToUpdate.add(sub_i);
   				
   			}
-  			if (con.Contract_Excepted_Renewal_ACV__c != ACV ) {
+  			if (con.CX_OLD_Contract_Expected_Renewal_ACV__c != ACV ) {
   				
-  				con.Contract_Excepted_Renewal_ACV__c = ACV; 
+  				con.CX_OLD_Contract_Expected_Renewal_ACV__c = ACV; 
   				ContractToUpdateMap.put(con.Id,con);
   			}
   			

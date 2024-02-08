@@ -6,18 +6,11 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
     global List<Grace_Period_days__mdt> Grace_Period_days;
     Map<String,Id> SlaProcessMap;
     List<String> accountsToProccess = new List<String>();
-    
-    // Sep. 2022 - new Default Logic
-    public static map <id,Account> AccMap = new map <Id,Account>();
-    // Sep. 2022 - new Default Logic
-    
+
     public EntitlementsProcessActiveContractBatch(List<String> accountsToProccess){
-        system.debug('TESTING accountsToProccess is '+accountsToProccess);
         this.accountsToProccess = accountsToProccess;
     }
     global Database.QueryLocator start(Database.BatchableContext BC){        
-        
-        system.debug('TESTINTG accountsToProccess is '+accountsToProccess);
         Grace_Period_days=[select Number_Of_Days__c FROM Grace_Period_days__mdt limit 1];
         DateTime dT=system.today();
         if(Grace_Period_days.size()>0){
@@ -38,14 +31,6 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
         {
             s.add((String)r.get('AccountId'));
         }  
-        
-        // Sep. 2022 - new Default Logic
-        // Find Accounts that have open opportunities and add them for the population
-        list <Account> OpenOppAccounts = [select name, of_Open_Opportunities__c,type, Service_Availability__c from Account 
-                                    where of_Open_Opportunities__c > 0 and  Service_Availability__c = null order by of_Open_Opportunities__c];
-        for (account a : OpenOppAccounts){s.add (a.id);}
-        // Sep. 2022 - new Default Logic
-        
         //Retrieve all accounts with active contracts                            
         res = [SELECT accountid FROM contract WHERE endDate>=:dt.date()  group by accountid];//AND accountid IN:accountsToProccess only for testing
         
@@ -53,10 +38,9 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
         {
             s.add((String)r.get('AccountId'));
         }
-        
-        
+
          system.debug('***IN execute res2: '+res);
-         string query='SELECT Name,Id,Service_Availability__c,Override_Service_Availability__c,Maximum_Portal_Users__c,Override_maximum_Portal_Users__c,of_Open_Opportunities__c';
+         string query='SELECT Name,Id,Service_Availability__c,Override_Service_Availability__c,Maximum_Portal_Users__c,Override_maximum_Portal_Users__c';
                 query+=',(SELECT Id, Name, AccountId, StartDate, EndDate, SlaProcessId,status,Case_Priority__c,Type,Number_Of_Users__c,Service_Availability__c FROM Entitlements where status=\'Active\')';
                 query+=',(SELECT id,Service_Availability__c,CreatedDate,endDate FROM contracts WHERE   endDate>= '+currentDateWithPerioddays+'  And Status!=\'Terminated\'  And Status!=\'Expired\' )';
                 query+=',(SELECT AccountId,isActive,CreatedDate FROM users ) ';        
@@ -71,9 +55,6 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
     global void execute(Database.BatchableContext BC, List<Account> scope){
         system.debug('***IN execute: '+scope);
 		system.debug('***IN scope: '+scope);
-		system.debug('******** EntitlementsProcessActiveContractBatch EXECUTE');
-		if (scope!=null) AccMap.putall (scope);
-		
         Map<String,Service_Availability__mdt> ServiceAvailabilityMap=new Map<String,Service_Availability__mdt>();
         // Loop all service availability types from metadata 
         for(Service_Availability__mdt sam:[select Label,Order__c from Service_Availability__mdt]){
@@ -114,16 +95,8 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
         upsertEntitlementList.clear();
         List<Account> accountToChangeStatus = new List<Account>();
         // Loop - all Accounts fetched above, 
-        for(Account acc:scope)
-        {
-            
+        for(Account acc:scope){
             system.debug('***IN acc.contracts: '+acc.contracts);
-            
-            // Sep. 2022 - new Default Logic
-            // Add a new flag to account to mark accounts that will use a new default logic
-            if (acc.of_Open_Opportunities__c > 0 && acc.Service_Availability__c == null) acc.Default_Entitlements_New_Process__c = true; //put in the try
-            
-            
             if(acc.contracts==null || acc.contracts.isEmpty()){
                 
                 // 9.6 : Check if need to udpate entitlements for Accounts that has active Contracts
@@ -132,19 +105,12 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
                 }
                 continue;
             }
-            system.debug('TESTING *****1');
             try {
-                
-                system.debug('TESTING *****1');
                 accountNumberOfUser=null;
                 string serviceAvailability=[select Label,Order__c from Service_Availability__mdt order by Order__c desc limit 1].label;
-                
                 Contract maxContract=acc.contracts[0];
-               //Sep 2022 Remove ->  Contract maxContract = null;
-                if (acc!=null && acc.contracts.size()>0) maxContract=acc.contracts[0];
                 //Get contract end date by order of service availability 
-                //Sep 2022 Remove ->if (acc!=null && acc.contracts!=null && acc.contracts.size()>0) 
-                    for(Contract con:acc.contracts)
+                for(Contract con:acc.contracts)
                 {
  
                     string contractServiceAvailability=con.Service_Availability__c; 
@@ -155,38 +121,22 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
                     }
                     
                 }
-                
-                system.debug('TESTING *****1');
-                
-                //Sep 2022 Remove ->
-                //Date maxContractendDate= null;
-                //if (maxcontract!=null) maxContractendDate = maxContract.EndDate;
-                //Sep 2022 Remove ->
-          		Date maxContractendDate=maxContract.EndDate;
-                
-                //Sep 2022 Remove ->
-                //if(Grace_Period_days.size()>0 && maxcontract!=null)
-                //Sep 2022 Remove ->
-                  if(Grace_Period_days.size()>0)
-                {
+                Date maxContractendDate=maxContract.EndDate;
+                if(Grace_Period_days.size()>0){
                     maxContractendDate = maxContract.EndDate.addDays((Integer.valueOf(Grace_Period_days[0].Number_Of_Days__c)));
                 }
-                
                 accountServiceAvailability=serviceAvailability;
-                system.debug('TESTING accountServiceAvailability is '+accountServiceAvailability);
                 list<Checkmarx_SLA__mdt> cmslaListExpectedFromContract=new list<Checkmarx_SLA__mdt>();
                 if(CheckmarxSLAMap.get(accountServiceAvailability)!=null){
                     cmslaListExpectedFromContract=CheckmarxSLAMap.get(serviceAvailability);
                     for(Checkmarx_SLA__mdt sla:cmslaListExpectedFromContract)
                         if(sla.Type__c=='User Managment'){
                             accountNumberOfUser=sla.Number_Of_Users__c;
-                            system.debug('TESTING accountNumberOfUser updated');
                             break;
                         }
                     
                 }
                 
-                system.debug('TESTING *****1');
                 
                 if(acc.Override_Service_Availability__c!=null && acc.Override_Service_Availability__c!='')  
                     serviceAvailability=acc.Override_Service_Availability__c;
@@ -207,11 +157,7 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
                         if(e.Type==cl.Type__c && e.Case_Priority__c==cl.Priority__c && e.Service_Availability__c==cl.Service_Availability__c){
                             //i++;
                             //update SLA/OLA entitlement
-                            //Sep 2022 Remove ->
-                            //if (maxContract!=null) e.StartDate=date.newinstance(maxContract.CreatedDate.year(), maxContract.CreatedDate.month(), maxContract.CreatedDate.day());
-                            //Sep 2022 Remove ->
                             e.StartDate=date.newinstance(maxContract.CreatedDate.year(), maxContract.CreatedDate.month(), maxContract.CreatedDate.day());
-                            
                             e.EndDate=maxContractendDate;
                             e.Case_Priority__c=cl.Priority__c;
                             e.Case_Record_Type__c=cl.Case_Record_Type__c;
@@ -255,17 +201,12 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
                     }
                     upsertEntitlementList.add(e);
                 }
-                system.debug('TESTING *****1');
-                
                 for(Checkmarx_SLA__mdt cl:cmslaListExpected)
                 {
 
 
                     Entitlement e=new Entitlement();
                     e.AccountId=acc.Id;
-                    //Sep 2022 Remove ->
-                    //if (maxContract!=null) e.StartDate=date.newinstance(maxContract.CreatedDate.year(), maxContract.CreatedDate.month(), maxContract.CreatedDate.day());
-                    //Sep 2022 Remove ->
                     e.StartDate=date.newinstance(maxContract.CreatedDate.year(), maxContract.CreatedDate.month(), maxContract.CreatedDate.day());
                     e.EndDate=maxContractendDate;
                     e.Case_Priority__c=cl.Priority__c;
@@ -300,21 +241,14 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
                 if(Test.isRunningTest()){
                     acc.name='';
                 }
-                
-                system.debug('TESTING ******1');
                 acc.Maximum_Portal_Users__c=accountNumberOfUser;
                 acc.Service_availability__c=accountServiceAvailability;
             }catch(Exception ex){
                 upsertAccountListError.add(new EntitlementProcessErrorHandling.SaveResultClass(acc.Id,ex.getMessage()+'. Stacktrace:'+ex.getStackTraceString()));
             }
         }
-        
-        system.debug('TESTING accountToChangeStatus is '+accountToChangeStatus);
-        
         //end fix entitlements for account with contract
         List<Entitlement> entList = createEntitlementAndUpdateAccount(accountToChangeStatus);
-        
-        system.debug('TESTING entlist is '+entlist);
         upsertEntitlementList.addAll(entList);
         
         //update all accounts - (defulat and contracted)
@@ -345,26 +279,8 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
     
     @TestVisible 
     private List<Entitlement> createEntitlementAndUpdateAccount(List<Account> accList){
-        
-        system.debug('TESTING createEntitlementAndUpdateAccount AccList is '+AccList);
-
-		List<Checkmarx_SLA__mdt> mtdL = [SELECT DeveloperName, Id, Number_Of_Users__c FROM Checkmarx_SLA__mdt WHERE DeveloperName = 'Default_User_Managment'];
-		System.debug('TSR - mtdL' + mtdL);
-        
-        list <id> ids = new list <id>();
-        
-        for (Account a : acclist) ids.add (a.id);
-        
-        list <Account> AList = [select id,name,of_Open_Opportunities__c from Account where id=:ids ];
-        if (AList.size()>0) AccMap.putall (AList);
-        
         List<Entitlement> entitlementsToCreate = new List<Entitlement>();
         for(Account acc : accList){
-            
-            Account aData = null;
-            if (acc!=null && AccMap.containsKey (Acc.id)) aData = AccMap.get (acc.id);
-            system.debug('TESTING aData is '+aData);
-            
             try {
                 Boolean haveActiveUser = false;
                 if(acc.Users != null){
@@ -376,15 +292,8 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
                     }
                 }
                 
-                system.debug('TESTING haveActiveUser is '+haveActiveUser);
-                // Sep. 2022 - new Default Logic
-                if((haveActiveUser || (aData!=null && aData.of_Open_Opportunities__c>0)) && (acc.Service_Availability__c==null || acc.Service_Availability__c=='')){
-                    system.debug('TESTING adding default entitlement');
+                if(haveActiveUser && (acc.Service_Availability__c==null || acc.Service_Availability__c=='')){
                     acc.Service_Availability__c='Default';
-                    // anat: improve the current logic
-                    //acc.Maximum_Portal_Users__c= 2;
-					acc.Maximum_Portal_Users__c= mtdL[0].Number_Of_Users__c;
-                    // anat: improve the current logic
                     entitlementsToCreate.addAll(createEntitlements(acc));
                 }
             }catch(Exception ex){
@@ -428,7 +337,6 @@ global class EntitlementsProcessActiveContractBatch implements Database.Batchabl
                 e.Name= sla.Type__c+': '+sla.Service_Availability__c;
             resultList.add(e);
         }
-        system.debug('TESTING resultlist is '+resultlist);
         return resultList;
     }
     

@@ -52,7 +52,7 @@ global class Email_Template_Ctrl {
             query += ' Where ' + referenceName + ' =: ParentId';
             if(ObjToDisplay == 'SBQQ__QuoteLine__c'){
                 /*query += ' and SBQQ__Bundled__c != true ';*/
-                query += ' and SBQQ__Product__r.SBQQ__Hidden__c != true ';
+                query += ' and (SBQQ__Product__r.SBQQ__Hidden__c != true Or (SBQQ__Product__r.SBQQ__Hidden__c = true And SBQQ__NetPrice__c != 0))';
                 query += '  order by WDCX_LineOrder__c ';
             }
             return Database.query(query);
