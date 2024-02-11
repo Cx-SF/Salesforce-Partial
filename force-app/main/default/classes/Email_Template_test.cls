@@ -54,6 +54,13 @@ public class Email_Template_test  {
 		info.AcvDifference_Percent = 2;
 		info.AcvDownSell_Amount = 76;
 		info.AcvDownSell_Percent = 4;
+
+		info.Expected_Renewal_ACV = '78';
+		info.ExpectedRenewal_ACV = 75;
+		info.UpliftedExpected_RenewalACV = 44;
+		info.Uplifted_ExpectedRenewal_ACV = '44';
+		info.currencyISO = 'USD';
+		
 		info.currencyISO = 'USD';
         test.stopTest();
     }
