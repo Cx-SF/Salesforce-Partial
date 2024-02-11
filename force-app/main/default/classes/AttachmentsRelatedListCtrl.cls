@@ -5,6 +5,7 @@ public with sharing class AttachmentsRelatedListCtrl {
         List<AttachmentsWrapper> result = new List<AttachmentsWrapper>();
         Set<Id> documentIds = new Set<Id>();
         Set<Id> relatedIds = new Set<Id>();
+        // Maps for filtering Attachments shown in Community
         Map<Id, ContentDocumentLink> cdlChildMap = new Map<Id, ContentDocumentLink>(); 
         
         for(ContentDocumentLink cdl: [SELECT Id, ContentDocumentId, IsDeleted, LinkedEntityId, ShareType, SystemModstamp, Visibility FROM ContentDocumentLink WHERE LinkedEntityId =:parentId ]){
@@ -112,7 +113,7 @@ public with sharing class AttachmentsRelatedListCtrl {
             result.add(new AttachmentsWrapper(att,accId,accountId));
         }
         /* Old code
-                    List<ContentDocumentLink> links =   [Select Id,
+                    List<ContentDocumentLink> links = 	[Select Id,
                     ContentDocumentId,
                     IsDeleted,
                     LinkedEntityId,
@@ -134,7 +135,7 @@ public with sharing class AttachmentsRelatedListCtrl {
                     }
                     }
                     }
-        */
+		*/
         return result;
     }
     
@@ -160,12 +161,12 @@ public with sharing class AttachmentsRelatedListCtrl {
         public String downloadUrl { get; set; }
         
         public AttachmentsWrapper (ContentDocumentLink cdl, ContentVersion cv,Id accountId) {
-            this.id  = cdl.ContentDocumentId;           
-            this.size  = cv.ContentSize;            
-            this.createdDate  = cv.CreatedDate;         
-            this.createdByName  = cv.CreatedBy.AccountId!=null ?  cv.CreatedBy.Name : 'Checkmarx Support';          
-            this.createdById  = cv.CreatedById;         
-            this.parentId  = cdl.LinkedEntityId;            
+            this.id  = cdl.ContentDocumentId;			
+            this.size  = cv.ContentSize;			
+            this.createdDate  = cv.CreatedDate;			
+            this.createdByName  = cv.CreatedBy.AccountId!=null ?  cv.CreatedBy.Name : 'Checkmarx Support';			
+            this.createdById  = cv.CreatedById;			
+            this.parentId  = cdl.LinkedEntityId;			
             this.title  = cv.Title;
             this.type = cv.ContentDocument.FileType;
             if(accountId!=null){
@@ -176,12 +177,12 @@ public with sharing class AttachmentsRelatedListCtrl {
             }
         }
         public AttachmentsWrapper (Attachment att,String accId,Id accountId) {
-            this.id  = att.Id;          
-            this.size  = att.BodyLength;            
-            this.createdDate  = att.CreatedDate;            
-            this.createdByName  = accId!=null ? att.CreatedBy.Name : 'Checkmarx Support';           
-            this.createdById  = att.CreatedById;            
-            this.parentId  = att.parentId;          
+            this.id  = att.Id;			
+            this.size  = att.BodyLength;			
+            this.createdDate  = att.CreatedDate;			
+            this.createdByName  = accId!=null ? att.CreatedBy.Name : 'Checkmarx Support';			
+            this.createdById  = att.CreatedById;			
+            this.parentId  = att.parentId;			
             this.title  = att.Name;
             if(att.Name!=null && att.Name.Contains('.')){
                 this.type= att.Name.substringAfter('.');
