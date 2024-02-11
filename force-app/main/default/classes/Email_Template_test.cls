@@ -59,7 +59,7 @@ public class Email_Template_test  {
 		info.UpliftedExpected_RenewalACV = 44;
 		info.Uplifted_ExpectedRenewal_ACV = '44';
 		info.currencyISO = 'USD';
-		info.currencyISO = 'USD';
+		
         test.stopTest();
     }
 }
