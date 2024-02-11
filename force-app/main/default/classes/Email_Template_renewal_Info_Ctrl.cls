@@ -1,7 +1,10 @@
 public class Email_Template_renewal_Info_Ctrl  {
 
-   public Double ExpectedRenewal_ACV { get; set {ExpectedRenewal_ACV = value; value.format();}}
-   public Double  AcvDownSell_Amount {get; set;}
+   public Double ExpectedRenewal_ACV { get; set {
+	ExpectedRenewal_ACV = value; 
+	value.format();
+   }}
+  public Double  AcvDownSell_Amount {get; set;}
    public Double  AcvDownSell_Percent {get; set;}
    public Double  AcvDifference_Amount {get; set;}
    public Double AcvDifference_Percent {get; set;}
