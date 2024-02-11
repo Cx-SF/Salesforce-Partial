@@ -1,5 +1,55 @@
 public with sharing class LeadTriggerHandler 
 {
+	public static Map <Id, Lead> OldMap = new Map <Id, Lead>();
+	public static String event;
+
+	public static Map <Id, Opportunity> OppMap = new Map <Id, Opportunity>();
+
+	public static void GenData(List <Lead> LLead){
+		Set <Id> setId = new Set <Id>();
+		for (Lead l: LLead){
+			if (l.ConvertedOpportunityId != null) setId.add(l.ConvertedOpportunityId);
+		}
+
+		if (!setId.isEmpty()){
+			List <Opportunity> lo = [SELECT Id, StageName FROM Opportunity WHERE Id IN:setId];
+			if (lo != null && !lo.isEmpty()) OppMap.putAll(lo);
+		}
+	}
+
+	public static void blockConversionDuoToOppStage(Lead l){
+		l.addError('A deal registration can only be approved and added to an existing opportunity if the opportunity is in stage "stage zero prospecting".');
+	}
+
+	public static Boolean blockConversionDuoToOppStageREQ(Lead l){
+		Boolean tmp = false, b = false;
+		if (event == 'Update' && l.IsConverted && !OldMap.get(l.Id).IsConverted && l.ConvertedOpportunityId != null && l.RecordTypeId == '0123z0000003S8iAAE' ) tmp = true;
+		if(tmp && OppMap.containsKey(l.ConvertedOpportunityId) && OppMap.get(l.ConvertedOpportunityId).StageName != 'Requirements Definition') b = true;
+		System.debug('iCloudius - blockConversionDuoToOppStageREQ: ' + b);
+		return b;
+	}
+
+	public static void blockConversionDuoToOppStage(List <Lead> LLead){
+		for (Lead l: LLead) if (blockConversionDuoToOppStageREQ(l)) blockConversionDuoToOppStage(l);
+	}
+
+	public static void HandleBefore(List <Lead> LLead, Map <Id, Lead> OldTriggerMap, String evt){
+		System.debug('iCloudius - LeadTriggerHandler - HandleBefore ' + evt);
+		if (OldTriggerMap != null) OldMap = OldTriggerMap;
+		if (evt != null) event = evt;
+		GenData(LLead);
+		blockConversionDuoToOppStage(LLead);
+	}
+
+	public static void GenDataAfter(List <Lead> LLead){
+	}
+
+	public static void HandleAfter(List <Lead> LLead){
+		System.debug('iCloudius - LeadTriggerHandler - HandleBefore ' + event);
+		GenDataAfter(LLead);
+	}
+
+/*
     public void leadCampaignTeamMemberCreation(List<Lead> leadLst, Map<Id,Lead> newLeadMap, Map<Id,Lead> oldLeadMap)
     {
 		map<ID,ID> leadID_To_CustomPrimaryCampaignId = new map<ID,ID>() ;
@@ -92,9 +142,8 @@ public with sharing class LeadTriggerHandler
 	    			}
 	    			else
 	    			{
-	    				List<Id> cmIds = new List<Id>();
-	    				cmIds.add(cm.CampaignId);
-	    				leadId_CampaignIds.put(cm.LeadId,cmIds);
+	    				List<Id> cmIds = new List<Id>{cm.CampaignId};
+	    				leadId_CampaignIds.put(cm.LeadId, cmIds);
 	    			}
 	    		}
 	    	}
@@ -118,8 +167,8 @@ public with sharing class LeadTriggerHandler
 		    		  leadsCMmap.get(leadID).CampaignMembers.size() > 0))*/
 		    	// New If changed by Mendy
 		    	
-		    	//check if already exist: 
-		    	Boolean exist = false;
+		    	//check if already exist: */
+		    	/*Boolean exist = false;
 		    	system.debug('leadId_CampaignIds.containsKey(leadID)1 ' + leadId_CampaignIds.containsKey(leadID));
 		    	
 		    	if(leadId_CampaignIds.containsKey(leadID))
@@ -149,7 +198,7 @@ public with sharing class LeadTriggerHandler
 	    		insert insCMs ; 
 	    	}
 		}
-    }
+    }*/
     
     /*
     public void leadAutoCampaignAssigment_AfterInsertUpdate(List<Lead> leadLst, Map<Id,Lead> newLeadMap, Map<Id,Lead> oldLeadMap)
@@ -360,14 +409,14 @@ public with sharing class LeadTriggerHandler
 // -------------------------------------------- TEST METHOD -------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------------------        
     //Test Method
-    private static testMethod void LeadTriggerHandler()
+   private static testMethod void LeadTriggerHandler()
     {
     	ClsObjectCreator cls = new ClsObjectCreator();
 
-		Campaign cm = new Campaign(Name = 'Test Camp');
+		Campaign cm = new Campaign(Name = 'Test Camp', StartDate = Date.today());
 		insert cm ; 
 		
-		Campaign cm2 = new Campaign(Name = 'Test Camp2');
+		Campaign cm2 = new Campaign(Name = 'Test Camp2', StartDate = Date.today());
 		insert cm2 ; 
 
 		Lead lead = cls.returnLead('Test01@test.com');
@@ -377,14 +426,15 @@ public with sharing class LeadTriggerHandler
 		Lead lead1 = cls.returnLead('Test02@test.com');
 		insert lead1 ;
 		
-		lead1.Custom_Primary_Campaign__c = cm.id ; 
+		//lead1.Custom_Primary_Campaign__c = cm.id ; 
+		lead1.Description = 'test';
 		update lead1 ; 
 		
-		lead1.Custom_Primary_Campaign__c = cm2.Id;
-		update lead1;
+		//lead1.Custom_Primary_Campaign__c = cm2.Id;
+		//update lead1;
 		
-		lead.Custom_Primary_Campaign__c = null ;
-		update lead; 
+		//lead.Custom_Primary_Campaign__c = null ;
+		//update lead; 
 		
 		
     }

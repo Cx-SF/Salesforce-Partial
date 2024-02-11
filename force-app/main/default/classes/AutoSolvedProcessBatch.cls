@@ -52,7 +52,7 @@ public with sharing class AutoSolvedProcessBatch implements Database.Batchable<s
         String selectFields = 'Id,ContactId,Is_auto_closed__c	,OwnerId,Account_CSM__c,  ';
         List<String> fields = new List<String>();
         //add Email fields
-        selectFields += 'ContactEmail,SuppliedEmail,CSM_Email__c,Account_CSM_Email__c,CreatedBy.Email,Account_ISR_Email__c,Account_RSM_Email__c,Account_SDR_Email__c,Account_SE_Email__c,Account_TAM_Email__c,Business_Owner_Email__c,Owner_Manager_Email__c, ';
+        selectFields += 'ContactEmail,SuppliedEmail,CSM_Email__c,Account_CSM_Email__c,CreatedBy.Email,Account_RSM_Email__c,Account_SDR_Email__c,Account_SE_Email__c,Account_TAM_Email__c,Business_Owner_Email__c,Owner_Manager_Email__c, ';
         selectFields += ' Status,  Status_Change_Date__c  ';//date field
         return selectFields;
     }

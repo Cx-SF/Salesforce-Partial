@@ -1,15 +1,15 @@
 <apex:component id="Email_Template_Approvals" controller="Email_Template_Ctrl" allowDML="true" access="global"   >
     <style>
-       .outBorder {
+    /*.outBorder {
     border:3px outset black;
-   }
-   .inBorder{
-    border-top:0.5px solid   black;
-    border-left:0.5px solid   black;
+   }*/
+   /*.inBorder{
+        border-top:0.5px solid black; 
+        border-left:0.5px solid black;
    }
         .HClass {align:left !important;}
         .Custom11Tab .bPageBlock { border-color:white;}
-        .Custom11Tab .secondaryPalette
+        .Custom11Tab .secondaryPalette*/
     </style>
     <apex:attribute name="QuoteIdET"      type="String" description="Junction object name"  assignTo="{!ParentId}" />
     <apex:attribute name="ApprovalIdET"   type="String" description="Table's Columns"       assignTo="{!ApprovalId}"/>
@@ -18,23 +18,26 @@
     <apex:attribute name="ObjectRefName"  type="String" description="Reference object name" assignTo="{!referenceName}" />
     
     
-    <apex:dataTable id="documentsTable" value="{!RecordsToDisplay}" var="prod"   styleclass="outBorder" headerClass="HClass" 
-                    style="align:left;font-size:13px;border-collapse: collapse ; border-width:thin;border-style:solid;width:80%;border-color:gray;background-color:#9fd9fc; color: black;" >
+    <apex:dataTable id="documentsTable" value="{!RecordsToDisplay}" var="prod"   styleclass="outBorder" headerClass="align:left !important;" 
+                    style="align: left; font-size: 13px; border-collapse: collapse; border-width: thin; border-style: solid; width: 100%; border-color: black; background-color: #9fd9fc; color: black;  border-top: 0.5px solid black; border-left: 0.5px solid black;" >
         
         <apex:repeat value="{!fsList}" var="fieldValue">
-            <apex:column headerValue="{!fieldValue.Label}" styleclass="inBorder" rendered="{!IF((fieldValue.Type == 'currency' || fieldValue.Type == 'date'),'false','true')}" style="align:center !important;background-color: #FFFFFF; color: #000000 ">
+            <apex:column headerValue="{!fieldValue.Label}" styleclass="inBorder" rendered="{!IF((fieldValue.Type == 'currency' || fieldValue.Type == 'date'),'false','true')}" style="align: center !important; background-color: #FFFFFF; color: #000000; border-top: 0.5px solid black; border-left: 0.5px solid black; ">
+                <apex:facet name="header"><div Style="border-left: 0.5px solid black;">{!fieldValue.Label}</div></apex:facet>
                 <apex:outputtext value="{!prod[fieldValue]}"  styleClass="slds-output" /> 
             </apex:column>
             
-            <apex:column headerValue="{!fieldValue.Label}" styleclass="inBorder" rendered="{!IF(fieldValue.Type == 'currency','true','false')}" style="background-color: #FFFFFF; color: #000000">
+            <apex:column headerValue="{!fieldValue.Label}" styleclass="inBorder" rendered="{!IF(fieldValue.Type == 'currency','true','false')}" style="align: center !important; background-color: #FFFFFF; color: #000000; border-top: 0.5px solid black; border-left: 0.5px solid black;">
                  {!IF(prod[fieldValue] != null,'$','')}
-                <apex:outputtext value="{0, number, ###,###,###,##0}" styleClass="slds-output" style="text-align:right" >
+                <apex:facet name="header"><div Style="border-left: 0.5px solid black;">{!fieldValue.Label}</div></apex:facet>
+                <apex:outputtext value="{0, number, ###,###,###,##0}" styleClass="slds-output" style="text-align: right; border-top: 0.5px solid black; border-left: 0.5px solid black;" >
                     <apex:param value="{!prod[fieldValue]}"/>
                     </apex:outputtext> 
                
                 </apex:column>
                 
-                <apex:column headerValue="{!fieldValue.Label}" styleclass="inBorder" rendered="{!IF(fieldValue.Type == 'date','true','false')}" style="background-color: #FFFFFF; color: #000000">
+                <apex:column headerValue="{!fieldValue.Label}" styleclass="inBorder" rendered="{!IF(fieldValue.Type == 'date','true','false')}" style="align: center !important; background-color: #FFFFFF; color: #000000; border-top: 0.5px solid black; border-left: 0.5px solid black;">
+                    <apex:facet name="header"><div Style="border-left: 0.5px solid black;">{!fieldValue.Label}</div></apex:facet>
              <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
             <apex:param value="{!prod[fieldValue]}" /> 
                </apex:outputText>

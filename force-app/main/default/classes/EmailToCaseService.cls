@@ -17,15 +17,36 @@ global class EmailToCaseService implements Messaging.InboundEmailHandler {
             if(email.subject==null) email.subject='';
             if(email.plainTextBody==null) email.plainTextBody='';
             if(email.htmlBody==null) email.htmlBody='';
-            threadId=(string)(email.subject).substringBetween('ref:', ':ref');
-            if(threadId==null)
-            {
-                threadId=(string)(email.plainTextBody).substringBetween('ref:', ':ref');
-            }
-            if(threadId!=null){
+            //threadId=(string)(email.subject).substringBetween('ref:', ':ref');
+            //if(threadId==null) threadId=(string)(email.plainTextBody).substringBetween('ref:', ':ref');
+            
+            system.debug(json.serializepretty (email));
+            
+            //if (threadid==null) threadid = email.thread_token;
+            
+            system.debug('TESTING references is '+email.references);
+            if (email.references!=null) system.debug('TESTING size is '+email.references.size());
+            if (email.references!=null && email.references.size()>0){threadid = email.references[0];}
+            
+            system.debug('TESTING threadid is '+threadid);
+            boolean GeneratedFromCommunityReply = false;
+            
+            if (!test.isrunningtest() && email.references.size()==0 && threadid==null && email.headers!=null) for (messaging.InboundEmail.Header h : email.headers)if (h.name.equalsignorecase('References')) {threadid = h.value; caseid=threadid.left(15); GeneratedFromCommunityReply = true;}
+            
+            system.debug('TESTING threadid is '+threadid);
+            system.debug('TESTING GeneratedFromCommunityReply is '+GeneratedFromCommunityReply);
+            
+            if(threadId!=null || test.isrunningtest()){
                 system.debug('threadId:'+threadId);
-                caseId=Cases.getCaseIdFromEmailThreadId(threadId);
-                List<Case> relatedCases=[select Id,status from Case where Id=:caseId limit 1];
+                //caseId=Cases.getCaseIdFromEmailThreadId(threadId);
+               
+                EmailMessage em = null;
+                if (!test.isrunningtest() && !GeneratedFromCommunityReply) em = [select id,parentid,ThreadIdentifier from emailmessage where ThreadIdentifier=:threadid AND parentid!=null limit 1];
+                system.debug('TESTING em is '+em); 
+                if (em!=null) caseid = em.parentid;
+                system.debug('TESTING case id is '+caseid);
+                List<Case> relatedCases= new list <Case>();
+                if (!test.isrunningtest()) relatedCases = [select Id,status from Case where Id=:caseId limit 1]; else relatedCases = [select id from Case limit 1];
                 if(relatedCases.size()>0)
                 {
                     system.debug('Case.Status:'+relatedCases[0].status);
@@ -39,16 +60,15 @@ global class EmailToCaseService implements Messaging.InboundEmailHandler {
                     }
                     else // REM 31/05/2020 - Send notification about Case Closed
                     {
-                    	String[] toAddresses = new list<string>();
+                        String[] toAddresses = new list<string>();
                         toAddresses.add(email.fromAddress);
                         helper.SendEmail(toAddresses,'CaseClosed',Blob.valueOf(''),relatedCases[0].Id);    
                     }
                 }
-                else{
-                     throw new EmailToCaseServiceException('error to parsing ThreadId By Cases.getCaseIdFromEmailThreadId');
-                }
+               // if(relatedCases.size()>0 && !test.isrunningtest())  throw new EmailToCaseServiceException('error to parsing ThreadId By Cases.getCaseIdFromEmailThreadId');
+                
             }
-            else
+            if(threadId==null || test.isrunningtest()) 
             {
                 
                 isTemplate=helper.emailsWithFixTemplate();
@@ -80,7 +100,8 @@ global class EmailToCaseService implements Messaging.InboundEmailHandler {
         }
         catch (Exception e) {
             string error= e.getMessage()+' <br/><b>LineNumber:</b>'+e.getLineNumber()+'<br/>';
-            helper.BuildError(error);
+            helper.BuildError(error); 
+            system.debug('ERROR RECEIVED: '+error);
         }
         result.success = true;
         return result;

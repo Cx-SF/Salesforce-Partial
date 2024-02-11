@@ -48,8 +48,6 @@
                 component.set('v.generalRecordTypeId', generalRecordTypeId);
                 component.set('v.caseDeflectionRecordTypeId', caseDeflectionRecordTypeId);
                 component.set('v.recordTypes', recordTypes);
-                component.set('v.tenant_list_filter', ' AND Account__c = \'' + runningUser.AccountId + '\'');
-                console.log('NCCW - tenant filter: ' + component.get('v.tenant_list_filter'));
             } else {
                 var message = 'Unknown error';
                 var errors = a.getError();
@@ -203,23 +201,15 @@
     
     
     handleNextActionFromCommunity : function(component,value) {
-        var isOne = false;
-        var recordTypesData = component.get('v.recordTypes');
 		var isPowerPartner = component.get('v.isPowerPartner');
 		var available_accounts = component.get('v.available_accounts');
 		var selected_account = component.get('v.selected_account');
-        var selected_tenant = component.get('v.selecselected_tenantted_account');
 		var canCreate = true;
 
 		var userType = component.get('v.userType');
         var recordTypeId = value;
         var searchKeyWord = component.find('searchInputField').get('v.value');
         var defaultValues = {};
-
-        isOne = (recordTypeId == '0124K000000QDcAQAW');
-        console.log('NCCW - isOne: ' + isOne);
-        component.set('v.isOne', isOne);
-
         if (searchKeyWord != null && searchKeyWord != '') {
             defaultValues['Subject'] = searchKeyWord.substring(0, 80);
         }
@@ -230,13 +220,6 @@
 		} else if (!this.isEmpty(selected_account)){
 			defaultValues['CX_End_Customer__c'] = selected_account;
 		}
-
-        if (canCreate && isOne && this.isEmpty(selected_tenant)){
-            component.set('v.isSelectTenantREQ', true);
-			canCreate = false;
-        } else if (isOne){
-            defaultValues['Account_Tenant_List__c'] = selected_tenant;
-        }
 
 		if (canCreate){
 			component.set('v.isRecordTypeSelectionAction', false);

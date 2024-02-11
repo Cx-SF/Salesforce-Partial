@@ -26,8 +26,9 @@
 
     getCase2EmailAddress : function (component) {
         // var caseId = component.get("v.recordId");
+        var localPart = $A.get('$Label.c.LocalPart_Custom');
         var getCase2EmailAddress = component.get("c.getCase2EmailAddress");
-        getCase2EmailAddress.setParam("localPart", "checkmarxsupport");
+        getCase2EmailAddress.setParam("localPart", localPart);
         getCase2EmailAddress.setCallback(this, function (response) {
             console.log(response.getState());
             console.log(response.getError());

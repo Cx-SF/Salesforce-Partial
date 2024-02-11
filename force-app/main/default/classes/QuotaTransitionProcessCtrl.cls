@@ -11,13 +11,13 @@ public class QuotaTransitionProcessCtrl  {
 	public static Map<String, Object> init(id quotaPlannigId){
 		System.debug('quotaPlannigId: ' + quotaPlannigId);
 		// get the current Quota_Planning (the on from the page)
-		List<Quota_Planning__c> currentQuotaPlanning = [select Id, Name, Active__c, rsm_positionId__c, sub_region__c, Region__c, RSM__c,RSM__r.name, TBH__c, TBH__r.name, Target_Year__c, Q1_NB_Target_ACV__c, Q2_NB_Target_ACV__c, Q3_NB_Target_ACV__c, Q4_NB_Target_ACV__c, Q1_Upsell_Target_ACV__c, Q2_Upsell_Target_ACV__c, Q3_Upsell_Target_ACV__c, Q4_Upsell_Target_ACV__c, Sales_Planning_Role_del__c FROM Quota_Planning__c where id =: quotaPlannigId];
+		List<Quota_Planning__c> currentQuotaPlanning = [select Id, Name, Active__c, rsm_positionId__c, sub_region__c, Region__c, RSM__c,RSM__r.name, TBH__c, TBH__r.name, Target_Year__c, Q1_NB_Target_ACV__c, Q2_NB_Target_ACV__c, Q3_NB_Target_ACV__c, Q4_NB_Target_ACV__c, Q1_Upsell_Target_ACV__c, Q2_Upsell_Target_ACV__c, Q3_Upsell_Target_ACV__c, Q4_Upsell_Target_ACV__c, Q1_Expected_Renewal_ACV__c, Q2_Expected_Renewal_ACV__c, Q3_Expected_Renewal_ACV__c, Q4_Expected_Renewal_ACV__c, Q1_Renewal_Target_ACV__c, Q2_Renewal_Target_ACV__c, Q3_Renewal_Target_ACV__c, Q4_Renewal_Target_ACV__c, Sales_Planning_Role_del__c, Region_Retention_Factor__c  FROM Quota_Planning__c where id =: quotaPlannigId];
 
 		// get all the Quota Planning thet active and from this Year
 		Map<String, Object> resOut = new Map<String, Object>();
 		resOut.put('Succses', true);
 		String todayYear = String.valueOf(System.today().year());
-		List<Quota_Planning__c> quotePlanning = [SELECT Id, Name, Active__c, rsm_positionId__c, sub_region__c, Region__c, RSM__c, RSM__r.name, TBH__c, TBH__r.name, Target_Year__c, Q1_NB_Target_ACV__c, Q2_NB_Target_ACV__c, Q3_NB_Target_ACV__c, Q4_NB_Target_ACV__c, Q1_Upsell_Target_ACV__c, Q2_Upsell_Target_ACV__c, Q3_Upsell_Target_ACV__c, Q4_Upsell_Target_ACV__c, Sales_Planning_Role_del__c FROM Quota_Planning__c where active__c = true and Target_Year__c =: todayYear and id !=: quotaPlannigId];
+		List<Quota_Planning__c> quotePlanning = [SELECT Id, Name, Active__c, rsm_positionId__c, sub_region__c, Region__c, RSM__c, RSM__r.name, TBH__c, TBH__r.name, Target_Year__c, Q1_NB_Target_ACV__c, Q2_NB_Target_ACV__c, Q3_NB_Target_ACV__c, Q4_NB_Target_ACV__c, Q1_Upsell_Target_ACV__c, Q2_Upsell_Target_ACV__c, Q3_Upsell_Target_ACV__c, Q4_Upsell_Target_ACV__c, Q1_Expected_Renewal_ACV__c, Q2_Expected_Renewal_ACV__c, Q3_Expected_Renewal_ACV__c, Q4_Expected_Renewal_ACV__c, Q1_Renewal_Target_ACV__c, Q2_Renewal_Target_ACV__c, Q3_Renewal_Target_ACV__c, Q4_Renewal_Target_ACV__c, Sales_Planning_Role_del__c, Region_Retention_Factor__c  FROM Quota_Planning__c where active__c = true and Target_Year__c =: todayYear and id !=: quotaPlannigId];
 
 		Map<String, String> rsmMap = new Map<String, String>();
 		Map<String, String> tbhMap = new Map<String, String>();
@@ -40,6 +40,7 @@ public class QuotaTransitionProcessCtrl  {
 		resOut.put('rsmPositionIdList', rsmPositionIdMap);
 		resOut.put('quotePlanning', quotePlanning);
 		resOut.put('currentQuotaPlanning', currentQuotaPlanning[0]);
+		System.debug('Init resOut: ' + JSON.serialize(resOut));
 		return resOut;
 	}
 
@@ -64,8 +65,8 @@ public class QuotaTransitionProcessCtrl  {
 				sourceId = String.valueOf(messMap.get('sourceId'));
 				targetId = String.valueOf(messMap.get('targetId'));
 				String today = String.valueOf(Date.today()).removeEnd(' 00:00:00');
-				String textforSource = today + ' ' + UserInfo.getFirstName() + ' ' + UserInfo.getLastName() + ' transferred ' + messMap.get('moneyPassed') + ' from ' + messMap.get('fieldNameChanged') + ' ' + messMap.get('sourceRecord') + ' to ' + messMap.get('targetRecord') + ' (quota amount was changed from ' + messMap.get('lastSourceAmount') + ' to ' + messMap.get('newSourceAmount')+')\n' + 'Notes: ' + quotaMess.get('comment');
-				String textforTarget = today + ' ' + UserInfo.getFirstName() + ' ' + UserInfo.getLastName() + ' transferred ' + messMap.get('moneyPassed') + ' from ' + messMap.get('fieldNameChanged') + ' ' + messMap.get('sourceRecord') + ' to ' + messMap.get('targetRecord') + ' (quota amount was changed from ' + messMap.get('lastTargetAmount') + ' to ' + messMap.get('newTargetAmount')+')\n' + 'Notes: ' + quotaMess.get('comment');
+				String textforSource = today + ' ' + UserInfo.getFirstName() + ' ' + UserInfo.getLastName() + ' transferred ' + messMap.get('moneyPassed') + ' from ' + messMap.get('fieldNameChanged') + ' ' + messMap.get('sourceRecord') + ' to ' + messMap.get('targetRecord') + ' (quota amount was changed from ' + messMap.get('lastSourceAmount') + ' to ' + messMap.get('newSourceAmount')+')\n' + ' Notes: ' + quotaMess.get('comment');
+				String textforTarget = today + ' ' + UserInfo.getFirstName() + ' ' + UserInfo.getLastName() + ' transferred ' + messMap.get('moneyPassed') + ' from ' + messMap.get('fieldNameChanged') + ' ' + messMap.get('sourceRecord') + ' to ' + messMap.get('targetRecord') + ' (quota amount was changed from ' + messMap.get('lastTargetAmount') + ' to ' + messMap.get('newTargetAmount')+')\n' + ' Notes: ' + quotaMess.get('comment');
 
 				noteSource.Title = String.valueOf(messMap.get('title'));
 				noteSource.Content = Blob.valueOf(textforSource);

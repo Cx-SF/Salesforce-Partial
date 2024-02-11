@@ -1,0 +1,4 @@
+<apex:page docType="html-5.0" standardController="Case" sidebar="false" showHeader="false">
+    <JBCXM:GSNxt accountId="{!case.accountId}">
+    </JBCXM:GSNxt>
+</apex:page>

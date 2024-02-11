@@ -19,7 +19,7 @@
 */
 public with sharing class CloneOppButtonController {
 
-    private final ApexPages.StandardController theController;
+   /* private final ApexPages.StandardController theController;
 
     public CloneOppButtonController(ApexPages.StandardController stdController) {
         theController = stdController;
@@ -33,7 +33,8 @@ public with sharing class CloneOppButtonController {
             // TODO: Uncomment the action you wish to use and comment out the other one.
             //cloneId = CloneOpportunity.clone((Opportunity)theController.getRecord());
             cloneId = CloneOpportunity.cloneWithProducts(theController.getId());
-            Opportunity opp = new Opportunity(Id = theController.getId(),Renew_Opportunity__c = cloneId);
+            //Opportunity opp = new Opportunity(Id = theController.getId(),Renew_Opportunity__c = cloneId); 
+            Opportunity opp = new Opportunity(Id = theController.getId()); //Update by Rafa 22/02/23 
             update opp;
         }
         catch (Exception e) {
@@ -76,7 +77,7 @@ public with sharing class CloneOppButtonController {
         ApexPages.StandardController sc = new ApexPages.StandardController(opp1);
         CloneOppButtonController controller = new CloneOppButtonController(sc);
         controller.autorun();
-        Test.stopTest() ;*/
-    } 
+        Test.stopTest() ;
+    } */
 
 }

@@ -4,7 +4,7 @@ public class EntitlementProcessErrorHandling {
     
     public static List<SaveResultClass> setErrorList(Database.SaveResult[] SaveResultList,List<sObject> objectList){
         SaveResultClassList.clear();
-        for(Integer i=0;i<SaveResultList.size();i++){
+        if(!SaveResultList.isEmpty()) for(Integer i=0;i<SaveResultList.size();i++){
             if (!SaveResultList.get(i).isSuccess()){
                 for (Database.Error e : SaveResultList.get(i).getErrors())
                 {               

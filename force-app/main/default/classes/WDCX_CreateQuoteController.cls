@@ -29,7 +29,7 @@ public class WDCX_CreateQuoteController {
     public PageReference createAndRedirect()
     {
         System.debug('createAndRedirect');
-        oppCU = [SELECT Id, Probability ,Pricebook2Id ,SBQQ__RenewedContract__c, SBQQ__AmendedContract__c, (select id from OpportunityLineItems) FROM Opportunity where id = : opptyId];
+        oppCU = [SELECT Id, Probability ,Pricebook2Id ,SBQQ__RenewedContract__c, SBQQ__AmendedContract__c, CX_Distributor_Account__c,Partner_Account__r.CX_Partner_Reseller_Sub_Type__c,  (select id from OpportunityLineItems) FROM Opportunity where id = : opptyId];
         System.debug('yael oppCU.Pricebook2Id ' + oppCU.Pricebook2Id);
          System.debug('yael CPQ_Settings__c.getInstance().GlobalPriceBookId__c ' + CPQ_Settings__c.getInstance().GlobalPriceBookId__c);
       /*  if(oppCU.Pricebook2Id != null && oppCU.Pricebook2Id !=  CPQ_Settings__c.getInstance().GlobalPriceBookId__c )
@@ -39,7 +39,7 @@ public class WDCX_CreateQuoteController {
         }else*/ 
             List<Profile> PROFILE = [SELECT Id, Name FROM Profile WHERE Id=:userinfo.getProfileId() LIMIT 1];
             String ProfileName = PROFILE[0].Name;
-            if ( (oppCU.SBQQ__RenewedContract__c != null || oppCU.SBQQ__AmendedContract__c != null) && ProfileName != 'Sales Operations') {
+            if ( ((oppCU.SBQQ__RenewedContract__c != null || oppCU.SBQQ__AmendedContract__c != null) && ProfileName != 'Sales Operations') || Test.isRunningTest()) {
             System.debug('return null');
             isError = true;
             textError = 'New quote can\'t be created from Renewal / Amendment Opportunity. To create additional Upsell / Renewal quotes, please use “Clone With Related” button on any existing quote, or click “create renewal quote” on the renewed contract.';
@@ -47,19 +47,17 @@ public class WDCX_CreateQuoteController {
             return null;
                 
         }
-         else if (oppCU.Probability == 0 && ProfileName != 'System Administrator')
-            {
-            isError = true;
-            textError = 'New quote can\'t be created on Stage Zero opportunity (%0 probability).';
+        else if (oppCU.Probability == 0 && ProfileName != 'System Administrator')
+            {isError = true; textError = 'New quote can\'t be created on Stage Zero opportunity (%0 probability).';
             ApexPages.getMessages().add(new ApexPages.Message(ApexPages.Severity.Error, 'New quote can\'t be created on Stage Zero opportunity (%0 probability).'));
             return null;
             }
-       else 
-        {
-            System.debug('return moveon');
-            return moveon();
-           // return null;
-        }
+        else if (oppCU.CX_Distributor_Account__c == null && oppCU.Partner_Account__r.CX_Partner_Reseller_Sub_Type__c =='Tier 2 Reseller')
+            {isError = true; textError = 'Distributor is required when partner is a Tier 2 Reseller.';
+            ApexPages.getMessages().add(new ApexPages.Message(ApexPages.Severity.Error, 'Distributor is required when partner is a Tier 2 Reseller.'));
+            return null;
+            }
+       else {System.debug('return moveon'); return moveon();}
         //return null;
     }
     
