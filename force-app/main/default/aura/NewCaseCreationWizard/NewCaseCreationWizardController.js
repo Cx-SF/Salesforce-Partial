@@ -130,60 +130,43 @@
 	// Handle Account Selection
 	closeAccountSelectionModal : function (cmp){
 		cmp.set('v.downloadModalOpen', false);
-        cmp.set('v.selected_tenant_obj', null);
 		cmp.set('v.selected_account', null);
 	},
-    partnerAccountSelected: function(cmp, evt, hlp){
-        let selectedValue = evt.getParam('value');
-        console.log('NCCW - Selected partner Account: ' + selectedValue);
-        let tenantFilter = ' AND Account__c = \'' + selectedValue + '\'';
-        cmp.set('v.selected_tenant_obj', null);
-        cmp.set('v.tenant_list_filter', tenantFilter);
-    },
     selectAccountAndContinue : function(cmp, evt, hlp){
 		var available_accounts = cmp.get('v.available_accounts');
 		var selected_account = cmp.get('v.selected_account');
-        var selected_tenant_obj = cmp.get('v.selected_tenant_obj');
 		var runningUser = cmp.get('v.runningUser');
 		var canCreate = true;
 		var combo = cmp.find('AccountCombo');
-        var tenantLookup = cmp.find('tenantlookup');
-        var defaultValues = {};
 
 		if (hlp.isEmpty(selected_account)){
 			$A.util.addClass(combo, "error-box");
-            canCreate = false;
 		} else {
-            $A.util.removeClass(combo, "error-box");
-        }
-
-        if (!hlp.isEmpty(tenantLookup)){
-            if (hlp.isEmpty(selected_tenant_obj) || hlp.isEmpty(selected_tenant_obj.val)){
-                $A.util.addClass(tenantLookup, "error-box");
-                canCreate = false;
-            } else {
-                $A.util.removeClass(tenantLookup, "error-box");
-                cmp.set('v.selected_tenant', selected_tenant_obj.val);
-                defaultValues['Account_Tenant_List__c'] = selected_tenant_obj.val;
-            }
-        }
-                
-        if (canCreate) {
-			console.log('Can create Case');
+			console.log('Can download');
+			$A.util.removeClass(combo, "error-box");
+			/*
+			let selectedAccountName = '';
+			for (let i = 0; i < available_accounts.length;i++){
+				if (available_accounts[i].value == selected_account){
+					selectedAccountName = available_accounts[i].label;
+					break;
+				}
+			}
+			*/
 
 			var userType = cmp.get('v.userType');
 			var recordTypeId = cmp.get('v.defaultRecordType');
 			var searchKeyWord = cmp.find('searchInputField').get('v.value');
+			var defaultValues = {};
 
 			if (selected_account != runningUser.AccountId){
-                defaultValues['AccountId'] = selected_account;// New b
 				defaultValues['Customer_Account_ID__c'] = selected_account;
 			}
 			
 			if (searchKeyWord != null && searchKeyWord != '') {
 				defaultValues['Subject'] = searchKeyWord.substring(0, 80);
 			}
-			console.log('NCCW - Default values: ' + JSON.stringify(defaultValues));
+			console.log('Default values: ' + JSON.stringify(defaultValues));
 			
 			cmp.set('v.isRecordTypeSelectionAction', false);
 			
@@ -202,61 +185,7 @@
 				console.log('Reseting');
 				cmp.set('v.selected_account', null);
 			}
-            cmp.set('v.selected_tenant_obj', null);
-            cmp.set('v.selected_tenant', null);
 		}
-	},
+	}
 	// .Handle Account Selection
-
-    // Handle tenant selection
-    closeTenantSelectionModal : function (cmp){
-		cmp.set('v.isSelectTenantREQ', false);
-        cmp.set('v.selected_tenant_obj', null);
-		cmp.set('v.selected_tenant', null);
-	},
-    selectTenantListAndContinue : function(cmp, evt, hlp){
-        var canCreate = true;
-        var defaultValues = {};
-        var selected_tenant_obj = cmp.get('v.selected_tenant_obj');
-        var tenantLookup = cmp.find('tenantlookup');
-        var recordTypeId = cmp.get('v.defaultRecordType');
-        var searchKeyWord = cmp.find('searchInputField').get('v.value');
-
-        if (hlp.isEmpty(selected_tenant_obj) || hlp.isEmpty(selected_tenant_obj.val)){
-			$A.util.addClass(tenantLookup, "error-box");
-            canCreate = false;
-		} else {
-            $A.util.removeClass(tenantLookup, "error-box");
-            cmp.set('v.selected_tenant', selected_tenant_obj.val);
-            defaultValues['Account_Tenant_List__c'] = selected_tenant_obj.val;
-        }
-
-        if (canCreate) {
-			console.log('Can create Case');
-			
-			if (!hlp.isEmpty(searchKeyWord)) {
-				defaultValues['Subject'] = searchKeyWord.substring(0, 80);
-			}
-
-			console.log('NCCW - Default values: ' + JSON.stringify(defaultValues));
-			cmp.set('v.isRecordTypeSelectionAction', false);
-			
-			var evt = $A.get("e.c:DynamicLayoutDialogStarter");
-			if (evt) {
-				evt.setParams({
-					"sObjectName": "Case",
-                    "recordTypeId": recordTypeId,
-                    "layoutMode": "NEW",
-                    "defaultValues" : defaultValues
-                });
-				evt.fire();
-			}
-			cmp.set('v.isSelectTenantREQ', false);
-            cmp.set('v.selected_tenant_obj', null);
-            cmp.set('v.selected_tenant', null);
-
-		}
-
-    }
-    // .Handle tenant selection
 })

@@ -1,0 +1,45 @@
+<apex:component id="Email_Template_Renewal_Info" controller="Email_Template_renewal_Info_Ctrl" allowDML="true" access="global"   >
+    <!--assignTo="{!ExpectedACV}"-->
+    <style>
+        table, th, td {
+            border: 1px solid;
+        }
+    </style>
+
+    <apex:attribute name="ExpectedRenewalACV"  type="Double" description="Junction object name" assignTo="{!ExpectedRenewal_ACV}" />
+    <apex:attribute name="AcvDownSellAmount"  type="Double" description="Junction object name" assignTo="{!AcvDownSell_Amount}" />
+    <apex:attribute name="AcvDownSellPercent"  type="Double" description="Junction object name" assignTo="{!AcvDownSell_Percent}" />
+    <apex:attribute name="AcvDifferenceAmount"  type="Double" description="Junction object name" assignTo="{!AcvDifference_Amount}" />
+    <apex:attribute name="AcvDifferencePercent"  type="Double" description="Junction object name" assignTo="{!AcvDifference_Percent}" />
+    <apex:attribute name="UpliftedExpectedRenewalACV"  type="Double" description="Junction object name" assignTo="{!UpliftedExpected_RenewalACV}" />
+    <apex:attribute name="currency"  type="String" description="Junction object name" assignTo="{!currencyISO}"/>
+
+    <table Style="border: 1px solid;">
+    <tr Style="border: 1px solid;">
+        <td Style="border: 1px solid;">Expected Renewal ACV </td>
+        <td Style="border: 1px solid;">Uplifted Expected Renewal ACV</td>
+    </tr>
+    <tr Style="border: 1px solid;">
+        <td Style="border: 1px solid;">{!if(ExpectedRenewalACV == null, 0, ExpectedRenewal_ACV)} {!currencyISO}</td>
+        <td Style="border: 1px solid;">{!if(UpliftedExpectedRenewalACV == null, 0, Uplifted_ExpectedRenewal_ACV)} {!currencyISO}</td>
+    </tr>
+    <tr Style="border: 1px solid;">
+        <td Style="border: 1px solid;">Increase/decrease Amount from Expected ACV</td>
+        <td Style="border: 1px solid;">ACV Down Sell Amount (from uplifted)</td>
+        
+    </tr>
+    <tr Style="border: 1px solid;">
+        <td Style="border: 1px solid;">{!if(AcvDifferenceAmount == null, 0, Acv_Difference_Amount)} {!currencyISO}</td>
+        <td Style="border: 1px solid;">{!if(AcvDownSellAmount == null, 0, Acv_DownSell_Amount)} {!currencyISO}</td>
+
+    </tr>
+    <tr Style="border: 1px solid;">
+        <td Style="border: 1px solid;">Increase/decrease Percent from Expected ACV</td>
+        <td Style="border: 1px solid;">ACV Down Sell Percent (from uplifted)</td>
+    </tr>
+    <tr Style="border: 1px solid;">
+        <td Style="border: 1px solid;">{!if(AcvDifferencePercent == null, 0, AcvDifferencePercent)}%</td> 
+        <td Style="border: 1px solid;">{!if(AcvDownSellPercent == null, 0, AcvDownSellPercent)}%</td>
+    </tr>
+  </table>
+</apex:component>

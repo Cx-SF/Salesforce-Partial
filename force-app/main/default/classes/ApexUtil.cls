@@ -18,14 +18,6 @@ public with sharing class ApexUtil {
 			return 0;
 		}
 	}
-	public static Integer GitHubTest(String lwId) {
-		//UP TO 10000
-	    try{
-			system.debug(lwId);
-		} catch (Exception ex){
-			return 0;
-		}
-	}
 
 
 	private class MyPickListInfo {

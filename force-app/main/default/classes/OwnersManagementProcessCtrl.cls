@@ -173,7 +173,7 @@ public class OwnersManagementProcessCtrl  {
 			if(rom.Opportunity__c != null) opprtunityIdsList.add(rom.Opportunity__c);
 		}
 
-		String query = 'select id, Name, Type, BillingCountry, Total_Active_ACV__c, SBQQ__DefaultOpportunity__c, CX_NextFY_ExpectedRenewalACV__c, Account_Owner__c, of_Open_Opportunities__c, OwnerId, Existing_Quota__c, Account_Status__c from Account where OwnerId =: owner and id not In : accountIdsList';
+		String query = 'select id, Name, Type, BillingCountry, Total_Active_ACV__c, SBQQ__DefaultOpportunity__c, CX_NextFY_ExpectedRenewalACV__c, Account_Owner__c, of_Open_Opportunities__c, OwnerId, Existing_Quota__c, Account_Status__c from Account where (OwnerId =: owner OR OwnerId =: UserInfo.getUserId()) and id not In : accountIdsList';
 
 		if(country != null) query += ' and BillingCountry =: country' ;
 		if(typeN != null) query += ' and Type =: typeN';
@@ -188,7 +188,7 @@ public class OwnersManagementProcessCtrl  {
 			accountIdList.add(acc.Id);
 		}
 
-		oppList = [select Id, Name, Account_name__c, AccountId, Channel__c, Type, StageName, CloseDate, OwnerId, Opportunity_Owner_Name__c,Existing_Quota__c from Opportunity where AccountId in :accountIdList and OwnerId != :owner and StageName not in('Stage zero Disqualified', 'Closed Won', 'Closed Lost', 'Paid', 'Approved', 'Cancelled', 'Closed Omitted') and id not In : opprtunityIdsList order by Account_name__c]; 
+		oppList = [select Id, Name, Account_name__c, AccountId, Channel__c, Type, StageName, CloseDate, OwnerId, Opportunity_Owner_Name__c,Existing_Quota__c from Opportunity where AccountId in :accountIdList and (OwnerId != :owner OR OwnerId != :UserInfo.getUserId()) and StageName not in('Stage zero Disqualified', 'Closed Won', 'Closed Lost', 'Paid', 'Approved', 'Cancelled', 'Closed Omitted') and id not In : opprtunityIdsList order by Account_name__c]; 
 
 		System.debug('Rafa - accList: ' + accList);
 		System.debug('Rafa - oppList: ' + oppList);
@@ -264,7 +264,7 @@ public class OwnersManagementProcessCtrl  {
 				rom.status__c = (accMap.get('Existing_Quota__c') == true) ? 'Pending Quota Review' : 'In Progress';
 				rom.Updated_By__c = UserInfo.getUserId();
 				rom.Update_Date__c = Date.today();
-				rom.Previous_Owner__c = (Id) currentOwnerId;
+				rom.Previous_Owner__c = (Id) accMap.get('OwnerId'); //currentOwnerId;
 				rom.New_Owner__c = (accMap.get('ownerChange') == '') ? (Id) selectedOwner : (Id) accMap.get('ownerChange');
 				if(additionalApprover != null && additionalApprover != '') rom.Additional_approver__c = (Id) additionalApprover;
 				rom.Account__C = (Id) accMap.get('Id');
@@ -277,14 +277,14 @@ public class OwnersManagementProcessCtrl  {
 			}
 		}
 		
-		List<Opportunity> oppList = [Select Id, Name, Account_name__c, AccountId, Channel__c, Type, StageName, CloseDate, OwnerId, Opportunity_Owner_Name__c,Existing_Quota__c from Opportunity where AccountId in :accountIdList and OwnerId = :currentOwnerId and StageName not in('Stage zero Disqualified', 'Closed Won', 'Closed Lost', 'Paid', 'Approved', 'Cancelled', 'Closed Omitted')];
+		List<Opportunity> oppList = [Select Id, Name, Account_name__c, AccountId, Channel__c, Type, StageName, CloseDate, OwnerId, Opportunity_Owner_Name__c,Existing_Quota__c from Opportunity where AccountId in :accountIdList and (OwnerId = :currentOwnerId OR OwnerId = :UserInfo.getUserId()) and StageName not in('Stage zero Disqualified', 'Closed Won', 'Closed Lost', 'Paid', 'Approved', 'Cancelled', 'Closed Omitted')];
 
 		for(Opportunity opp: oppList){
 			Records_Owner_Management__c rom = new Records_Owner_Management__c();
 			rom.status__c = opp.Existing_Quota__c ? 'Pending Quota Review' : 'In Progress';
 			rom.Updated_By__c = UserInfo.getUserId();
 			rom.Update_Date__c = Date.today();
-			rom.Previous_Owner__c = (Id) currentOwnerId;
+			rom.Previous_Owner__c = opp.OwnerId; //(Id) currentOwnerId;
 			rom.New_Owner__c = (mapAccIdVsOwnerId.containsKey(opp.AccountId)) ? mapAccIdVsOwnerId.get(opp.AccountId) : (Id) selectedOwner;
 			if(additionalApprover != null && additionalApprover != '') rom.Additional_approver__c = (Id) additionalApprover;
 			rom.Account__C = opp.AccountId;
@@ -300,7 +300,7 @@ public class OwnersManagementProcessCtrl  {
 				rom.status__c = (oppMap.get('Existing_Quota__c') == true) ? 'Pending Quota Review' : 'In Progress';
 				rom.Updated_By__c = UserInfo.getUserId();
 				rom.Update_Date__c = Date.today();
-				rom.Previous_Owner__c = (Id) currentOwnerId;
+				rom.Previous_Owner__c = (Id) oppMap.get('OwnerId'); //currentOwnerId;
 				rom.New_Owner__c = (oppMap.get('ownerChange') == '') ? (Id) selectedOwner : (Id) oppMap.get('ownerChange');
 				if(additionalApprover != null && additionalApprover != '') rom.Additional_approver__c = (Id) additionalApprover;
 				rom.Account__C = (Id) oppMap.get('AccountId');

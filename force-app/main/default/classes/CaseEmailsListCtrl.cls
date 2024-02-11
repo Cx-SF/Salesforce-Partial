@@ -21,14 +21,12 @@ public with sharing class CaseEmailsListCtrl {
 
     @AuraEnabled
     public static String getCase2EmailAddress(String localPart) {
-        EmailServicesAddress email = [
-                SELECT EmailDomainName,IsActive,LocalPart
-                FROM EmailServicesAddress
-                WHERE LocalPart = :localPart
-                LIMIT 1
-        ];
-
-        return email.LocalPart+'@'+email.EmailDomainName;
+        String res = '';
+        EmailServicesAddress email = null;
+        List <EmailServicesAddress> lemail = [SELECT EmailDomainName, IsActive, LocalPart FROM EmailServicesAddress WHERE LocalPart = :localPart LIMIT 1];
+        if (lemail != null && !lemail.isEmpty()) email = lemail[0];
+        if (email != null) res = email.LocalPart+'@'+email.EmailDomainName;
+        return res;
     }
     
     @AuraEnabled
@@ -57,10 +55,14 @@ public with sharing class CaseEmailsListCtrl {
     public static string sendMailMethod(String mMail, String cc, String mSubject ,String mbody, String caseId, List<String> attachList, Map<String, Map<String, String>> attachData) {
         try {
         
+            String messageId = Cases.generateThreadingMessageId(Id.valueOf(caseId));
+            system.debug('TESTING messageId is '+messageId);
             List<Messaging.SingleEmailMessage> mails =  new List<Messaging.SingleEmailMessage>();
-    
+    		system.debug('TESTING Creating Email');
             // Step 1: Create a new Email
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            mail.setReferences(CaseId+'@sfdc.net');
+            system.debug('TESTING references set to '+mail.references);
     
             // Step 2: Set list of people who should get the email
             List<String> sendTo = new List<String>();
@@ -78,6 +80,7 @@ public with sharing class CaseEmailsListCtrl {
             //mail.setReplyTo('noreply@gmail.com'); // change it with your mail address.
             mail.setReplyTo(UserInfo.getUserEmail()); // REM 25/09
             mail.setSenderDisplayName(UserInfo.getName());
+            //mail.setwhatid(caseid);
     
             // Step 4. Set email contents - you can use variables!
             mail.setSubject(mSubject);

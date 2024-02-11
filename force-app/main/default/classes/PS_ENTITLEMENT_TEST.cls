@@ -22,7 +22,7 @@ public class PS_ENTITLEMENT_TEST  {
             UnitPrice = 12000, IsActive = true);
         insert customPrice;
         
-        account acc = new account (name = 'testacc');
+        account acc = new account (name = 'testacc', Developers__c = 4);
         insert acc;
         contact con = new contact (accountid = acc.id , lastname = 'Lname test',  MailingCountry = 'France');
        // insert con;

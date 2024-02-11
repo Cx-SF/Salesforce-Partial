@@ -48,8 +48,10 @@ export default class OwnerManagementProcessAccountList extends LightningElement 
         for(let i=0; i<this.accountData.length; i++){
             this.accountData[i].CX_NextFY_ExpectedRenewalACV__c = this.convertNumToStr(this.accountData[i].CX_NextFY_ExpectedRenewalACV__c);
             this.accountData[i].Total_Active_ACV__c = this.convertNumToStr(this.accountData[i].Total_Active_ACV__c);
+            let urll = window.location.href.split('com');
+            console.log('url: ' + urll);
             //this.accountData[i].of_Open_Opportunities__c = this.convertNumToStr(this.accountData[i].of_Open_Opportunities__c);
-            this.accountData[i].accountUrl = 'https://checkmarx--uat.sandbox.lightning.force.com/lightning/r/Account/' + this.accountData[i].Id + '/view';
+            this.accountData[i].accountUrl = urll[0] + 'com/' + this.accountData[i].Id;
             this.accountData[i].rowNumber = i+1;
             this.accountData[i].ownerChange = '';
         }
