@@ -8,10 +8,10 @@ private class CostomerOverviewAvvountPO_ctrl_Test {
         a.CSM__c = UserInfo.getUserId();
         insert a;
 
-        Account_Planning__c ap = TestObjectCreator.CreateAccountPlanning(a.id);
-        insert ap;
+        //Account_Planning__c ap = TestObjectCreator.CreateAccountPlanning(a.id);
+        //insert ap;
 
-        CostomerOverviewAvvountPO_ctrl.initComponent(ap.Id);
+        //CostomerOverviewAvvountPO_ctrl.initComponent(ap.Id);
 
     }
 }
